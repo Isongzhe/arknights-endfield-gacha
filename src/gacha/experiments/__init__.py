@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ._io import update_results_md
 
-EXPERIMENTS: list[str] = []  # appended by Tasks 12-14
+EXPERIMENTS: list[str] = ["e01_reproduce_paper", "e02_endfield_single"]
 
 
 def run_experiment(name: str, out_dir: Path, results_md: Path | None = None) -> dict:
