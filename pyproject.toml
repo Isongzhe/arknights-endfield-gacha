@@ -1,0 +1,36 @@
+[project]
+name = "gacha"
+version = "0.1.0"
+description = "Exact waiting-time models for gacha banners (Arknights: Endfield) with cross-banner carry-over and risk metrics"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "numpy>=2.0",
+  "scipy>=1.14",
+  "matplotlib>=3.9",
+  "pandas>=2.2",
+]
+
+[project.scripts]
+gacha = "gacha.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gacha"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
