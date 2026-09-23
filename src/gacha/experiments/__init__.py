@@ -12,6 +12,9 @@ EXPERIMENTS: list[str] = [
     "e02_endfield_single",
     "e03_personal_state",
     "e04_carry_over",
+    "e05_tail_risk",
+    "e06_mc_convergence",
+    "e07_sensitivity",
 ]
 
 

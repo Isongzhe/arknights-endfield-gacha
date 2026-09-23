@@ -47,3 +47,39 @@ def test_e04_carry_over(tmp_path: Path):
     assert head["exact_mean_K2"] < head["iid_mean_K2"]  # entering pity and dossier help
     assert "e04_carry_over.md" in _files(tmp_path, "tables", "e04")
     assert "e04_fig_cdf.png" in _files(tmp_path, "figures", "e04")
+
+
+def test_e05_tail_risk(tmp_path: Path):
+    head = run_experiment("e05_tail_risk", tmp_path)
+    assert head["q90_K1"] < head["q90_K3"] < head["q90_K5"]
+    assert 0.0 < head["completion_60_per_banner_K5"] < 1.0
+    assert "e05_tail_risk.csv" in _files(tmp_path, "tables", "e05")
+    assert "e05_fig_completion.png" in _files(tmp_path, "figures", "e05")
+
+
+def test_e06_mc_convergence(tmp_path: Path):
+    head = run_experiment("e06_mc_convergence", tmp_path)
+    assert abs(head["mc_200k"] - head["exact_survival_90"]) < 0.005
+    assert head["max_abs_z"] < 3.5
+    assert "e06_convergence.md" in _files(tmp_path, "tables", "e06")
+    assert "e06_fig_convergence.png" in _files(tmp_path, "figures", "e06")
+
+
+def test_e07_sensitivity(tmp_path: Path):
+    head = run_experiment("e07_sensitivity", tmp_path)
+    assert head["mean_up_share_0.7"] < head["mean_up_share_0.5"]
+    assert head["mean_guarantee_100"] < head["mean_guarantee_140"]
+    assert "e07_sensitivity.md" in _files(tmp_path, "tables", "e07")
+    assert "e07_fig_sensitivity.png" in _files(tmp_path, "figures", "e07")
+
+
+def test_registry_complete():
+    assert EXPERIMENTS == [
+        "e01_reproduce_paper",
+        "e02_endfield_single",
+        "e03_personal_state",
+        "e04_carry_over",
+        "e05_tail_risk",
+        "e06_mc_convergence",
+        "e07_sensitivity",
+    ]
