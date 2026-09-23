@@ -1,4 +1,5 @@
-"""E4: exact multi-banner distribution (pity + dossier carried) vs the paper's i.i.d. convolution."""
+"""E4: exact multi-banner distribution (pity and dossier carried) versus the paper's
+i.i.d. convolution (its Eq. 2)."""
 
 from __future__ import annotations
 

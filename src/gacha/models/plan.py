@@ -8,7 +8,7 @@ from typing import NamedTuple
 from gacha.kernel.types import FAIL, SUCCESS, Transition
 from gacha.rules.endfield import BannerSpec
 
-from .endfield import ACTIVE, DONE, BannerState, pull, status, validate_start
+from .endfield import ACTIVE, DONE, FRESH, BannerState, pull, status, validate_start
 
 
 class PlanState(NamedTuple):
@@ -27,7 +27,7 @@ class Plan:
     def __init__(
         self,
         banners: Sequence[BannerSpec],
-        start: BannerState = BannerState(0, 0, 0, 0),
+        start: BannerState = FRESH,
         dossier0: bool = False,
     ):
         self.banners = list(banners)

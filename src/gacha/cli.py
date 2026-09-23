@@ -89,18 +89,26 @@ def main(argv: list[str] | None = None) -> int:
     )
     ev.add_argument("--copies", type=int, default=0, help="UP copies already obtained here")
     ev.add_argument(
-        "--up-obtained", type=int, choices=(0, 1), default=0,
+        "--up-obtained",
+        type=int,
+        choices=(0, 1),
+        default=0,
         help="1 if the 120 guarantee is already void",
     )
     ev.add_argument(
-        "--dossier", type=int, choices=(0, 1), default=0,
+        "--dossier",
+        type=int,
+        choices=(0, 1),
+        default=0,
         help="1 if this banner received the 60-pull dossier",
     )
     ev.add_argument("--target", type=int, default=1, help="wanted UP copies")
     ev.add_argument("--cap", type=int, default=120, help="maximum paid pulls on this banner")
     ev.add_argument("--budget", type=int, default=None, help="paid pulls available")
     ev.add_argument(
-        "--realized", type=int, default=None,
+        "--realized",
+        type=int,
+        default=None,
         help="paid pulls you actually needed; prints how unlucky that was",
     )
     ev.add_argument("--plan", type=str, default=None, help="TOML plan file (multi-banner)")

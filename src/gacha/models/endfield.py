@@ -20,6 +20,9 @@ class BannerState(NamedTuple):
     u: int  # 1 once a UP came from a counted pull (voids the 120 guarantee)
 
 
+FRESH = BannerState(0, 0, 0, 0)
+
+
 def pull(
     rules: EndfieldCharacterRules, state: BannerState, f: int, target_copies: int
 ) -> list[tuple[float, BannerState, int]]:
@@ -82,9 +85,7 @@ def validate_start(spec: BannerSpec, start: BannerState, f: int) -> None:
 class SingleBannerModel:
     """One banner; absorbs success when the target is reached, fail when the cap is exhausted."""
 
-    def __init__(
-        self, spec: BannerSpec, start: BannerState = BannerState(0, 0, 0, 0), dossier: bool = False
-    ):
+    def __init__(self, spec: BannerSpec, start: BannerState = FRESH, dossier: bool = False):
         self.spec = spec
         self.rules = spec.rules
         self.f = spec.rules.free_pulls(dossier)

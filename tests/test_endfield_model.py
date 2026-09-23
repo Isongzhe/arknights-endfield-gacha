@@ -100,9 +100,7 @@ def test_fifty_fifty_closed_form():
     expected = [0.0] + [0.5**j for j in range(1, cap + 1)]
     assert ht.f_succ.tolist() == pytest.approx(expected, abs=1e-12)
     assert ht.p_fail == pytest.approx(0.5**cap)
-    assert rk.mean(ht) == pytest.approx(
-        sum(j * 0.5**j for j in range(1, cap + 1)) + cap * 0.5**cap
-    )
+    assert rk.mean(ht) == pytest.approx(sum(j * 0.5**j for j in range(1, cap + 1)) + cap * 0.5**cap)
 
 
 def test_support_bound_from_guarantee():

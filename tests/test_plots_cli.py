@@ -33,7 +33,12 @@ def test_heatmap_draws(tmp_path: Path):
     fig, ax = new_figure()
     z = np.arange(12, dtype=float).reshape(3, 4)
     im = heatmap(
-        ax, z, x=np.array([0, 5, 10, 15]), y=np.array([1, 2, 3]), xlabel="x", ylabel="y",
+        ax,
+        z,
+        x=np.array([0, 5, 10, 15]),
+        y=np.array([1, 2, 3]),
+        xlabel="x",
+        ylabel="y",
         cbar_label="z",
     )
     assert im.get_array().shape == (3, 4)
