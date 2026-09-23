@@ -79,6 +79,17 @@ def test_validate_start_rejects_bad_states():
         SingleBannerModel(spec, start=BannerState(-1, 0, 0, 0))
 
 
+def test_validate_start_rejects_pulls_past_guarantee_without_up():
+    # The 120th counted pull always sets u = 1, so n >= 120 with u == 0 cannot occur in the game.
+    spec = BannerSpec(FULL, 1, 200)
+    with pytest.raises(ValueError):
+        validate_start(spec, BannerState(0, 120, 0, 0), 5)
+    with pytest.raises(ValueError):
+        validate_start(spec, BannerState(0, 121, 0, 0), 5)
+    validate_start(spec, BannerState(0, 121, 1, 1), 5)  # possible: UP obtained at pull 120
+    validate_start(BannerSpec(BARE, 1, 200), BannerState(0, 121, 0, 0), 0)  # no guarantee rule
+
+
 def test_first_six_star_closed_form():
     # up_share=1: first UP == first 6*, bounded by hard pity. Paper Eq. (8) survival sum with
     # the Endfield soft-pity schedule: E = sum_{j<80} prod_{r<j} (1 - p_r).

@@ -80,6 +80,12 @@ def validate_start(spec: BannerSpec, start: BannerState, f: int) -> None:
         raise ValueError("u must be 0 or 1")
     if max(0, n - f) > spec.cap:
         raise ValueError(f"start state has {max(0, n - f)} paid pulls, beyond the cap {spec.cap}")
+    g = spec.rules.guarantee_pull
+    if g is not None and u == 0 and n >= g:
+        raise ValueError(
+            f"n = {n} >= guarantee_pull = {g} requires u = 1: the {g}th counted pull always"
+            " grants the UP (R5)"
+        )
 
 
 class SingleBannerModel:

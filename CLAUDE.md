@@ -11,6 +11,7 @@ Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfi
     uv run ruff check . && uv run ruff format .
     uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60 --realized 90
     uv run gacha experiment all  # tables -> results/tables, figures -> results/figures
+    uv run gacha evaluate --plan plan.toml --budget 300   # multi-banner; schema: gacha evaluate --help
 
 ## Principles
 

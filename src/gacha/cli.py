@@ -15,6 +15,25 @@ from gacha.models.plan import Plan
 from gacha.risk import metrics as rk
 from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
 
+PLAN_TOML_HELP = """\
+plan file (TOML), banners in chronological order; target_copies = 0 means a skipped banner
+(cap must be 0). [rules] overrides EndfieldCharacterRules fields for every banner (per-banner
+overrides are not supported). [start] is your state inside the first banner; dossier0 = true if
+the first banner received the 60-pull dossier.
+
+    dossier0 = false
+    [start]            # optional, defaults to a fresh banner
+    t = 10             # pity counter, n = counted pulls, c = UP copies, u = 1 if UP obtained
+    [rules]            # optional
+    free_start_pulls = 5
+    [[banners]]
+    target_copies = 1
+    cap = 120
+    [[banners]]
+    target_copies = 0
+    cap = 0
+"""
+
 
 def _plan_from_toml(path: Path) -> tuple[Plan, Plan]:
     data = tomllib.loads(path.read_text())
@@ -45,8 +64,8 @@ def _evaluate(args: argparse.Namespace) -> int:
     lines = [
         f"P(success)                    {ht.p_success:.4f}",
         f"P(success within {budget} paid)    {rk.completion(ht, budget):.4f}",
-        f"mean paid pulls               {rk.mean(ht):.2f}",
-        f"sd                            {rk.sd(ht):.2f}",
+        f"mean paid pulls (until success or cap)  {rk.mean(ht):.2f}",
+        f"sd   (until success or cap)  {rk.sd(ht):.2f}",
     ]
     if ht.p_success > 0:
         for a in (0.5, 0.9, 0.95, 0.99):
@@ -82,7 +101,18 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="gacha", description="Exact gacha waiting-time models")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    ev = sub.add_parser("evaluate", help="evaluate a personal banner state or a plan file")
+    ev = sub.add_parser(
+        "evaluate",
+        help="evaluate a personal banner state or a plan file",
+        description=(
+            "Evaluate the distribution of paid pulls for one banner (flags) or for a multi-banner "
+            "plan (--plan FILE). Lines marked '(until success or cap)' describe paid pulls spent "
+            "until the target is reached or the cap is exhausted; lines marked '(given success)' "
+            "condition on reaching the target."
+        ),
+        epilog=PLAN_TOML_HELP,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     ev.add_argument("--pity", type=int, default=0, help="pity counter t (0-79)")
     ev.add_argument(
         "--banner-pulls", type=int, default=0, help="counted pulls already made on this banner"

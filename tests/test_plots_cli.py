@@ -94,6 +94,17 @@ def test_cli_evaluate_plan_file(tmp_path: Path, capsys):
     assert "P(success within 150 paid)" in capsys.readouterr().out
 
 
+def test_cli_labels_stop_distribution_and_documents_plan_schema(capsys):
+    rc = main(["evaluate", "--target", "2", "--cap", "120"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "mean paid pulls (until success or cap)" in out
+    with pytest.raises(SystemExit):
+        main(["evaluate", "--help"])
+    help_text = capsys.readouterr().out
+    assert "[[banners]]" in help_text and "target_copies" in help_text
+
+
 def test_cli_unknown_experiment(capsys):
     assert main(["experiment", "nope"]) == 2
     assert "unknown experiment" in capsys.readouterr().err
