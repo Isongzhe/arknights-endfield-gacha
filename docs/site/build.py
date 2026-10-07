@@ -105,6 +105,10 @@ def check_browser_engine():
 
 
 check_browser_engine()
+from gacha.analysis.rebate import star_rates  # noqa: E402
+
+rate6, rate5 = star_rates(full)
+d["rates"] = {"six": rate6, "five": rate5}
 data = json.dumps(d, ensure_ascii=False, separators=(",", ":"))
 (HERE / "data.json").write_text(data)
 template = (HERE / "template.html").read_text()

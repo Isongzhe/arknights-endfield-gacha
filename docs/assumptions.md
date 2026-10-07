@@ -17,7 +17,7 @@ policy in `src/gacha/models/endfield.py` / `plan.py`. Change a rule here first, 
 | R8 | every 240 counted pulls: +1 UP token (raises potential); an operator maxes out at 6 copies (1 + 5 potentials), so target_copies above 6 is meaningless | confirmed (cap of 6 from user 2026-10-07; not enforced in code) | potential_every |
 | R9 | 10 banner-bound pulls per limited banner: 5 from logging in during the first three days of the version plus 5 exchanged in the shop (user 2026-10-07, "通常都會換"). The code default is still 5; use `free_start_pulls=10` for a player who takes the shop exchange. Not known for re-run banners (RR7 assumes 0) | confirmed banner-bound (user 2026-10-07) | free_start_pulls |
 | R10 | off-rate 6★ composition (standard vs previous limited) | deferred (Phase 3) | — |
-| R11 | 5★ layer (8%, one per 10 pulls) | deferred (Phase 3) | — |
+| R11 | 5★ layer: 8% base; if 9 pulls in a row give no 5★ or better, the 10th is 5★ or better (6★ at its pity rate, otherwise 5★). When the 6★ rate is boosted the 5★ rate is min(8%, 1 − p_t) | wiki; the boosted-rate interaction is assumed. Used only for the quota rebate | five_star_rate, five_star_pity |
 | R12 | limited operator stays 3 banners | deferred (affects R10) | — |
 
 | ID | Policy assumption | Code |
@@ -50,11 +50,16 @@ and including the first UP, and 2.2720% afterwards. The model reproduces both to
 until first UP] = 2.0387% (bonus pulls excluded). This confirms R2 (ramp from the 66th pull), R4,
 R5 (120 guarantee) and R8/RR6 (one token per 240 pulls).
 
-### Not modeled: 保障配額 rebate
+### 保障配額 rebate (R13), modeled as an expected-value approximation
 
-25 保障配額 buy one universal permit; a duplicate 5★ gives 10 and a duplicate 6★ gives 50. For a player
-whose 5★ pulls are mostly duplicates this returns roughly one pull per 25 pulls (3-4%). It needs
-the 5★ layer (R11) and a collection state, so it is deferred; results are slightly conservative.
+25 保障配額 buy one universal permit; a duplicate 5★ gives 10 and a duplicate 6★ gives 50
+(`quota_per_permit`, `quota_five_dupe`, `quota_six_dupe`). `gacha.analysis.rebate` computes the
+long-run 5★ and 6★ rates from the stationary law of (6★ pity, 5★ pity) and turns a player's
+ownership shares into quota per pull; the stock is then scaled by 1 / (1 − quota per pull / 25).
+For a player whose 5★ are all owned this is about 1.3 quota per pull, roughly one extra pull per
+19 pulls. It is an average, not part of the exact chain: the variance of the rebate, quota earned
+from free and bonus pulls, and the start-up transient are ignored. The roster used by the site is
+in `docs/rules/roster.md`.
 
 ## Open questions (spec §9)
 

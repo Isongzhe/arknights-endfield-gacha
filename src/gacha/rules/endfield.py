@@ -23,6 +23,11 @@ class EndfieldCharacterRules:
     dossier_pulls: int = 10  # R7
     potential_every: int | None = 240  # R8
     free_start_pulls: int = 5  # R9
+    five_star_rate: float = 0.08  # R11
+    five_star_pity: int = 10  # R11: a 5* or better at least once every 10 pulls
+    quota_per_permit: int = 25  # R13: 保障配額 for one universal permit
+    quota_five_dupe: int = 10  # R13
+    quota_six_dupe: int = 50  # R13
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.up_share <= 1.0:
