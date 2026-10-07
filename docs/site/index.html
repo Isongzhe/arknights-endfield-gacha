@@ -89,7 +89,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
   <ol>
     <li><a href="#overview">總覽</a></li>
     <li><a href="#calc">試算</a></li>
-    <li><a href="#case">復刻池與新限定</a></li>
+    <li><a href="#case">分析報告</a></li>
     <li><a href="#flow">研究與計算流程</a></li>
     <li><a href="#rules">卡池規則</a></li>
     <li><a href="#theory">統計理論</a></li>
@@ -174,68 +174,64 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 
 <section id="case">
   <h2>每個版本都會遇到的決策：下半的復刻池，還是下個版本的新限定</h2>
-  <p>照目前的排程，每個大版本的下半是一個復刻池，緊接著下個版本開新的限定角色池。復刻依角色推出的順序輪替，1.5 下半是伊馮，1.6 下半輪到 1.1 版的角色。所以「復刻池要不要投入、會不會影響下一隻新角色」不是單一事件，而是每個版本都會重來一次的問題。</p>
-  <p>下面用 1.5 下半的伊馮復刻池與 1.6 新角色當例子，數字取自一位玩家 2026 年 10 月 7 日的實際狀況，也是上面試算器的預設值。換成你自己的數字，同樣的分析方式照樣適用。</p>
-  <h3>手上的狀況</h3>
-  <div class="scroll"><table>
-    <tr><th>項目</th><th>數值</th></tr>
-    <tr><td>現有資源</td><td>通用憑證 2 張、合成玉 19,950、源石 243 顆，合計 78 抽</td></tr>
-    <tr><td>伊馮復刻池</td><td>累積已抽 30 抽，30 抽門檻的 10 連已用，再 50 抽必出六星，10/15 06:00 結束</td></tr>
-    <tr><td>限定池保底</td><td>再 32 抽必出六星，會帶進新角色池</td></tr>
-    <tr><td>新角色池</td><td>10/15 到 11/5。開版三天內登入送 5 抽，商店可再換 5 抽，共 10 抽綁定該池</td></tr>
-    <tr><td>月卡</td><td>每天 200 合成玉。到 10/15 多 3 抽，到 11/5 再多 8 抽</td></tr>
-    <tr><td>到 11/5 的可用總抽數</td><td>89 抽，不含活動、開版獎勵與保障配額換的抽</td></tr>
-  </table></div>
-  <h3>關鍵觀察</h3>
-  <p>伊馮池再 50 抽必出六星，軟保底從再抽第 36 抽開始。新角色池扣掉綁定的 10 抽後，自備第 22 抽必出六星，軟保底從第 8 抽開始。兩者合計 72 抽，手上的抽數夠兩邊各走到小保底，各賭一次 50%，還有餘裕。</p>
-  <p>兩個池的保底互不相通，所以它們只透過共用的抽數互相影響。在復刻池每多花一抽，新角色池就少一抽。</p>
-  <h3>伊馮池該抽到哪裡</h3>
-  <div class="scroll"><table>
-    <tr><th class="n">從現在起最多再抽</th><th class="n">伊馮</th><th class="n">新角色</th><th class="n">兩隻都有</th></tr>
-    <tr><td class="n">0，不抽</td><td class="n">0%</td><td class="n">78.2%</td><td class="n">0%</td></tr>
-    <tr><td class="n">40</td><td class="n">38.0%</td><td class="n">59.9%</td><td class="n">23.4%</td></tr>
-    <tr><td class="n">50，到必出六星 ◀</td><td class="n">54.8%</td><td class="n">59.0%</td><td class="n">33.2%</td></tr>
-    <tr><td class="n">60，累積 90 抽，拿到最後一次贈送</td><td class="n">58.3%</td><td class="n">58.2%</td><td class="n">35.1%</td></tr>
-    <tr><td class="n">67，只留 22 抽給新角色</td><td class="n">59.4%</td><td class="n">57.7%</td><td class="n">35.8%</td></tr>
-    <tr><td class="n">81，10/15 前全部投入</td><td class="n">62.7%</td><td class="n">40.4%</td><td class="n">37.0%</td></tr>
-  </table></div>
-  <p>核心是前 50 抽，六星幾乎都在第 36 到 50 抽之間出現。在那之前停手最不划算，例如只抽 40 抽，伊馮只有 38%。超過 50 抽之後，每一抽只有 0.4% 拿到伊馮。最多可以抽到 67 抽，因為那樣還剩 22 抽，剛好夠新角色走到小保底。再多就會把新角色的機率砍到 40%。抽 50 抽停手時，四種結局是：兩隻都有 33.2%、只有伊馮 21.6%、只有新角色 25.8%、都沒有 19.4%。</p>
-  <p class="note">操作規則：抽到出六星為止，最晚是從現在起第 50 抽，也就是池內累積第 80 抽。拿到伊馮就停。歪了的話可以停，也可以再抽 10 抽到累積 90 抽，把最後一次贈送的 10 連拿到手再停。無論如何要留 22 抽給新角色。歪掉不是全損：80 保底計數由所有復刻池共用，下個版本的復刻池接得上；池內的累積抽數則要等同一隻角色再次復刻才用得到，而復刻是依序輪替的，可能要等很多個版本。</p>
-  <h3>從累積 80 抽到 90 抽值不值得</h3>
-  <p>歪掉之後保底歸零，每抽回到 0.4% 拿到伊馮。自己的 10 抽約 3.9%，累積滿 90 抽送的 10 連再 3.9%，合計約 7.7%。等於花 10 抽拿到 20 抽的效果。它讓伊馮多 3.5 個百分點，新角色只少 0.8 個百分點，因為剩下的抽數仍夠新角色走到小保底。90 抽之後沒有贈送，再往後就不划算了。</p>
-  <h3>這算不算在賭</h3>
-  <p>算。「存夠 120 抽再下池」的打法沒有虧到任何回饋，而且效率更高。追到拿到為止平均 74 抽一隻 UP，出六星就停則是約 49 抽換 52% 的機率，折合每隻約 94 抽。差別來自 120 大保底，它等於替歪掉的人打折，只賭一次小保底的人放棄了這個折扣。</p>
-  <p>在限定池只抽一半還有一個實際損失：80 保底的計數會帶到下一池，但朝 120 累積的進度在池子結束時歸零。復刻池的進度則會保留，所以在復刻池只抽一段的代價比較小。</p>
-  <div class="scroll"><table>
-    <tr><th>比較</th><th class="n">全部留給新角色</th><th class="n">伊馮抽到出六星</th></tr>
-    <tr><td>至少拿到一隻</td><td class="n">78.2%</td><td class="n">80.6%</td></tr>
-    <tr><td>一無所有</td><td class="n">21.8%</td><td class="n">19.4%</td></tr>
-    <tr><td>平均拿到幾隻</td><td class="n">0.78</td><td class="n">1.14</td></tr>
-    <tr><td>新角色要保證拿到的最壞花費</td><td class="n">1,110</td><td class="n">3,960</td></tr>
-  </table></div>
-  <p>這個案例裡 89 抽不夠保證任何一隻，所以兩種打法一無所有的機率都在兩成左右。穩健打法把機率集中在一隻，花一千元左右就能保證。拚的打法多了拿到兩隻的機會，代價是要保證新角色時得花更多。</p>
-  <h3>如果願意花錢</h3>
-  <p>補抽的價格取首儲雙倍用完之後的價目：新角色池的尋訪包 10 抽 490 元，其餘用一般源石，最便宜的檔位每抽 55.1 元。</p>
-  <div class="scroll"><table>
-    <tr><th>打法</th><th class="n">伊馮</th><th class="n">新角色</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞</th></tr>
-    <tr><td>不抽伊馮，新角色追到底</td><td class="n">0%</td><td class="n">100%</td><td class="n">78.2%</td><td class="n">224</td><td class="n">1,110</td><td class="n">1,110</td></tr>
-    <tr><td>伊馮抽 50 抽停，新角色追到底</td><td class="n">54.8%</td><td class="n">100%</td><td class="n">59.0%</td><td class="n">1,050</td><td class="n">3,480</td><td class="n">3,960</td></tr>
-    <tr><td>兩隻都追到底</td><td class="n">100%</td><td class="n">100%</td><td class="n">37.1%</td><td class="n">1,574</td><td class="n">4,670</td><td class="n">6,120</td></tr>
-  </table></div>
-  <p>金額單位是台幣，假設缺多少補多少。</p>
-  <div class="scroll"><table>
-    <tr><th class="n">花費上限</th><th class="n">多幾抽</th><th class="n">兩隻都有的最高機率</th></tr>
-    <tr><td class="n">0</td><td class="n">0</td><td class="n">36.2%</td></tr>
-    <tr><td class="n">1,000</td><td class="n">18</td><td class="n">59.2%</td></tr>
-    <tr><td class="n">2,000</td><td class="n">37</td><td class="n">69.4%</td></tr>
-    <tr><td class="n">3,000</td><td class="n">55</td><td class="n">75.1%</td></tr>
-    <tr><td class="n">4,000</td><td class="n">73</td><td class="n">84.9%</td></tr>
-    <tr><td class="n">5,000</td><td class="n">91</td><td class="n">91.5%</td></tr>
-    <tr><td class="n">6,120</td><td class="n">111</td><td class="n">100%</td></tr>
-  </table></div>
-  <p>前 1,000 元的效果最大，兩隻都有的機率從 36% 升到 59%。那 18 抽讓伊馮吃滿 120 大保底之後，還夠新角色走到小保底。之後每 1,000 元大約多 6 到 10 個百分點。</p>
-  <h3>零星多拿的抽數幫助有限</h3>
-  <p>在伊馮抽 50 抽停手的前提下，活動與開版獎勵每多 10 抽，新角色的機率只多 2 到 3 個百分點。原因是新角色池的小保底在第 22 抽，歪了之後要再走 65 抽以上才會進入下一個軟保底區，中間每抽只有 0.4%。</p>
+  <p>照目前的排程，每個大版本的下半是一個復刻池，緊接著下個版本開新的限定角色池。復刻依角色推出的順序輪替，1.5 下半是伊馮，1.6 下半輪到 1.1 版的角色。所以「復刻池要不要投入、會不會影響下一隻新角色」是每個版本都會重來一次的問題。</p>
+  <p class="note">這一節是依上方試算器的輸入即時產生的分析報告。改上面任何一個數字，下面的表、圖與文字都會跟著重算。預設值取自一位玩家在 2026 年 10 月 7 日面對伊馮復刻池與 1.6 新角色時的實際狀況。</p>
+
+  <h3>一、手上的狀況</h3>
+  <div class="scroll"><table id="rep-state"></table></div>
+
+  <h3>二、兩個池各自的門檻</h3>
+  <p id="rep-key"></p>
+  <figure>
+    <div class="ftitle">各自單獨抽，幾抽內拿到的機率</div>
+    <div class="legend"><span><i style="border-color:var(--s2)"></i>復刻角色</span><span><i style="border-color:var(--s3)"></i>新角色</span></div>
+    <div class="chart" id="c-rep-cdf"></div>
+    <figcaption>橫軸是從現在起自己拿出的抽數。曲線陡升的區段是軟保底區，垂直跳升的地方是必出六星或大保底。平坦的區段每抽只有 0.4%。</figcaption>
+  </figure>
+  <div class="scroll"><table id="rep-single"></table></div>
+
+  <h3>三、在復刻池每多抽一段，換到什麼、賠掉什麼</h3>
+  <p>把復刻池的投入切成每 10 抽一段，看每一段讓復刻角色的機率多多少，又讓新角色的機率少多少。換得多、賠得少的段落值得抽，反過來就該停。</p>
+  <div class="scroll"><table id="rep-marginal"></table></div>
+  <p id="rep-marginal-note"></p>
+
+  <h3>四、四種結局</h3>
+  <div class="scroll"><table id="rep-outcome"></table></div>
+  <p id="rep-outcome-note"></p>
+
+  <h3>五、集中在一隻，還是兩邊都賭</h3>
+  <div class="scroll"><table id="rep-style"></table></div>
+  <p>「存夠再下池」的打法沒有虧到任何回饋，而且效率更高。從全新狀態追到拿到為止，平均 74 抽一隻 UP；出六星就停則是約 49 抽換 52% 的機率，折合每隻約 94 抽。差別來自 120 大保底，它等於替歪掉的人打折。在限定池只抽一半還有一個損失：80 保底的計數會帶到下一池，但朝 120 累積的進度在池子結束時歸零。復刻池的 80 保底計數由所有復刻池共用，累積抽數則要等同一隻角色再次復刻才用得到。</p>
+
+  <h3>六、花錢的風險</h3>
+  <p>假設新角色一定要拿到，缺多少補多少。下表把抽數的分布透過價目表換成金額的分布，再取常用的風險指標。</p>
+  <div class="scroll"><table id="rep-risk"></table></div>
+  <p id="rep-risk-note"></p>
+  <figure>
+    <div class="ftitle">花費上限與兩隻都拿到的最高機率</div>
+    <div class="chart" id="c-rep-money"></div>
+    <figcaption>橫軸是你願意花的上限，以百元為單位。垂直虛線是你在試算器填的上限。曲線平坦的區段代表多花的錢幾乎沒有幫助，跳升的地方是剛好夠跨過某個保底門檻。</figcaption>
+  </figure>
+
+  <h3>七、多拿到的免費抽數有多少幫助</h3>
+  <div class="scroll"><table id="rep-income"></table></div>
+  <p id="rep-income-note"></p>
+
+  <h3>八、推導</h3>
+  <p>令 \(T_A\)、\(T_B\) 為兩個池各自拿到目標所需的自備抽數，\(f_A(j)=P(T_A=j)\)、\(F_A(j)=P(T_A\le j)\)，\(B\) 池同理。兩種池的保底互不相通，所以 \(T_A\) 與 \(T_B\) 獨立。令 \(S\) 為到第二個池結束可用的總抽數，\(x\) 為第一個池的投入上限：最多抽 \(x\) 抽，拿到就提早停，剩下的全給第二個池。</p>
+  <div class="math">$$P_{\text{both}}(x)=\sum_{j=0}^{x} f_A(j)\,F_B(S-j),\qquad P_A(x)=F_A(x),\qquad P_B(x)=P_{\text{both}}(x)+\bigl(1-F_A(x)\bigr)F_B(S-x).$$</div>
+  <p>第一項是「第 \(j\) 抽拿到第一隻，剩下 \(S-j\) 抽夠拿第二隻」。\(P_B\) 多出來的那一項是「第一隻沒拿到，用掉 \(x\) 抽後剩下的還夠拿第二隻」。把上限從 \(x-1\) 提高到 \(x\)，三個機率的變化是</p>
+  <div class="math">$$\Delta P_A=f_A(x),\qquad \Delta P_{\text{both}}=f_A(x)\,F_B(S-x)\ \ge 0,\qquad \Delta P_B=-\bigl(1-F_A(x-1)\bigr)\,f_B(S-x+1)\ \le 0 .$$</div>
+  <p>這三條式子解釋了整份報告的形狀：</p>
+  <ul>
+    <li><b>兩隻都有的機率隨上限只增不減。</b>但增量是 \(f_A(x)\) 乘上一個不超過 1 的數，所以只有在 \(f_A\) 大的地方才漲得動，也就是第一個池的軟保底區與保底點。</li>
+    <li><b>新角色機率的損失集中在特定幾抽。</b>第 \(x\) 抽的代價正比於 \(f_B(S-x+1)\)，也就是第二個池「剛好在第 \(S-x+1\) 抽拿到」的機率。這個值在第二個池的保底點很大，其他地方很小。所以只要剩下的抽數還蓋得住第二個池的必出六星點，多抽幾乎沒有代價；一旦蓋不住，機率就整段掉下去。</li>
+    <li><b>停手點落在門檻上。</b>收益只在第一個池的門檻出現，代價只在跨過第二個池的門檻時出現。兩個門檻之間的每一抽，收益與代價都接近零，所以最佳的上限不是在某個門檻，就是在「剛好留下第二個池門檻所需抽數」的位置。</li>
+  </ul>
+  <p>花費的部分，令 \(U=\min(T_A,x)+T_B\) 為實際用掉的抽數，短缺是 \((U-S)^+\)。價目表給出買 \(k\) 抽的最低價格 \(c(k)\)，它是分段的，因為源石有檔位、禮包有次數限制。花費 \(C=c\bigl((U-S)^+\bigr)\) 的分布由 \(U\) 的分布直接換算：</p>
+  <div class="math">$$\mathrm{VaR}_{\alpha}=\min\{m:\;P(C\le m)\ge\alpha\},\qquad \mathrm{CVaR}_{\alpha}=E\,[\,C\mid C\ge \mathrm{VaR}_{\alpha}\,],\qquad E[C\mid C>0]=\frac{E[C]}{P(C>0)} .$$</div>
+  <p>\(U\) 的分布是「截斷在 \(x\) 的 \(T_A\)」與 \(T_B\) 的摺積。這裡可以用摺積，是因為兩個池的保底獨立；同一系列的連續兩個限定池就不行，因為保底會跨池繼承。</p>
+
   <h3>沒有算進去的來源</h3>
   <p>保障配額每 25 換 1 張通用憑證。重複拿到五星給 10、重複的六星給 50。若抽到的五星大多已經有，大約每 25 抽能回收 1 抽，相當於抽數多 3% 到 4%。這個回收目前沒有建模，所以上面的機率略為保守。</p>
 </section>
@@ -687,6 +683,66 @@ if (typeof module !== "undefined") module.exports = { firstUp, decide, convolve,
   function claims(id){const v=$(id).value;if(!v)return 0;const [y,m,d]=v.split('-').map(Number),t=new Date();
     const days=Math.round((Date.UTC(y,m-1,d)-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
     return days<0?0:days+($('in-claimed').checked?0:1);}
+  const tbl=(id,head,body)=>{$(id).innerHTML='<tr>'+head.map((h,i)=>`<th${i?' class="n"':''}>${h}</th>`).join('')+'</tr>'+
+    body.map(r=>'<tr>'+r.map((v,i)=>`<td${i?' class="n"':''}>${v}</td>`).join('')+'</tr>').join('');};
+  function report(c){
+    const {fa,fb,S,S1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other,card}=c;
+    const h=Math.min(ap,maxA,capMax), softA=Math.max(1,ap-14), hardB=Math.max(0,bp-bf), softB=Math.max(1,bp-14-bf);
+    const Fa=cumsum(fa), Fb=cumsum(fb), at=(F,j)=>j<0?0:F[Math.min(j,F.length-1)];
+    const stat=f=>{let m=0,acc=0,med=null;f.forEach((p,j)=>{m+=p*j;acc+=p;if(med===null&&acc>=0.5-1e-12)med=j;});return {m,med};};
+    const out=x=>{const r=rows[x];return {both:r.both,a:r.a-r.both,b:r.b-r.both,none:1-r.a-r.b+r.both,n:r.a+r.b,pa:r.a,pb:r.b};};
+    const pp=v=>(v>=0?'+':'−')+Math.abs(v*100).toFixed(1);
+    tbl('rep-state',['項目','數值'],[
+      ['現有可用',`${now} 抽`],
+      ['月卡收入',card?`復刻池結束前還能領 ${c1} 次，新角色池結束前 ${c2} 次`:'沒有月卡'],
+      ['其他預估收入',`${other} 抽`],
+      ['復刻池結束前可用',`${S1} 抽`],['到新角色池結束可用',`${S} 抽`],
+      ['復刻池',`累積已抽 ${an} 抽，再 ${ap} 抽必出六星`],
+      ['新角色池',`再 ${bp} 抽必出六星，其中開頭 ${bf} 抽免費`]]);
+    const sum=ap+hardB;
+    $('rep-key').textContent=`復刻池從現在起第 ${softA} 抽進入軟保底，第 ${ap} 抽必出六星，最多 ${maxA} 抽保證拿到。新角色池扣掉免費抽之後，自備第 ${softB} 抽進入軟保底，第 ${hardB} 抽必出六星，最多 ${maxB} 抽保證拿到。兩邊各走到必出六星合計 ${sum} 抽，你有 ${S} 抽，`+
+      (S>=sum?`夠兩邊各賭一次 50%，還多 ${S-sum} 抽。`:`還差 ${sum-S} 抽，沒辦法兩邊都走到必出六星。`)+`兩隻都要保證則需要 ${maxA+maxB} 抽。`;
+    const xm=Math.max(maxA,maxB), pad=F=>{const a=F.slice();while(a.length<=xm)a.push(1);return a;};
+    lineChart('c-rep-cdf',{label:'兩個池各自的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
+      xlabel:'從現在起自備的抽數',ylabel:'拿到的機率',xname:'抽數',vfmt:pct,h:280,
+      series:[{name:'復刻角色',y:pad(Fa),color:'var(--s2)'},{name:'新角色',y:pad(Fb),color:'var(--s3)'}]});
+    const sa=stat(fa), sb=stat(fb);
+    tbl('rep-single',['單獨抽','平均','中位數','走到必出六星時','最多'],[
+      ['復刻角色',sa.m.toFixed(1),sa.med,pc(at(Fa,ap)),maxA],['新角色',sb.m.toFixed(1),sb.med,pc(at(Fb,hardB)),maxB]]);
+    const blocks=[];let bestBlock=null,worstBlock=null;
+    for(let s=0;s<capMax;s+=10){const e=Math.min(s+10,capMax),da=rows[e].a-rows[s].a,db=rows[e].b-rows[s].b,dd=rows[e].both-rows[s].both;
+      blocks.push([`第 ${s+1} 到 ${e} 抽`,pp(da),pp(db),pp(dd)]);
+      if(!bestBlock||da>bestBlock.da)bestBlock={s,e,da};if(!worstBlock||db<worstBlock.db)worstBlock={s,e,db};}
+    tbl('rep-marginal',['復刻池投入','復刻角色機率（百分點）','新角色機率（百分點）','兩隻都有（百分點）'],blocks);
+    $('rep-marginal-note').textContent=blocks.length?`收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，讓復刻角色多 ${(bestBlock.da*100).toFixed(1)} 個百分點。代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽，讓新角色少 ${Math.abs(worstBlock.db*100).toFixed(1)} 個百分點`+
+      (worstBlock.db<-0.05?`，因為抽到這裡，剩下的抽數已經不夠新角色走到必出六星。`:`。`):'復刻池結束前沒有可用的抽數。';
+    const caps=[...new Set([0,h,Math.min(h+10,capMax),pick.x,capMax])].sort((a,b)=>a-b);
+    tbl('rep-outcome',['復刻池上限','兩隻都有','只有復刻角色','只有新角色','都沒有','平均拿到幾隻'],
+      caps.map(x=>{const o=out(x);return [x+(x===pick.x?' ◀':''),pc(o.both),pc(o.a),pc(o.b),pc(o.none),o.n.toFixed(2)];}));
+    const oh=out(h);
+    $('rep-outcome-note').textContent=`抽到必出六星就停（上限 ${h}）時，最可能的結局是「${[['兩隻都有',oh.both],['只有復刻角色',oh.a],['只有新角色',oh.b],['都沒有',oh.none]].sort((p,q)=>q[1]-p[1])[0][0]}」。◀ 是試算器建議的上限。`;
+    const o0=out(0);
+    tbl('rep-style',['比較','全部留給新角色',`復刻池抽到必出六星（${h} 抽）`],[
+      ['至少拿到一隻',pc(1-o0.none),pc(1-oh.none)],['一無所有',pc(o0.none),pc(oh.none)],
+      ['平均拿到幾隻',o0.n.toFixed(2),oh.n.toFixed(2)],
+      ['新角色要保證拿到的最壞花費',nt(spend(0).mx),nt(spend(h).mx)]]);
+    const strat=[[0,'不抽復刻池'],[h,`復刻池抽 ${h} 抽停`],[maxA,'兩隻都追到保證']].filter((v,i,a)=>a.findIndex(w=>w[0]===v[0])===i);
+    tbl('rep-risk',['打法（新角色追到保證）','拿到復刻角色','不用花錢','平均','中位數','VaR 90%','CVaR 90%','最壞','有花錢時的平均'],
+      strat.map(([x,name])=>{const r=spend(x);return [name,pc(pA(x)),pc(r.free),nt(r.avg),nt(r.p50),nt(r.q90),nt(r.cvar),nt(r.mx),r.free<1-1e-9?nt(r.avgPay):'—'];}));
+    const rh=spend(h);
+    $('rep-risk-note').textContent=rh.free>1-1e-9?'以這個打法，庫存已經足夠，不需要花錢。':
+      `以復刻池抽 ${h} 抽停為例：有 ${pc(rh.free)} 的機會不用花錢；一旦要花，平均是 ${nt(rh.avgPay)}。平均花費 ${nt(rh.avg)} 這個數字沒有代表性，因為花費集中在 0 元與接近最壞的 ${nt(rh.mx)} 兩頭，中間很少。`;
+    const top=costFor(maxA+maxB-S,left), nM=Math.max(1,Math.ceil(top/100)), curve=[];
+    for(let i=0;i<=nM;i++){let k=0;while(k<400&&costFor(k+1,left)<=i*100)k++;
+      const rr=decide(fa,fb,S+k), lim=Math.min(S1+k,S+k);let b=0;for(let x=0;x<=lim;x++)b=Math.max(b,rr[x].both);curve.push(b);}
+    lineChart('c-rep-money',{label:'花費上限與兩隻都有的最高機率',xmax:nM,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(nM,8),
+      xlabel:'花費上限（百元）',ylabel:'兩隻都有',xname:'上限（百元）',vfmt:pct,h:280,mark:Math.min(nM,Math.round(M/100)),series:[{name:'兩隻都有',y:curve}]});
+    const inc=[0,10,20,30,40].map(e=>{const rr=decide(fa,fb,S+e), x=Math.min(h,rr.length-1), r=rr[x];return [e,pc(r.a),pc(r.b),pc(r.both),r.b];});
+    tbl('rep-income',['額外多拿（抽）','復刻角色','新角色','兩隻都有'],inc.map(r=>r.slice(0,4)));
+    const gain=((inc[4][4]-inc[0][4])/4)*100;
+    $('rep-income-note').textContent=`以復刻池抽 ${h} 抽停為前提。每多 10 抽，新角色的機率平均多 ${gain.toFixed(1)} 個百分點。`+
+      (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
+  }
   function run(){
     const err=$('calc-error'),out=$('calc-out');
     const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf'),soft=true;
@@ -717,12 +773,15 @@ if (typeof module !== "undefined") module.exports = { firstUp, decide, convolve,
     $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到復刻角色</th><th class="n">拿到新角色</th><th class="n">兩隻都有</th></tr>'+
       xs.map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
     // spend when the second target is chased to its guarantee and the first is capped at x
-    const spend=x=>{const c=fa.slice(0,Math.min(x,maxA)+1);while(c.length<=Math.min(x,maxA))c.push(0);
-      c[c.length-1]+=1-c.reduce((a,b)=>a+b,0);const tot=convolve(c,fb);
+    const S=B, spendMemo={};
+    const spend=x=>{if(spendMemo[x])return spendMemo[x];const n=Math.min(x,maxA),c=fa.slice(0,n+1);
+      c[n]+=1-c.reduce((a,b)=>a+b,0);const tot=convolve(c,fb);
       let free=0,avg=0,mx=0;const pts=[];
-      tot.forEach((pr,u)=>{if(pr<=0)return;const k=costFor(u-B,left);if(k===0)free+=pr;avg+=pr*k;if(pr>1e-12)mx=Math.max(mx,k);pts.push([k,pr]);});
-      pts.sort((a,b)=>a[0]-b[0]);let acc=0,q90=0;for(const [k,pr] of pts){acc+=pr;if(acc>=0.9-1e-12){q90=k;break;}}
-      return {free,avg,q90,mx};};
+      tot.forEach((pr,u)=>{if(pr<=0)return;const k=costFor(u-S,left);if(k===0)free+=pr;avg+=pr*k;if(pr>1e-12)mx=Math.max(mx,k);pts.push([k,pr]);});
+      pts.sort((a,b)=>a[0]-b[0]);let acc=0,q90=null,p50=null;
+      for(const [k,pr] of pts){acc+=pr;if(p50===null&&acc>=0.5-1e-12)p50=k;if(q90===null&&acc>=0.9-1e-12)q90=k;}
+      let tn=0,td=0;for(const [k,pr] of pts)if(k>=q90){tn+=k*pr;td+=pr;}
+      return spendMemo[x]={free,avg,p50,q90,cvar:td?tn/td:0,mx,avgPay:free<1?avg/(1-free):0};};
     const pA=x=>{let t=0;for(let j=0;j<=Math.min(x,maxA);j++)t+=fa[j];return t;};
     const worst=x=>costFor(Math.min(x,maxA)+maxB-B,left);
     let afford=-1;for(let x=0;x<=maxA;x++)if(worst(x)<=M)afford=x;
@@ -739,6 +798,7 @@ if (typeof module !== "undefined") module.exports = { firstUp, decide, convolve,
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
       series:[{name:'兩隻都有',y:usable.map(r=>r.both)},{name:'復刻角色',y:usable.map(r=>r.a)},{name:'新角色',y:usable.map(r=>r.b)}]});
     const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
+    report({fa,fb,S:B,S1:B1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other:num('in-other'),card:$('in-card').checked});
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
   }
