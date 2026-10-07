@@ -163,6 +163,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
     <fieldset><legend>復刻池<small>先開</small></legend>
       <label for="in-an">本池累積已抽<input id="in-an" type="number" min="0" max="119" value="30" inputmode="numeric"></label>
       <label for="in-ap">再幾抽必出六星<input id="in-ap" type="number" min="1" max="80" value="50" inputmode="numeric"></label>
+      <label class="check" for="in-agot"><input id="in-agot" type="checkbox">已經拿到復刻角色，這個池不再抽</label>
       <span class="cap">這兩個數字各自獨立。累積抽數不會歸零，保底計數每次出六星就重來，而且所有復刻池共用。</span>
     </fieldset>
     <fieldset><legend>限定新角色池<small>後開</small></legend>
@@ -202,7 +203,7 @@ __OWN6__
     <h3>結果</h3>
     <div class="keys" id="calc-keys"></div>
     <p id="calc-advice" class="note"></p>
-    <figure>
+    <figure id="fig-cap">
       <div class="ftitle">復刻池投入上限對三種結果的影響</div>
       <div class="legend"><span><i style="border-color:var(--s1)"></i>兩隻都有</span><span><i style="border-color:var(--s2)"></i>拿到復刻角色</span><span><i style="border-color:var(--s3)"></i>拿到新角色</span></div>
       <div class="chart" id="c-calc-cap"></div>
@@ -692,7 +693,7 @@ __ENGINE__
   const tbl=(id,head,body)=>{$(id).innerHTML='<tr>'+head.map((h,i)=>`<th${i?' class="n"':''}>${h}</th>`).join('')+'</tr>'+
     body.map(r=>'<tr>'+r.map((v,i)=>`<td${i?' class="n"':''}>${v}</td>`).join('')+'</tr>').join('');};
   function report(c){
-    const {rebate,perPull,fa,fb,S,S1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other,card}=c;
+    const {got,rebate,perPull,fa,fb,S,S1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other,card}=c;
     const h=Math.min(ap,maxA,capMax), softA=Math.max(1,ap-14), hardB=Math.max(0,bp-bf), softB=Math.max(1,bp-14-bf);
     const Fa=cumsum(fa), Fb=cumsum(fb), at=(F,j)=>j<0?0:F[Math.min(j,F.length-1)];
     const stat=f=>{let m=0,acc=0,med=null;f.forEach((p,j)=>{m+=p*j;acc+=p;if(med===null&&acc>=0.5-1e-12)med=j;});return {m,med};};
@@ -704,10 +705,11 @@ __ENGINE__
       ['其他預估收入',`${other} 抽`],
       ['保障配額回收',perPull>0?`平均每抽 ${perPull.toFixed(2)} 配額，共多 ${rebate} 抽`:'沒有計入'],
       ['復刻池結束前可用',`${S1} 抽`],['到新角色池結束可用',`${S} 抽`],
-      ['復刻池',`累積已抽 ${an} 抽，再 ${ap} 抽必出六星`],
+      ['復刻池',got?'已經拿到復刻角色，不再投入':`累積已抽 ${an} 抽，再 ${ap} 抽必出六星`],
       ['新角色池',`再 ${bp} 抽必出六星，其中開頭 ${bf} 抽免費`]]);
     const sum=ap+hardB;
-    $('rep-key').textContent=`復刻池從現在起第 ${softA} 抽進入軟保底，第 ${ap} 抽必出六星，最多 ${maxA} 抽保證拿到。新角色池扣掉免費抽之後，自備第 ${softB} 抽進入軟保底，第 ${hardB} 抽必出六星，最多 ${maxB} 抽保證拿到。兩邊各走到必出六星合計 ${sum} 抽，你有 ${S} 抽，`+
+    const one=(id,msg)=>{$(id).innerHTML=`<tr><td>${msg}</td></tr>`;};
+    $('rep-key').textContent=got?`復刻角色已經拿到。新角色池扣掉免費抽之後，自備第 ${softB} 抽進入軟保底，第 ${hardB} 抽必出六星，最多 ${maxB} 抽保證拿到。你有 ${S} 抽，`+(S>=maxB?'已經足夠保證。':S>=hardB?`夠走到必出六星，離保證還差 ${maxB-S} 抽。`:`還差 ${hardB-S} 抽才到必出六星。`):`復刻池從現在起第 ${softA} 抽進入軟保底，第 ${ap} 抽必出六星，最多 ${maxA} 抽保證拿到。新角色池扣掉免費抽之後，自備第 ${softB} 抽進入軟保底，第 ${hardB} 抽必出六星，最多 ${maxB} 抽保證拿到。兩邊各走到必出六星合計 ${sum} 抽，你有 ${S} 抽，`+
       (S>=sum?`夠兩邊各賭一次 50%，還多 ${S-sum} 抽。`:`還差 ${sum-S} 抽，沒辦法兩邊都走到必出六星。`)+`兩隻都要保證則需要 ${maxA+maxB} 抽。`;
     const xm=Math.max(maxA,maxB), pad=F=>{const a=F.slice();while(a.length<=xm)a.push(1);return a;};
     lineChart('c-rep-cdf',{label:'兩個池各自的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
@@ -720,24 +722,24 @@ __ENGINE__
     for(let s=0;s<capMax;s+=10){const e=Math.min(s+10,capMax),da=rows[e].a-rows[s].a,db=rows[e].b-rows[s].b,dd=rows[e].both-rows[s].both;
       blocks.push([`第 ${s+1} 到 ${e} 抽`,pp(da),pp(db),pp(dd)]);
       if(!bestBlock||da>bestBlock.da)bestBlock={s,e,da};if(!worstBlock||db<worstBlock.db)worstBlock={s,e,db};}
-    tbl('rep-marginal',['復刻池投入','復刻角色機率（百分點）','新角色機率（百分點）','兩隻都有（百分點）'],blocks);
-    $('rep-marginal-note').textContent=blocks.length?`收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，讓復刻角色多 ${(bestBlock.da*100).toFixed(1)} 個百分點。代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽，讓新角色少 ${Math.abs(worstBlock.db*100).toFixed(1)} 個百分點`+
+    if(got){one('rep-marginal','復刻角色已經拿到，不需要再決定復刻池要抽到哪裡。');}else tbl('rep-marginal',['復刻池投入','復刻角色機率（百分點）','新角色機率（百分點）','兩隻都有（百分點）'],blocks);
+    $('rep-marginal-note').textContent=got?'':blocks.length?`收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，讓復刻角色多 ${(bestBlock.da*100).toFixed(1)} 個百分點。代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽，讓新角色少 ${Math.abs(worstBlock.db*100).toFixed(1)} 個百分點`+
       (worstBlock.db<-0.05?`，因為抽到這裡，剩下的抽數已經不夠新角色走到必出六星。`:`。`):'復刻池結束前沒有可用的抽數。';
     const caps=[...new Set([0,h,Math.min(h+10,capMax),pick.x,capMax])].sort((a,b)=>a-b);
     tbl('rep-outcome',['復刻池上限','兩隻都有','只有復刻角色','只有新角色','都沒有','平均拿到幾隻'],
       caps.map(x=>{const o=out(x);return [x+(x===pick.x?' ◀':''),pc(o.both),pc(o.a),pc(o.b),pc(o.none),o.n.toFixed(2)];}));
     const oh=out(h);
-    $('rep-outcome-note').textContent=`抽到必出六星就停（上限 ${h}）時，最可能的結局是「${[['兩隻都有',oh.both],['只有復刻角色',oh.a],['只有新角色',oh.b],['都沒有',oh.none]].sort((p,q)=>q[1]-p[1])[0][0]}」。◀ 是試算器建議的上限。`;
+    if(got)$('rep-outcome-note').textContent='復刻角色已在手，所以只剩兩種結局：兩隻都有，或只有復刻角色。';else $('rep-outcome-note').textContent=`抽到必出六星就停（上限 ${h}）時，最可能的結局是「${[['兩隻都有',oh.both],['只有復刻角色',oh.a],['只有新角色',oh.b],['都沒有',oh.none]].sort((p,q)=>q[1]-p[1])[0][0]}」。◀ 是試算器建議的上限。`;
     const o0=out(0);
-    tbl('rep-style',['比較','全部留給新角色',`復刻池抽到必出六星（${h} 抽）`],[
+    if(got)one('rep-style','復刻角色已經拿到，資源只剩新角色一個去處，沒有集中或分散的取捨。');else tbl('rep-style',['比較','全部留給新角色',`復刻池抽到必出六星（${h} 抽）`],[
       ['至少拿到一隻',pc(1-o0.none),pc(1-oh.none)],['一無所有',pc(o0.none),pc(oh.none)],
       ['平均拿到幾隻',o0.n.toFixed(2),oh.n.toFixed(2)],
       ['新角色要保證拿到的最壞花費',nt(spend(0).mx),nt(spend(h).mx)]]);
-    const strat=[[0,'不抽復刻池'],[h,`復刻池抽 ${h} 抽停`],[maxA,'兩隻都追到保證']].filter((v,i,a)=>a.findIndex(w=>w[0]===v[0])===i);
+    const strat=[[0,got?'新角色追到保證':'不抽復刻池'],[h,`復刻池抽 ${h} 抽停`],[maxA,'兩隻都追到保證']].filter((v,i,a)=>a.findIndex(w=>w[0]===v[0])===i);
     tbl('rep-risk',['打法（新角色追到保證）','拿到復刻角色','不用花錢','平均','中位數','VaR 90%','CVaR 90%','最壞','有花錢時的平均'],
       strat.map(([x,name])=>{const r=spend(x);return [name,pc(pA(x)),pc(r.free),nt(r.avg),nt(r.p50),nt(r.q90),nt(r.cvar),nt(r.mx),r.free<1-1e-9?nt(r.avgPay):'—'];}));
     const rh=spend(h);
-    $('rep-risk-note').textContent=rh.free>1-1e-9?'以這個打法，庫存已經足夠，不需要花錢。':
+    $('rep-risk-note').textContent=got?(rh.free>1-1e-9?'庫存已經足夠保證新角色，不需要花錢。':`有 ${pc(rh.free)} 的機會不用花錢；一旦要花，平均是 ${nt(rh.avgPay)}，最壞 ${nt(rh.mx)}。`):rh.free>1-1e-9?'以這個打法，庫存已經足夠，不需要花錢。':
       `以復刻池抽 ${h} 抽停為例：有 ${pc(rh.free)} 的機會不用花錢；一旦要花，平均是 ${nt(rh.avgPay)}。平均花費 ${nt(rh.avg)} 這個數字沒有代表性，因為花費集中在 0 元與接近最壞的 ${nt(rh.mx)} 兩頭，中間很少。`;
     const top=costFor(maxA+maxB-S,left), nM=Math.max(1,Math.ceil(top/100)), curve=[];
     for(let i=0;i<=nM;i++){let k=0;while(k<400&&costFor(k+1,left)<=i*100)k++;
@@ -751,9 +753,9 @@ __ENGINE__
     tbl('rep-band',['回收的抽數','可用抽數','新角色','兩隻都有','兩隻都保證的最壞花費'],
       band.map(r=>[r.d<0?'比估計少 2 抽':r.d>0?'比估計多 2 抽':'目前的估計',r.S,pc(r.b),pc(r.both),nt(r.worst)]));
     const spread=Math.max(Math.abs(band[0].both-band[1].both),Math.abs(band[2].both-band[1].both))*100;
-    $('rep-band-note').textContent=perPull>0?`以復刻池抽 ${h} 抽停為前提。回收差 2 抽，兩隻都有的機率最多移動 ${spread.toFixed(1)} 個百分點`+(spread<1.5?'，不影響該停在哪裡的判斷。':'。這個幅度不小，代表你的抽數剛好落在某個保底門檻附近，判斷時要保守一點。'):'目前沒有計入回收，這張表只顯示可用抽數差 2 抽的影響。';
+    $('rep-band-note').textContent=perPull>0?(got?'':`以復刻池抽 ${h} 抽停為前提。`)+`回收差 2 抽，兩隻都有的機率最多移動 ${spread.toFixed(1)} 個百分點`+(spread<1.5?'，不影響該停在哪裡的判斷。':'。這個幅度不小，代表你的抽數剛好落在某個保底門檻附近，判斷時要保守一點。'):'目前沒有計入回收，這張表只顯示可用抽數差 2 抽的影響。';
     const gain=((inc[4][4]-inc[0][4])/4)*100;
-    $('rep-income-note').textContent=`以復刻池抽 ${h} 抽停為前提。每多 10 抽，新角色的機率平均多 ${gain.toFixed(1)} 個百分點。`+
+    $('rep-income-note').textContent=(got?'':`以復刻池抽 ${h} 抽停為前提。`)+`每多 10 抽，新角色的機率平均多 ${gain.toFixed(1)} 個百分點。`+
       (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
   }
   function run(){
@@ -776,15 +778,17 @@ __ENGINE__
     const now=tk+Math.floor(jade0/500), raw1=tk+Math.floor((jade0+daily*c1)/500), B1=eff(raw1);
     const jade=jade0+daily*c2, rawB=tk+Math.floor(jade/500)+num('in-other'), B=eff(rawB);
     $('calc-rebate').textContent=perPull>0?`平均每抽回收 ${perPull.toFixed(2)} 配額，約每 ${(25/perPull).toFixed(1)} 抽多 1 抽。可用抽數由 ${rawB} 變成 ${B}。這是期望值近似，實際回收有高有低。`:`沒有重複角色可回收。現有配額可換 ${Math.floor(q0/25)} 抽。`;
-    const fa=firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
+    const got=$('in-agot').checked;
+    const fa=got?[1]:firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
     const left=jade%500, M=num('in-money');
-    const rows=decide(fa,fb,B), capMax=Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
+    const rows=decide(fa,fb,B), capMax=got?0:Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
     const pick=usable.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
     const pc=v=>(v*100).toFixed(1)+'%';
     $('calc-keys').innerHTML=[[B,`到新角色池結束可用的總抽數。現有 ${now}，復刻池結束前 ${B1}`],[pc(best),'兩隻都拿到的最高機率'],[pick.x,'建議的復刻池投入上限'],
       ['NT$'+costFor(need-B,left).toLocaleString(),`兩隻都保證的最壞花費，運氣最差時才會花到，差 ${Math.max(0,need-B)} 抽`]].map(k=>`<div><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
     const skip=rows[0];
-    $('calc-advice').textContent=best<0.005?'以目前的抽數，兩隻都拿到的機率接近零。':
+    for(const id of ['fig-cap','calc-table'])$(id).hidden=got;
+    $('calc-advice').textContent=got?`復刻角色已經拿到，剩下的 ${B} 抽全部留給新角色。新角色不花錢拿到的機率是 ${pc(rows[0].b)}，要保證拿到最多需要 ${maxB} 抽。`:best<0.005?'以目前的抽數，兩隻都拿到的機率接近零。':
       pick.x===0?'復刻池不值得投入，把抽數全留給新角色。':
       `復刻池最多抽 ${pick.x} 抽，沒拿到就停手。這樣拿到復刻角色的機率是 ${pc(pick.a)}，新角色是 ${pc(pick.b)}，兩隻都有是 ${pc(pick.both)}。完全不抽復刻池時，新角色是 ${pc(skip.b)}。`;
     const xs=[...new Set([0,10,20,30,40,ap,ap+10,maxA,capMax].filter(x=>x<=capMax))].sort((a,b)=>a-b);
@@ -805,7 +809,7 @@ __ENGINE__
     let afford=-1;for(let x=0;x<=maxA;x++)if(worst(x)<=M)afford=x;
     let buy=0;while(buy<600&&costFor(buy+1,left)<=M)buy++;
     const nt=v=>'NT$'+Math.round(v).toLocaleString();
-    $('calc-afford').textContent=afford<0?`${nt(M)} 不夠保證新角色。完全不抽復刻池時，保證新角色最壞也要 ${nt(worst(0))}。`:
+    $('calc-afford').textContent=got?(worst(0)<=M?`${nt(M)} 足以保證新角色，最壞花費是 ${nt(worst(0))}，有 ${pc(spend(0).free)} 的機會一毛都不用花。`:`${nt(M)} 不夠保證新角色，最壞要 ${nt(worst(0))}。有 ${pc(spend(0).free)} 的機會一毛都不用花。`):afford<0?`${nt(M)} 不夠保證新角色。完全不抽復刻池時，保證新角色最壞也要 ${nt(worst(0))}。`:
       afford<ap&&ap<=maxA?`花費上限 ${nt(M)}、新角色一定要拿到的話，復刻池最多只能再抽 ${afford} 抽，還到不了必出六星的第 ${ap} 抽。停在那之前很不划算，拿到復刻角色的機率只有 ${pc(pA(afford))}。要嘛這次不抽復刻池，要嘛把上限提高到 ${nt(worst(ap))}，才能抽到必出六星。`:
       afford>=maxA?`${nt(M)} 足以把兩隻都追到保證，最壞花費是 ${nt(worst(maxA))}。`:
       `花費上限 ${nt(M)}、新角色一定要拿到的話，復刻池最多可以再抽 ${afford} 抽，也就是累積到 ${an+afford} 抽。這時拿到復刻角色的機率是 ${pc(pA(afford))}，而且有 ${pc(spend(afford).free)} 的機會一毛都不用花。算法：你到新角色池結束有 ${B} 抽`+(buy>0?`，${nt(M)} 最多再買 ${buy} 抽`:'')+`，新角色最壞要 ${maxB} 抽，所以最多能分給復刻池 ${B+buy-maxB} 抽。這個結論的前提是那 ${B} 抽都確實拿得到，其中預估的收入若沒有到手，就得用錢補。`;
@@ -817,7 +821,7 @@ __ENGINE__
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
       series:[{name:'兩隻都有',y:usable.map(r=>r.both)},{name:'復刻角色',y:usable.map(r=>r.a)},{name:'新角色',y:usable.map(r=>r.b)}]});
     const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
-    report({rebate:B-rawB,perPull,fa,fb,S:B,S1:B1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other:num('in-other'),card:$('in-card').checked});
+    report({got,rebate:B-rawB,perPull,fa,fb,S:B,S1:B1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other:num('in-other'),card:$('in-card').checked});
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
   }
