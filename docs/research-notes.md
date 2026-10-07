@@ -37,6 +37,13 @@ Symmetry 2026, 18(6), 1051, doi:10.3390/sym18061051 (CC BY 4.0).
 
 ## Findings
 
+- 2026-10-07, rule R2: for a few hours the default schedule was flat 0.8% (the user believed
+  Endfield had no soft pity), then the user confirmed the ramp does exist on both limited and
+  re-run banners, matching endfield.wiki.gg. The default is again +5% per pull from the 66th pull
+  and GOLDEN is back at its 2026-09-23 values. The flat schedule stays reachable with
+  `soft_pity_step = 0`; E7 reports it: mean 77.79 vs 74.33, median 75 vs 67, same q90 of 115.
+- 2026-10-07, re-run banner (重構尋訪) added as `rerun_rules()`: bonus pulls at 30/60/90 and
+  counters that persist across same-named re-runs (docs/rules/rerun-banner.md, RR1-RR7).
 - 2026-09-23, paper reproduction: every value in `tests/test_paper_reproduction.py` matched the
   paper within tolerance on the first run, including the m = 2 repeated-featured 95% quantile of
   300 that looked suspicious in the spec review.

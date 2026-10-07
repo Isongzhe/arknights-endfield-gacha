@@ -56,7 +56,7 @@ experiment and is replaced when it reruns.
 
 - mean_up_share_0.5: 74.3312129962629
 - mean_up_share_0.7: 62.02705958360243
-- mean_soft_60: 72.38122859949398
+- mean_no_ramp: 77.78707821824023
 - mean_guarantee_100: 67.34311718261641
 - mean_guarantee_140: 80.33987016814773
 - mean_guarantee_none: 93.87579867722638

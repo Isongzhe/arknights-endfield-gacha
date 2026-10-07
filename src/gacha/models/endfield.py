@@ -44,7 +44,7 @@ def pull(
             branches.append((1.0 - p, t + 1, c, u))
     potential = rules.potential_every is not None and n1 % rules.potential_every == 0
     bonus = 1 if potential else 0  # R8
-    is_vacuum = rules.vacuum_at is not None and n1 == rules.vacuum_at
+    is_vacuum = n1 in rules.vacuum_points
     vacuum = rules.vacuum_copies_pmf() if is_vacuum else (1.0,)  # R6
     merged: dict[BannerState, float] = {}
     for pr, t1, c1, u1 in branches:

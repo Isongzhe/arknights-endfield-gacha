@@ -12,11 +12,11 @@ from .schedule import ramp_schedule
 class EndfieldCharacterRules:
     base_rate: float = 0.008  # R2
     soft_pity_start: int = 65  # R2: first t at which the ramp applies (66th pull)
-    soft_pity_step: float = 0.05  # R2
+    soft_pity_step: float = 0.05  # R2; set 0.0 for a flat schedule
     hard_pity: int = 80  # R2: p_{79} = 1
     up_share: float = 0.5  # R4
     guarantee_pull: int | None = 120  # R5
-    vacuum_at: int | None = 30  # R6
+    vacuum_at: int | tuple[int, ...] | None = 30  # R6; a tuple gives several thresholds (RR3)
     vacuum_pulls: int = 10  # R6
     vacuum_rate: float = 0.008  # R6 (assumed flat)
     dossier_at: int | None = 60  # R7
@@ -32,10 +32,12 @@ class EndfieldCharacterRules:
         for name in ("free_start_pulls", "dossier_pulls", "vacuum_pulls"):
             if getattr(self, name) < 0:
                 raise ValueError(f"{name} must be >= 0")
-        for name in ("guarantee_pull", "vacuum_at", "dossier_at", "potential_every"):
+        for name in ("guarantee_pull", "dossier_at", "potential_every"):
             value = getattr(self, name)
             if value is not None and value < 1:
                 raise ValueError(f"{name} must be >= 1 or None")
+        if any(v < 1 for v in self.vacuum_points):
+            raise ValueError("vacuum_at thresholds must be >= 1")
         _ = self.probs  # validates base_rate, soft_pity_step, hard_pity
 
     @property
@@ -47,17 +49,36 @@ class EndfieldCharacterRules:
     def p(self, t: int) -> float:
         return self.probs[t]
 
+    @property
+    def vacuum_points(self) -> tuple[int, ...]:
+        """Banner-local pull counts at which 10 uncounted bonus pulls are granted."""
+        if self.vacuum_at is None:
+            return ()
+        if isinstance(self.vacuum_at, int):
+            return (self.vacuum_at,)
+        return tuple(self.vacuum_at)
+
     def free_pulls(self, dossier: bool) -> int:
         """Counted free pulls at the start of a banner (P1): 5 + 10 if a dossier is held."""
         return self.free_start_pulls + (self.dossier_pulls if dossier else 0)
 
     def vacuum_copies_pmf(self) -> tuple[float, ...]:
         """P(k UP copies from the 30-pull vacuum bonus), k = 0..vacuum_pulls (R6)."""
-        if self.vacuum_at is None:
+        if not self.vacuum_points:
             return (1.0,)
         r = self.vacuum_rate * self.up_share
         n = self.vacuum_pulls
         return tuple(comb(n, k) * r**k * (1.0 - r) ** (n - k) for k in range(n + 1))
+
+
+def rerun_rules(**overrides) -> EndfieldCharacterRules:
+    """Re-run banner (重構尋訪), rules RR1-RR7 in docs/assumptions.md.
+
+    Counters persist across same-named re-runs: pass the saved state as the model's start.
+    """
+    params = {"vacuum_at": (30, 60, 90), "dossier_at": None, "free_start_pulls": 0}
+    params.update(overrides)
+    return EndfieldCharacterRules(**params)
 
 
 @dataclass(frozen=True)

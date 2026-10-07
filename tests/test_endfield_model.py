@@ -92,7 +92,7 @@ def test_validate_start_rejects_pulls_past_guarantee_without_up():
 
 def test_first_six_star_closed_form():
     # up_share=1: first UP == first 6*, bounded by hard pity. Paper Eq. (8) survival sum with
-    # the Endfield soft-pity schedule: E = sum_{j<80} prod_{r<j} (1 - p_r).
+    # the rule schedule: E = sum_{j<80} prod_{r<j} (1 - p_r).
     rules = replace(BARE, up_share=1.0)
     ht = ht_of(BannerSpec(rules, 1, 80))
     assert ht.p_success == pytest.approx(1.0, abs=1e-12)
@@ -101,6 +101,9 @@ def test_first_six_star_closed_form():
         survival.append(survival[-1] * (1.0 - rules.p(r)))
     assert rk.mean(ht) == pytest.approx(sum(survival), abs=1e-9)
     assert ht.f_succ[80] == pytest.approx(survival[79], abs=1e-12)
+    assert rk.mean(ht) < sum(0.992**j for j in range(80))  # the ramp beats a flat schedule
+    flat = ht_of(BannerSpec(replace(rules, soft_pity_step=0.0), 1, 80))
+    assert rk.mean(flat) == pytest.approx(sum(0.992**j for j in range(80)), abs=1e-9)
 
 
 def test_fifty_fifty_closed_form():
@@ -161,7 +164,9 @@ def test_expected_pulls_monotone_in_entering_pity():
     assert all(e[t + 1] <= e[t] + 1e-9 for t in range(len(e) - 1))
 
 
-# frozen 2026-09-23, first UP, default rules, f=5, cap 120 (see docs/results.md, E2)
+# frozen 2026-09-23, first UP, default rules, f=5, cap 120 (see docs/results.md, E2).
+# Briefly moved on 2026-10-07 when R2 was set to a flat schedule, then restored the same day
+# (docs/research-notes.md, Findings).
 GOLDEN = {
     "mean": 74.3312129962629,
     "sd": 36.005262769041316,
@@ -181,3 +186,19 @@ def test_golden_default_rules():
     assert rk.quantile(ht, 0.9) == GOLDEN["q90"]
     assert rk.quantile(ht, 0.95) == GOLDEN["q95"]
     assert ht.f_succ[115] == pytest.approx(GOLDEN["p_115"], rel=1e-9)
+
+
+def test_rerun_banner_has_bonus_pulls_at_60_and_90():
+    from gacha.rules.endfield import rerun_rules
+
+    rules = rerun_rules()
+    p_vac = 1 - (1 - 0.004) ** 10
+    for n in (59, 89):  # the counted pull that reaches 60 / 90 also grants 10 bonus pulls
+        trs = pull(rules, BannerState(5, n, 0, 0), 0, 1)
+        assert sum(p for p, nxt, _ in trs if nxt.c == 1) == pytest.approx(0.004 + 0.996 * p_vac)
+    trs = pull(rules, BannerState(5, 70, 0, 0), 0, 1)  # no bonus between thresholds
+    assert sum(p for p, nxt, _ in trs if nxt.c == 1) == pytest.approx(0.004)
+    # resuming at n = 30, t = 30: the 120 guarantee is at most 90 pulls away
+    # the cap counts every paid pull on the banner, including the 30 already made
+    ht = ht_of(BannerSpec(rules, 1, 120), start=BannerState(30, 30, 0, 0))
+    assert ht.horizon == 90 and ht.p_success == pytest.approx(1.0)

@@ -1,4 +1,4 @@
-"""E7: sensitivity of the first-UP distribution to UP share, soft-pity start and the guarantee."""
+"""E7: sensitivity of the first-UP distribution to UP share, a soft-pity ramp and the guarantee."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
 
 from ._io import ensure_dirs, write_table
 
-GROUPS = ("up_share", "soft_pity_start", "guarantee_pull")
+GROUPS = ("up_share", "soft_pity_step", "guarantee_pull")
 
 
 def run(out_dir: Path) -> dict[str, float]:
@@ -41,8 +41,8 @@ def run(out_dir: Path) -> dict[str, float]:
 
     for q in (0.5, 0.6, 0.7):
         evaluate("up_share", f"up_share={q}", replace(base, up_share=q), 120)
-    for s in (60, 65, 70):
-        evaluate("soft_pity_start", f"soft_pity_start={s}", replace(base, soft_pity_start=s), 120)
+    for s in (0.05, 0.0):  # 0.0 = no soft-pity ramp, only the 80th-pull hard pity
+        evaluate("soft_pity_step", f"soft_pity_step={s}", replace(base, soft_pity_step=s), 120)
     for g in (100, 120, 140, None):
         evaluate("guarantee_pull", f"guarantee={g}", replace(base, guarantee_pull=g), g or 240)
     df = pd.DataFrame(rows)
@@ -64,7 +64,7 @@ def run(out_dir: Path) -> dict[str, float]:
     return {
         "mean_up_share_0.5": by["up_share=0.5"]["mean"],
         "mean_up_share_0.7": by["up_share=0.7"]["mean"],
-        "mean_soft_60": by["soft_pity_start=60"]["mean"],
+        "mean_no_ramp": by["soft_pity_step=0.0"]["mean"],
         "mean_guarantee_100": by["guarantee=100"]["mean"],
         "mean_guarantee_140": by["guarantee=140"]["mean"],
         "mean_guarantee_none": by["guarantee=None"]["mean"],

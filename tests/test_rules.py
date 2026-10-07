@@ -43,10 +43,14 @@ def test_paper_schedule_defaults_and_hard_only():
 def test_endfield_schedule_key_values():
     r = EndfieldCharacterRules()
     assert len(r.probs) == 80
+    # R2: +5% per pull from the 66th pull (t = 65), forced on the 80th.
+    assert r.soft_pity_step == 0.05
     assert r.p(64) == pytest.approx(0.008)
     assert r.p(65) == pytest.approx(0.058)
     assert r.p(78) == pytest.approx(0.708)
     assert r.p(79) == 1.0
+    flat = EndfieldCharacterRules(soft_pity_step=0.0)  # the no-ramp variant stays expressible
+    assert flat.p(78) == pytest.approx(0.008)
 
 
 def test_endfield_free_pulls():
@@ -86,3 +90,17 @@ def test_banner_spec_validation():
     with pytest.raises(ValueError):
         BannerSpec(r, target_copies=1, cap=-5)
     assert math.isfinite(r.p(0))
+
+
+def test_multiple_vacuum_points_and_rerun_rules():
+    from gacha.rules.endfield import rerun_rules
+
+    assert EndfieldCharacterRules().vacuum_points == (30,)
+    assert EndfieldCharacterRules(vacuum_at=None).vacuum_points == ()
+    r = rerun_rules()
+    assert r.vacuum_points == (30, 60, 90)  # RR3
+    assert r.dossier_at is None and r.free_start_pulls == 0  # RR7
+    assert r.guarantee_pull == 120 and r.potential_every == 240
+    assert len(r.vacuum_copies_pmf()) == 11
+    with pytest.raises(ValueError):
+        EndfieldCharacterRules(vacuum_at=(30, 0))
