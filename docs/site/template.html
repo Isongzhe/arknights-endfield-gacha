@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16p
 nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-size:14px}
 nav .label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--rule)}
-nav a{display:block;padding:5px 12px;color:var(--ink2);text-decoration:none;border-left:2px solid transparent;margin-left:-1px}
+nav a{display:block;padding:6px 12px;line-height:1.4;color:var(--ink2);text-decoration:none;border-left:2px solid transparent;margin-left:-1px}
 nav a:hover,nav a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
 main{min-width:0;display:flex;flex-direction:column;gap:56px}
 header h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.4vw,42px);line-height:1.25;margin:0 0 12px;text-wrap:balance}
@@ -38,9 +38,9 @@ p,ul,ol.steps{max-width:42em;margin:0}
 ul,ol.steps{padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
 code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:3px}
 pre.code{font-family:var(--mono);font-size:13px;line-height:1.6;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;overflow-x:auto;margin:0}
-.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
 .keys div{background:var(--surface);padding:14px 16px}
-.keys b{display:block;font-family:var(--mono);font-weight:500;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.2}
+.keys b{display:block;white-space:nowrap;font-family:var(--mono);font-weight:500;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.2}
 .keys span{font-size:13px;color:var(--ink2);line-height:1.5;display:block;margin-top:4px}
 .scroll{overflow-x:auto}
 table{border-collapse:collapse;font-size:14px;min-width:100%;font-variant-numeric:tabular-nums}
@@ -66,18 +66,24 @@ figcaption{font-size:13.5px;color:var(--ink2);line-height:1.6;margin-top:10px;ma
 pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px;overflow-x:auto;margin:0;text-align:center}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
 .two>*{min-width:0}
-.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-.calc fieldset{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:12px 14px 14px;margin:0;min-width:0;display:flex;flex-direction:column;gap:10px}
-.calc legend{font-weight:700;font-size:14px;padding:0 6px}
+.calc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.calc fieldset.wide{grid-column:1/-1}
+.calc .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px 14px;align-items:end}
+@media (max-width:640px){.calc{grid-template-columns:minmax(0,1fr)}}
+.calc fieldset{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:12px 16px 16px;margin:0;min-width:0;display:flex;flex-direction:column;gap:12px}
+.calc legend{font-weight:700;font-size:15px;padding:0 6px}
+.calc legend small{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}
 .calc label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2);line-height:1.4}
 .calc input[type=number],.calc input[type=date]{font-family:var(--mono);font-size:16px;padding:7px 9px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
 .calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .cap{font-size:13px;color:var(--muted)}
-.own{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 10px}
+.own{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px}
 .own label{align-items:center}
 .own img{width:30px;height:30px;border-radius:5px;flex:none}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
+#calc-out h3,#case h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
+#calc-out h3:first-child{border-top:0;padding-top:0;margin-top:6px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
 @media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);gap:24px}nav{position:static}nav ol{flex-direction:row;flex-wrap:wrap;border-left:0;gap:4px 4px}nav a{border-left:0;border-bottom:2px solid transparent;margin:0;padding:3px 8px}}
 </style>
@@ -127,31 +133,38 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
   <h2>試算：兩個池都想要，該怎麼分配</h2>
   <p>填入你的資源、兩個池的進度與剩餘天數，下面的數字會即時重算。月卡收入會依天數自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
   <form id="calc-form" class="calc" onsubmit="return false">
-    <fieldset><legend>資源</legend>
+    <fieldset class="wide"><legend>資源</legend>
+      <div class="fields">
       <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
       <label for="in-jade">合成玉<input id="in-jade" type="number" min="0" step="50" value="19950" inputmode="numeric"></label>
       <label for="in-stone">源石（1 顆 = 75 合成玉）<input id="in-stone" type="number" min="0" value="243" inputmode="numeric"></label>
       <label for="in-money">最多願意花多少（NT$）<input id="in-money" type="number" min="0" step="100" value="4000" inputmode="numeric"></label>
+      </div>
     </fieldset>
-    <fieldset><legend>時間與收入</legend>
+    <fieldset class="wide"><legend>時間與收入</legend>
+      <div class="fields">
       <label for="in-date1">復刻池結束日<input id="in-date1" type="date" value="2026-10-15"></label>
       <label for="in-date2">新角色池結束日<input id="in-date2" type="date" value="2026-11-05"></label>
+      <label for="in-other">其他預估收入（抽）<input id="in-other" type="number" min="0" value="0" inputmode="numeric"></label>
+      </div>
+      <div class="fields">
       <label class="check" for="in-card"><input id="in-card" type="checkbox" checked>有月卡，每天 200 合成玉</label>
       <label class="check" for="in-claimed"><input id="in-claimed" type="checkbox" checked>今天的月卡已經領了</label>
+      </div>
       <span class="cap" id="calc-days"></span>
-      <label for="in-other">其他預估收入（抽），活動、開版獎勵、每週任務，不確定就填 0<input id="in-other" type="number" min="0" value="0" inputmode="numeric"></label>
+      <span class="cap">其他預估收入指活動、開版獎勵、每週任務等，不確定就填 0。</span>
     </fieldset>
-    <fieldset><legend>復刻池（先開）</legend>
+    <fieldset><legend>復刻池<small>先開</small></legend>
       <label for="in-an">本池累積已抽<input id="in-an" type="number" min="0" max="119" value="30" inputmode="numeric"></label>
       <label for="in-ap">再幾抽必出六星<input id="in-ap" type="number" min="1" max="80" value="50" inputmode="numeric"></label>
       <span class="cap">這兩個數字各自獨立。累積抽數不會歸零，保底計數每次出六星就重來，而且所有復刻池共用。</span>
     </fieldset>
-    <fieldset><legend>限定新角色池（後開）</legend>
+    <fieldset><legend>限定新角色池<small>後開</small></legend>
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
       <label for="in-bf">開頭綁定的免費抽（登入 5 + 商店 5）<input id="in-bf" type="number" min="0" max="25" value="10" inputmode="numeric"></label>
     </fieldset>
-    <fieldset><legend>保障配額回收</legend>
-      <label for="in-quota">現有保障配額<input id="in-quota" type="number" min="0" value="10" inputmode="numeric"></label>
+    <fieldset class="wide"><legend>保障配額回收<small>抽到已擁有的角色會回收配額，25 換 1 抽</small></legend>
+      <div class="fields"><label for="in-quota">現有保障配額<input id="in-quota" type="number" min="0" value="10" inputmode="numeric"></label></div>
       <span class="cap">已擁有的五星，抽到重複的每隻給 10 配額：</span>
       <div class="own">
 __OWN5__
@@ -165,6 +178,7 @@ __OWN6__
   </form>
   <p id="calc-error" class="note" hidden></p>
   <div id="calc-out">
+    <h3>結果</h3>
     <div class="keys" id="calc-keys"></div>
     <p id="calc-advice" class="note"></p>
     <figure>
