@@ -303,7 +303,7 @@ __OWN6__
   </ul>
   <p>花費的部分，令 \(U=\min(T_A,x)+T_B\) 為實際用掉的抽數，短缺是 \((U-S)^+\)。價目表給出買 \(k\) 抽的最低價格 \(c(k)\)，它是分段的，因為源石有檔位、禮包有次數限制。花費 \(C=c\bigl((U-S)^+\bigr)\) 的分布由 \(U\) 的分布直接換算：</p>
   <div class="math">$$\mathrm{VaR}_{\alpha}=\min\{m:\;P(C\le m)\ge\alpha\},\qquad \mathrm{CVaR}_{\alpha}=E\,[\,C\mid C\ge \mathrm{VaR}_{\alpha}\,],\qquad E[C\mid C>0]=\frac{E[C]}{P(C>0)} .$$</div>
-  <p>\(U\) 的分布是「截斷在 \(x\) 的 \(T_A\)」與 \(T_B\) 的摺積。這裡可以用摺積，是因為兩個池的保底獨立；同一系列的連續兩個限定池就不行，因為保底會跨池繼承。</p>
+  <p>\(U\) 的分布是「截斷在 \(x\) 的 \(T_A\)」與 \(T_B\) 相加之後的分布，也就是上面說的 convolution。這裡可以直接相加，是因為兩個池的保底獨立；同一系列的連續兩個限定池就不行，因為保底會跨池繼承。</p>
 
   <h3>保障配額怎麼算進來</h3>
   <p>抽到已擁有的五星給 10 保障配額，已擁有的六星給 50，每 25 配額換 1 張通用憑證。五星的基礎機率是 8%，加上十抽必出五星以上的保底後，長期平均是每抽 13.4%；六星是每抽 1.86%。這兩個數字由六星保底與五星保底的聯合穩態分布算出。</p>
@@ -398,7 +398,7 @@ flowchart LR
   <h3>論文的單計數器模型</h3>
   <p>狀態只有保底計數 \(t\)。從 \(t\) 抽一次，以機率 \(p_t\) 成功並結束，否則走到 \(t+1\)。最後一個狀態必定成功，所以轉移矩陣的暫態部分 \(Q\) 是嚴格上三角，所有量都是有限和。令 \(E_t\)、\(V_t\) 為從 \(t\) 出發還需抽數的期望與變異數，\(f_t(j)\) 為剛好再抽 \(j\) 次的機率：</p>
   <div class="math">$$E_t = 1 + (1-p_t)\,E_{t+1},\qquad V_t=(1-p_t)\,V_{t+1}+p_t(1-p_t)\,E_{t+1}^2,\qquad f_t(j)=(1-p_t)\,f_{t+1}(j-1).$$</div>
-  <p>要拿 \(m\) 隻時，論文假設每一段獨立同分布，總抽數 \(T_m=\tau_1+\dots+\tau_m\) 的分布就是單段分布自己摺積 \(m\) 次。這個假設在終末地不成立，原因見下。</p>
+  <p>要拿 \(m\) 隻時，論文假設每一段獨立同分布，總抽數 \(T_m=\tau_1+\dots+\tau_m\) 的分布，就是把 \(m\) 個獨立的單段抽數加起來之後的分布。這個「把獨立的隨機量相加，求總和的分布」的運算，英文叫 convolution。這個假設在終末地不成立，原因見下。</p>
 
   <h3>終末地的狀態：兩個計數器加一個會過期的保底</h3>
   <p>終末地沒有「歪了下次必中」的狀態，取而代之的是池內的一次性保底。單池狀態需要四個量：</p>
@@ -426,10 +426,10 @@ flowchart LR
   <p>免費抽照樣推進 \(t\) 與 \(n\)，只是成本為零。所以 \(T\) 不是一般的步數，而是成本加權的吸收時間。吸收有兩種：拿到目標張數是成功，付費抽數達到該池上限還沒拿到是失敗。成功機率可以小於 1，這種分布稱為虧損分布。</p>
   <p>狀態圖是有向無環圖，因為每一步 \(n\) 都嚴格增加。這保證所有遞迴都在有限步內結束，也讓 \(T\) 的支撐有確定的上界。只要一隻時，120 保底使 \(T\le 120-f\)。</p>
 
-  <h3>多池：為什麼不能直接摺積</h3>
+  <h3>多池：為什麼不能把各池當成獨立直接相加</h3>
   <p>連續多池的狀態再加上池編號 \(k\) 與贈抽旗標 \(d\)，成為 \((k,t,n,c,u,d)\)。一池結束時做邊界轉移：</p>
   <div class="math">$$(k,\,t,\,n,\,c,\,u,\,d)\;\longrightarrow\;(k{+}1,\;t,\;0,\;0,\;0,\;\mathbf 1\{n\ge 60\}).$$</div>
-  <p>保底計數 \(t\) 原封不動帶到下一池，上一池有沒有抽滿 60 抽決定下一池多不多 10 抽免費。因此第二池的起始狀態取決於第一池怎麼結束，兩池的抽數並不獨立，分布也不相同。論文的 \(T_m\) 摺積公式在這裡會系統性偏高，結果一節有量化的差距。</p>
+  <p>保底計數 \(t\) 原封不動帶到下一池，上一池有沒有抽滿 60 抽決定下一池多不多 10 抽免費。因此第二池的起始狀態取決於第一池怎麼結束，兩池的抽數並不獨立，分布也不相同。論文的 \(T_m\) 這條「獨立相加」的公式在這裡會系統性偏高，結果一節有量化的差距。</p>
 
   <h3>風險指標</h3>
   <p>令 \(F(j)=P(T\le j)\)。給定預算 \(b\) 抽：</p>
@@ -519,22 +519,22 @@ flowchart LR
   </table></div>
   <p>這張表為了讓 n 直接等於已付抽數，把開頭免費 5 抽關掉了，所以全新狀態是 79.3 而不是上面的 74.3。</p>
 
-  <h3>跨池繼承：精確值與獨立摺積的差距</h3>
+  <h3>跨池繼承：精確值與當成獨立相加的差距</h3>
   <div class="two">
     <figure>
       <div class="ftitle">連續兩池都要</div>
-      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>獨立摺積</span></div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>當成獨立相加</span></div>
       <div class="chart" id="c-k2"></div>
     </figure>
     <figure>
       <div class="ftitle">連續三池都要</div>
-      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>獨立摺積</span></div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>當成獨立相加</span></div>
       <div class="chart" id="c-k3"></div>
     </figure>
   </div>
   <p>縱軸是在預算內全部拿齊的機率。實線全程在虛線上方，因為前一池剩下的保底與贈抽都會幫到下一池。</p>
   <div class="scroll"><table>
-    <tr><th class="n">池數</th><th class="n">精確期望</th><th class="n">摺積期望</th><th class="n">精確 90%</th><th class="n">摺積 90%</th><th class="n">最大累積機率差</th></tr>
+    <tr><th class="n">池數</th><th class="n">精確期望</th><th class="n">獨立相加的期望</th><th class="n">精確 90%</th><th class="n">獨立相加 90%</th><th class="n">最大累積機率差</th></tr>
     <tr><td class="n">2</td><td class="n">140.9</td><td class="n">148.7</td><td class="n">220</td><td class="n">230</td><td class="n">0.201</td></tr>
     <tr><td class="n">3</td><td class="n">207.6</td><td class="n">223.0</td><td class="n">277</td><td class="n">297</td><td class="n">0.152</td></tr>
   </table></div>
@@ -901,7 +901,7 @@ lineChart('c-pity',{label:'保底的價值',xmax:79,ymin:30,ymax:80,yticks:[30,4
 for(const k of [2,3]){const c=D.carry[k];
   lineChart('c-k'+k,{label:`連續 ${k} 池的累積分布`,xmax:c.exact.length-1,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,
     xticks:k===2?[0,50,100,150,200,230]:[0,100,200,300,345],xlabel:'總付費抽數預算',ylabel:'拿齊機率',xname:'預算',vfmt:pct,h:300,
-    series:[{name:'精確',y:c.exact},{name:'摺積',y:c.iid,dash:true}]});}
+    series:[{name:'精確',y:c.exact},{name:'獨立相加',y:c.iid,dash:true}]});}
 
 (function(){
   const host=document.getElementById('c-heat'),B=D.completion.budgets,G=D.completion.grid;
