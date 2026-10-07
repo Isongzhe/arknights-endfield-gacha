@@ -81,9 +81,11 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .own label{align-items:center}
 .own.offers{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
 .own img{width:30px;height:30px;border-radius:5px;flex:none}
-.formbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
-.formbar button{font:inherit;font-size:14px;padding:7px 14px;border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink);cursor:pointer}
-.formbar button:hover,.formbar button:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
+.formbar{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.formbar button{font:inherit;font-weight:700;font-size:16px;padding:10px 34px;border:0;border-radius:5px;background:var(--accent);color:var(--bg);cursor:pointer}
+.formbar button:hover{filter:brightness(1.1)}
+.formbar button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+#calc-out.stale,#case.stale{opacity:.45}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
 #calc-out h3,#case h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
@@ -135,8 +137,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 
 <section id="calc">
   <h2>試算：兩個池都想要，該怎麼分配</h2>
-  <p>填入你的資源、兩個池的進度與剩餘天數，下面的數字會即時重算。月卡收入會依天數自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
-  <form id="calc-form" class="calc" onsubmit="return false">
+  <p>填入你的資源、兩個池的進度與結束日期，按「計算」後，下面的結果與分析報告會一起更新。月卡收入會依日期自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
+  <form id="calc-form" class="calc">
     <fieldset class="wide"><legend>資源</legend>
       <div class="fields">
       <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
@@ -193,8 +195,8 @@ __OWN6__
       </div>
       <span class="cap" id="calc-rebate"></span>
     </fieldset>
+    <div class="formbar wide"><button type="submit" id="calc-go">計算</button><span class="cap" id="calc-saved"></span></div>
   </form>
-  <div class="formbar"><span class="cap" id="calc-saved"></span><button type="button" id="calc-reset">恢復成範例值</button></div>
   <p id="calc-error" class="note" hidden></p>
   <div id="calc-out">
     <h3>結果</h3>
@@ -223,7 +225,7 @@ __OWN6__
 <section id="case">
   <h2>每個版本都會遇到的決策：下半的復刻池，還是下個版本的新限定</h2>
   <p>照目前的排程，每個大版本的下半是一個復刻池，緊接著下個版本開新的限定角色池。復刻依角色推出的順序輪替，1.5 下半是伊馮，1.6 下半輪到 1.1 版的角色。所以「復刻池要不要投入、會不會影響下一隻新角色」是每個版本都會重來一次的問題。</p>
-  <p class="note">這一節是依上方試算器的輸入即時產生的分析報告。改上面任何一個數字，下面的表、圖與文字都會跟著重算。預設值取自一位玩家在 2026 年 10 月 7 日面對伊馮復刻池與 1.6 新角色時的實際狀況。</p>
+  <p class="note">這一節是依上方試算器的輸入產生的分析報告。改完數字按「計算」，下面的表、圖與文字都會跟著更新。預設值取自一位玩家在 2026 年 10 月 7 日面對伊馮復刻池與 1.6 新角色時的實際狀況。</p>
 
   <h3>一、手上的狀況</h3>
   <div class="scroll"><table id="rep-state"></table></div>
@@ -818,18 +820,20 @@ __ENGINE__
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
   }
-  // remember the viewer's inputs in this browser so a new version of the page does not wipe them
+  // inputs are applied when the viewer presses 計算; the applied values are kept in this browser
   const KEY='gacha-calc-v1', fields=()=>[...$('calc-form').querySelectorAll('input[id]')];
   const read=e=>e.type==='checkbox'?e.checked:e.value, write=(e,v)=>{if(e.type==='checkbox')e.checked=!!v;else e.value=v;};
-  const defaults={};fields().forEach(e=>defaults[e.id]=read(e));
-  const note=t=>{$('calc-saved').textContent=t;};
+  const note=t=>{$('calc-saved').textContent=t;}, stale=on=>{for(const id of ['calc-out','case']){const c=$(id).classList;if(c)c.toggle('stale',on);}};
+  let canSave=true;
   try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('已載入你上次填的數字。');}
-    else note('你填的數字會存在這個瀏覽器裡，頁面更新後不會消失。');
-  }catch(_){note('這個瀏覽器不允許儲存，重新整理後會回到範例值。');}
-  const save=()=>{try{const o={};fields().forEach(e=>o[e.id]=read(e));localStorage.setItem(KEY,JSON.stringify(o));note('已儲存。');}catch(_){}};
-  $('calc-form').addEventListener('input',()=>{save();run();});
-  $('calc-reset').addEventListener('click',()=>{fields().forEach(e=>write(e,defaults[e.id]));try{localStorage.removeItem(KEY);}catch(_){}note('已恢復成範例值。');run();});
+    if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('已載入你上次計算時的數字。');}
+    else note('目前顯示的是範例。改成你的數字後按「計算」。');
+  }catch(_){canSave=false;note('目前顯示的是範例。這個瀏覽器不允許儲存，重新整理後要重填。');}
+  const apply=()=>{run();stale(false);
+    try{const o={};fields().forEach(e=>o[e.id]=read(e));localStorage.setItem(KEY,JSON.stringify(o));note('已計算，數字已存在這個瀏覽器，頁面更新後不會消失。');}
+    catch(_){note('已計算。這個瀏覽器不允許儲存，重新整理後要重填。');}};
+  $('calc-form').addEventListener('submit',ev=>{ev.preventDefault();apply();});
+  $('calc-form').addEventListener('input',()=>{stale(true);note('有尚未計算的修改，按「計算」更新下面的結果。');});
   run();
 })();
 
