@@ -179,11 +179,25 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
     <tr><td class="n">0，不抽</td><td class="n">0%</td><td class="n">78.2%</td><td class="n">0%</td></tr>
     <tr><td class="n">40</td><td class="n">38.0%</td><td class="n">59.9%</td><td class="n">23.4%</td></tr>
     <tr><td class="n">50，到必出六星 ◀</td><td class="n">54.8%</td><td class="n">59.0%</td><td class="n">33.2%</td></tr>
+    <tr><td class="n">60，累積 90 抽，拿到最後一次贈送</td><td class="n">58.3%</td><td class="n">58.2%</td><td class="n">35.1%</td></tr>
     <tr><td class="n">67，只留 22 抽給新角色</td><td class="n">59.4%</td><td class="n">57.7%</td><td class="n">35.8%</td></tr>
     <tr><td class="n">81，10/15 前全部投入</td><td class="n">62.7%</td><td class="n">40.4%</td><td class="n">37.0%</td></tr>
   </table></div>
   <p>核心是前 50 抽，六星幾乎都在第 36 到 50 抽之間出現。在那之前停手最不划算，例如只抽 40 抽，伊馮只有 38%。超過 50 抽之後，每一抽只有 0.4% 拿到伊馮。最多可以抽到 67 抽，因為那樣還剩 22 抽，剛好夠新角色走到小保底。再多就會把新角色的機率砍到 40%。抽 50 抽停手時，四種結局是：兩隻都有 33.2%、只有伊馮 21.6%、只有新角色 25.8%、都沒有 19.4%。</p>
-  <p class="note">操作規則：抽到出六星為止，最晚是第 50 抽。拿到伊馮就停。歪了的話可以停，也可以再抽到第 67 抽為止，但一定要留 22 抽給新角色。歪掉不是全損，復刻池的進度會留到下次同名復刻，那時最多再 40 抽就保證拿到。</p>
+  <p class="note">操作規則：抽到出六星為止，最晚是從現在起第 50 抽，也就是池內累積第 80 抽。拿到伊馮就停。歪了的話可以停，也可以再抽 10 抽到累積 90 抽，把最後一次贈送的 10 連拿到手再停。無論如何要留 22 抽給新角色。歪掉不是全損，復刻池的進度會留到下次同名復刻。</p>
+  <h3>從累積 80 抽到 90 抽值不值得</h3>
+  <p>歪掉之後保底歸零，每抽回到 0.4% 拿到伊馮。自己的 10 抽約 3.9%，累積滿 90 抽送的 10 連再 3.9%，合計約 7.7%。等於花 10 抽拿到 20 抽的效果。它讓伊馮多 3.5 個百分點，新角色只少 0.8 個百分點，因為剩下的抽數仍夠新角色走到小保底。90 抽之後沒有贈送，再往後就不划算了。</p>
+  <h3>這算不算在賭</h3>
+  <p>算。「存夠 120 抽再下池」的打法沒有虧到任何回饋，而且效率更高。追到拿到為止平均 74 抽一隻 UP，出六星就停則是約 49 抽換 52% 的機率，折合每隻約 94 抽。差別來自 120 大保底，它等於替歪掉的人打折，只賭一次小保底的人放棄了這個折扣。</p>
+  <p>在限定池只抽一半還有一個實際損失：80 保底的計數會帶到下一池，但朝 120 累積的進度在池子結束時歸零。復刻池的進度則會保留，所以在復刻池只抽一段的代價比較小。</p>
+  <div class="scroll"><table>
+    <tr><th>比較</th><th class="n">全部留給新角色</th><th class="n">伊馮抽到出六星</th></tr>
+    <tr><td>至少拿到一隻</td><td class="n">78.2%</td><td class="n">80.6%</td></tr>
+    <tr><td>一無所有</td><td class="n">21.8%</td><td class="n">19.4%</td></tr>
+    <tr><td>平均拿到幾隻</td><td class="n">0.78</td><td class="n">1.14</td></tr>
+    <tr><td>新角色要保證拿到的最壞花費</td><td class="n">1,110</td><td class="n">3,960</td></tr>
+  </table></div>
+  <p>這個案例裡 89 抽不夠保證任何一隻，所以兩種打法一無所有的機率都在兩成左右。穩健打法把機率集中在一隻，花一千元左右就能保證。拚的打法多了拿到兩隻的機會，代價是要保證新角色時得花更多。</p>
   <h3>如果願意花錢</h3>
   <p>補抽的價格取首儲雙倍用完之後的價目：新角色池的尋訪包 10 抽 490 元，其餘用一般源石，最便宜的檔位每抽 55.1 元。</p>
   <div class="scroll"><table>
@@ -249,7 +263,7 @@ flowchart LR
     <tr><td>R7</td><td>本池抽滿 60 抽，下一池開頭送 10 抽。這 10 抽是正常抽，會推進所有計數。</td><td><span class="tag ok">已確認</span></td></tr>
     <tr><td>R8</td><td>本池每 240 抽送一個 UP 信物，用來提升潛能。一隻角色最多六張，即本體加五潛。</td><td><span class="tag ok">已確認</span></td></tr>
     <tr><td>R9</td><td>每個限定池有 10 抽綁定該池：版本開始三天內登入累積送 5 抽，商店可再兌換 5 抽。本頁「結果」一節的通用數字仍以 5 抽計算，案例與試算器用 10 抽。</td><td><span class="tag ok">已確認</span></td></tr>
-    <tr><td>R10–12</td><td>歪掉時常駐與舊限定的比例、五星層、限定角留存三池。</td><td><span class="tag later">留到後續階段</span></td></tr>
+    <tr><td>R10–12</td><td>限定角在自己的池結束後，會留在後兩個限定池的非 UP 名單裡，與常駐六星均分歪掉的那 50%。名單若是 7 隻，每出一隻六星是某隻特定舊限定的機率約 7.1%。這不影響拿到當期 UP 的抽數，所以尚未建模；它影響的是順便補舊限定的機率與保障配額的回收。五星層同樣尚未建模。</td><td><span class="tag later">留到後續階段</span></td></tr>
   </table></div>
   <h3>對玩家行為的假設</h3>
   <ul>
@@ -517,18 +531,35 @@ flowchart LR
     <tr><td>第三階段</td><td>武器池、保障配額與集成配額換抽、歪掉時拿到舊限定的比例。</td><td>武器池 40 與 100 抽節點的確切規則</td></tr>
   </table></div>
   <h3>自己動手算</h3>
-  <p>上面的試算器在瀏覽器裡跑的是同一套遞迴的移植版，每次建置網站都會與 Python 引擎逐點比對。要算別的情境，可以直接用命令列或 Python：</p>
-  <pre class="code">from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
+  <p>上面的試算器在瀏覽器裡跑的是同一套遞迴的移植版，每次建置網站都會與 Python 引擎逐點比對。同樣的計算也能用命令列做。把資源與兩個池的進度寫成一個檔案：</p>
+  <pre class="code">[stock]
+tickets = 2          # 通用尋訪憑證
+jade = 19950         # 合成玉
+stones = 243         # 源石
+future_pulls = 11    # 第二個池結束前預估還能拿到的抽數
+
+[first]
+kind = "rerun"       # 復刻池填 rerun，限定池填 limited
+pulls_done = 30      # 本池累積已抽，不含贈送的抽
+pulls_to_six_star = 50
+
+[second]
+kind = "limited"
+pulls_done = 0
+pulls_to_six_star = 32
+free_pulls = 10</pre>
+  <pre class="code">uv run gacha decide my_scenario.toml                           # 兩個池共用資源的停手表
+uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60  # 單一池，從目前狀態算起
+uv run gacha evaluate --plan plan.toml --budget 300            # 連續多個限定池
+uv run gacha experiment all                                    # 重現本頁所有表格與圖</pre>
+  <p>也可以直接在 Python 裡取得完整分布：</p>
+  <pre class="code">from gacha.analysis.two_banner import first_up_pmf
 from gacha.models.endfield import BannerState, SingleBannerModel
 from gacha.rules.endfield import BannerSpec, rerun_rules
 
 # 復刻池：已抽 30、保底計數 30、要一隻
 model = SingleBannerModel(BannerSpec(rerun_rules(), 1, 120), start=BannerState(30, 30, 0, 0))
-dist = hitting_time(EnumeratedChain.from_model(model))   # dist.f_succ[j] = 剛好再抽 j 抽拿到的機率</pre>
-  <pre class="code">uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60
-uv run gacha evaluate --plan plan.toml --budget 300
-uv run gacha experiment all</pre>
+pmf = first_up_pmf(model)        # pmf[j] = 剛好再抽 j 抽拿到的機率</pre>
 </section>
 
 <footer>參考文獻：Hou, S.; Zhu, Y.; Zhang, S. State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models. <i>Symmetry</i> 2026, 18(6), 1051. 本頁數字由專案內的精確引擎於 2026-10-07 計算。</footer>
