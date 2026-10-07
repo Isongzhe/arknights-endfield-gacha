@@ -138,13 +138,13 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 <section id="calc">
   <h2>試算：兩個池都想要，該怎麼分配</h2>
   <p>填入你的資源、兩個池的進度與結束日期，按「計算」後，下面的結果與分析報告會一起更新。月卡收入會依日期自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
-  <form id="calc-form" class="calc">
+  <form id="calc-form" class="calc" novalidate>
     <fieldset class="wide"><legend>資源</legend>
       <div class="fields">
       <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
-      <label for="in-jade">合成玉<input id="in-jade" type="number" min="0" step="50" value="19950" inputmode="numeric"></label>
+      <label for="in-jade">合成玉<input id="in-jade" type="number" min="0" value="19950" inputmode="numeric"></label>
       <label for="in-stone">源石（1 顆 = 75 合成玉）<input id="in-stone" type="number" min="0" value="243" inputmode="numeric"></label>
-      <label for="in-money">最多願意花多少（NT$）<input id="in-money" type="number" min="0" step="100" value="4000" inputmode="numeric"></label>
+      <label for="in-money">最多願意花多少（NT$）<input id="in-money" type="number" min="0" value="4000" inputmode="numeric"></label>
       </div>
     </fieldset>
     <fieldset class="wide"><legend>時間與收入</legend>
