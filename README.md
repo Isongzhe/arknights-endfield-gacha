@@ -27,6 +27,14 @@ this banner, and what does pulling here cost my chances on the next one.
   matches the game's official comprehensive rates to four decimals, and agrees with Monte Carlo
   within three standard errors.
 
+## The recurring decision
+
+Endfield's schedule so far puts a re-run banner in the second half of each major version and a
+new limited character at the start of the next one. Their pity counters are separate, so the
+two banners compete only for your stock of pulls. That makes "how far do I go on the re-run
+without hurting the next limited character" a question that comes back every version, and it is
+what `gacha decide` and the site's calculator are built for.
+
 ## Install
 
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
