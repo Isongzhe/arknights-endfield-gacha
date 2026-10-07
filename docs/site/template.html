@@ -70,7 +70,7 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .calc fieldset{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:12px 14px 14px;margin:0;min-width:0;display:flex;flex-direction:column;gap:10px}
 .calc legend{font-weight:700;font-size:14px;padding:0 6px}
 .calc label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2);line-height:1.4}
-.calc input[type=number]{font-family:var(--mono);font-size:16px;padding:7px 9px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
+.calc input[type=number],.calc input[type=date]{font-family:var(--mono);font-size:16px;padding:7px 9px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
 .calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .cap{font-size:13px;color:var(--muted)}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
@@ -131,9 +131,11 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <label for="in-money">最多願意花多少（NT$）<input id="in-money" type="number" min="0" step="100" value="4000" inputmode="numeric"></label>
     </fieldset>
     <fieldset><legend>時間與收入</legend>
-      <label for="in-d1">復刻池還剩幾天<input id="in-d1" type="number" min="0" value="8" inputmode="numeric"></label>
-      <label for="in-d2">新角色池結束還剩幾天<input id="in-d2" type="number" min="0" value="29" inputmode="numeric"></label>
+      <label for="in-date1">復刻池結束日<input id="in-date1" type="date" value="2026-10-15"></label>
+      <label for="in-date2">新角色池結束日<input id="in-date2" type="date" value="2026-11-05"></label>
       <label class="check" for="in-card"><input id="in-card" type="checkbox" checked>有月卡，每天 200 合成玉</label>
+      <label class="check" for="in-claimed"><input id="in-claimed" type="checkbox" checked>今天的月卡已經領了</label>
+      <span class="cap" id="calc-days"></span>
       <label for="in-other">其他預估收入（抽），活動、開版獎勵、每週任務，不確定就填 0<input id="in-other" type="number" min="0" value="0" inputmode="numeric"></label>
     </fieldset>
     <fieldset><legend>復刻池（先開）</legend>
@@ -625,18 +627,26 @@ __ENGINE__
   const stoneCost=u=>{for(let j=memo.length;j<=u;j++)memo[j]=Math.min(...TIERS.map(([c,g])=>c+memo[Math.max(0,j-g)]));return memo[Math.max(0,u)];};
   function costFor(k,left){if(k<=0)return 0;const plain=n=>stoneCost(Math.ceil(Math.max(0,n*500-left)/150));
     return Math.min(plain(k),490+(k>10?plain(k-10):0));}
+  // Monthly-card claims left: the daily reset (04:00) comes before either banner closes
+  // (re-run 06:00, limited 12:00), so the end date itself still counts.
+  function claims(id){const v=$(id).value;if(!v)return 0;const [y,m,d]=v.split('-').map(Number),t=new Date();
+    const days=Math.round((Date.UTC(y,m-1,d)-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);
+    return days<0?0:days+($('in-claimed').checked?0:1);}
   function run(){
     const err=$('calc-error'),out=$('calc-out');
     const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf'),soft=true;
     let msg='';
     if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
     else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
-    else if(num('in-d2')<num('in-d1'))msg='新角色池結束的天數不能比復刻池還短。';
+    else if(!$('in-date1').value||!$('in-date2').value)msg='請選擇兩個池的結束日。';
+    else if($('in-date2').value<$('in-date1').value)msg='新角色池的結束日不能早於復刻池。';
     if(msg){err.textContent=msg;err.hidden=false;out.hidden=true;return;}
     err.hidden=true;out.hidden=false;
     const jade0=num('in-jade')+num('in-stone')*75, daily=$('in-card').checked?200:0, tk=num('in-ticket');
-    const now=tk+Math.floor(jade0/500), B1=tk+Math.floor((jade0+daily*num('in-d1'))/500);
-    const jade=jade0+daily*num('in-d2'), B=tk+Math.floor(jade/500)+num('in-other');
+    const c1=claims('in-date1'), c2=claims('in-date2');
+    $('calc-days').textContent=`月卡還能領：復刻池結束前 ${c1} 次，新角色池結束前 ${c2} 次。每天 04:00 換日，兩種池都在換日之後才結束，所以結束當天也領得到。`;
+    const now=tk+Math.floor(jade0/500), B1=tk+Math.floor((jade0+daily*c1)/500);
+    const jade=jade0+daily*c2, B=tk+Math.floor(jade/500)+num('in-other');
     const fa=firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
     const left=jade%500, M=num('in-money');
     const rows=decide(fa,fb,B), capMax=Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
