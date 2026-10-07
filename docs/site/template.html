@@ -803,11 +803,12 @@ __ENGINE__
     const pA=x=>{let t=0;for(let j=0;j<=Math.min(x,maxA);j++)t+=fa[j];return t;};
     const worst=x=>costFor(Math.min(x,maxA)+maxB-B,left);
     let afford=-1;for(let x=0;x<=maxA;x++)if(worst(x)<=M)afford=x;
+    let buy=0;while(buy<600&&costFor(buy+1,left)<=M)buy++;
     const nt=v=>'NT$'+Math.round(v).toLocaleString();
     $('calc-afford').textContent=afford<0?`${nt(M)} 不夠保證新角色。完全不抽復刻池時，保證新角色最壞也要 ${nt(worst(0))}。`:
       afford<ap&&ap<=maxA?`花費上限 ${nt(M)}、新角色一定要拿到的話，復刻池最多只能再抽 ${afford} 抽，還到不了必出六星的第 ${ap} 抽。停在那之前很不划算，拿到復刻角色的機率只有 ${pc(pA(afford))}。要嘛這次不抽復刻池，要嘛把上限提高到 ${nt(worst(ap))}，才能抽到必出六星。`:
       afford>=maxA?`${nt(M)} 足以把兩隻都追到保證，最壞花費是 ${nt(worst(maxA))}。`:
-      `花費上限 ${nt(M)}、新角色一定要拿到的話，復刻池最多可以再抽 ${afford} 抽，也就是累積到 ${an+afford} 抽。這時拿到復刻角色的機率是 ${pc(pA(afford))}，而且有 ${pc(spend(afford).free)} 的機會一毛都不用花。`;
+      `花費上限 ${nt(M)}、新角色一定要拿到的話，復刻池最多可以再抽 ${afford} 抽，也就是累積到 ${an+afford} 抽。這時拿到復刻角色的機率是 ${pc(pA(afford))}，而且有 ${pc(spend(afford).free)} 的機會一毛都不用花。算法：你到新角色池結束有 ${B} 抽`+(buy>0?`，${nt(M)} 最多再買 ${buy} 抽`:'')+`，新角色最壞要 ${maxB} 抽，所以最多能分給復刻池 ${B+buy-maxB} 抽。這個結論的前提是那 ${B} 抽都確實拿得到，其中預估的收入若沒有到手，就得用錢補。`;
     const ms=[...new Set([0,ap,ap+10,maxA,Math.max(0,afford)])].filter(x=>x<=maxA).sort((a,b)=>a-b);
     $('calc-money').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到復刻角色</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞花費</th></tr>'+
       ms.map(x=>{const r=spend(x);return `<tr><td class="n">${x}${x===afford?' ◀':''}</td><td class="n">${pc(pA(x))}</td><td class="n">${pc(r.free)}</td><td class="n">${nt(r.avg)}</td><td class="n">${nt(r.q90)}</td><td class="n">${nt(r.mx)}</td></tr>`;}).join('');
