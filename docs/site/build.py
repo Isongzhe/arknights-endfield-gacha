@@ -112,5 +112,18 @@ assert template.count("__DATA__") == 1
 assert template.count("__ENGINE__") == 1
 page = template.replace("__DATA__", data).replace("__ENGINE__", (HERE / "engine.js").read_text())
 (HERE / "index.html").write_text(page)
+# index.html is a page body for hosts that supply the document shell; standalone.html is a
+# complete document for a plain web server or GitHub Pages.
+SHELL = """<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+%s
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true,theme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'default'});</script>
+</body></html>
+"""
+(HERE / "standalone.html").write_text(SHELL % page)
 print({x["name"]: x["states"] for x in d["pmf"]}, {k: v["states"] for k, v in d["carry"].items()})
 print("e_t0 range", min(d["e_t0"]), max(d["e_t0"]), "pmf max", max(max(x["y"]) for x in d["pmf"]))

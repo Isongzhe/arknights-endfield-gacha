@@ -1,7 +1,7 @@
 # gacha — exact gacha waiting-time models
 
 Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfield. Design:
-`docs/superpowers/specs/2026-09-16-endfield-gacha-phase1-design.md`. Rules and assumptions:
+`docs/design/2026-09-16-endfield-gacha-phase1-design.md`. Rules and assumptions:
 `docs/assumptions.md`. Research direction: `docs/research-notes.md`. Numbers: `docs/results.md`.
 
 ## Commands
@@ -12,6 +12,8 @@ Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfi
     uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60 --realized 90
     uv run gacha experiment all  # tables -> results/tables, figures -> results/figures
     uv run gacha evaluate --plan plan.toml --budget 300   # multi-banner; schema: gacha evaluate --help
+    uv run gacha decide examples/rerun_then_limited.toml  # two banners sharing one stock
+    uv run python docs/site/build.py                      # rebuild the site (needs node for the engine check)
 
 ## Principles
 
@@ -29,6 +31,9 @@ Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfi
 - **Experiments are reproducible scripts.** `src/gacha/experiments/eXX_name.py` exposes
   `run(out_dir) -> dict`; register it in `EXPERIMENTS`; write tables (CSV + MD) and figures (PNG +
   PDF); return headline numbers (use the `run-experiment` skill).
+- **The site has a second engine.** `docs/site/engine.js` ports the first-UP recursion for the
+  calculator; `docs/site/build.py` fails if it disagrees with Python. Change rules in Python
+  first, then the port. Re-run rules and prices are in `docs/rules/`.
 - **Figures** use `gacha.plots.style.PALETTE` in slot order, one axis per chart, a legend whenever
   two or more series are drawn, axis labels with units ("paid pulls").
 
@@ -39,6 +44,9 @@ Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfi
     src/gacha/models     paper.py, endfield.py (single banner), plan.py (multi-banner)
     src/gacha/risk       metrics.py, normal.py
     src/gacha/mc         simulate.py, compare.py
+    src/gacha/analysis   two_banner.py (stopping table for two banners sharing one stock)
+    src/gacha/cost       menu.py (price menus, cheapest top-up); prices are data, not rules
+    src/gacha/scenario.py  TOML scenario files (examples/)
     src/gacha/plots      style.py, waiting_time.py, heatmaps.py
     src/gacha/experiments  registry + e01..e07
     tests/               one file per module; toy_models.py holds hand-checkable fixtures

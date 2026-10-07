@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12, uv, numpy, scipy (sparse), pandas, matplotlib, pytest, ruff.
 
-**Spec:** `docs/superpowers/specs/2026-09-16-endfield-gacha-phase1-design.md` (read it first; the plan argues from it).
+**Spec:** `docs/design/2026-09-16-endfield-gacha-phase1-design.md` (read it first; the plan argues from it).
 
 ## Global Constraints
 
@@ -140,7 +140,7 @@ results/
 # gacha
 
 Exact waiting-time models for gacha banners, starting with the Arknights: Endfield limited
-character banner. See `docs/superpowers/specs/` for the design and `CLAUDE.md` for conventions.
+character banner. See `docs/design/` for the design and `CLAUDE.md` for conventions.
 
     uv sync
     uv run pytest
@@ -3886,7 +3886,7 @@ Symmetry 2026, 18(6), 1051, doi:10.3390/sym18061051 (CC BY 4.0).
 # gacha — exact gacha waiting-time models
 
 Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfield. Design:
-`docs/superpowers/specs/2026-09-16-endfield-gacha-phase1-design.md`. Rules and assumptions:
+`docs/design/2026-09-16-endfield-gacha-phase1-design.md`. Rules and assumptions:
 `docs/assumptions.md`. Research direction: `docs/research-notes.md`. Numbers: `docs/results.md`.
 
 ## Commands
