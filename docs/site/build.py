@@ -114,6 +114,31 @@ data = json.dumps(d, ensure_ascii=False, separators=(",", ":"))
 template = (HERE / "template.html").read_text()
 assert template.count("__DATA__") == 1
 assert template.count("__ENGINE__") == 1
+
+
+def checklist(entries, cls):
+    """Ownership checkboxes; an icon is embedded when docs/site/icons/<name>.png exists."""
+    import base64
+
+    out = []
+    for i, entry in enumerate(entries):
+        en = entry["en"]
+        label = f"{entry['zh']} {en}" if entry.get("zh") else en
+        icon = HERE / "icons" / f"{en.replace(' ', '_')}.png"
+        img = ""
+        if icon.exists():
+            b64 = base64.b64encode(icon.read_bytes()).decode()
+            img = f'<img alt="" src="data:image/png;base64,{b64}">'
+        out.append(
+            f'        <label class="check" for="in-{cls}-{i}"><input id="in-{cls}-{i}" '
+            f'class="{cls}" type="checkbox" checked>{img}{label}</label>'
+        )
+    return "\n".join(out)
+
+
+roster = json.loads((HERE / "roster.json").read_text())
+template = template.replace("__OWN5__", checklist(roster["five"], "own5"))
+template = template.replace("__OWN6__", checklist(roster["six_offrate"], "own6"))
 page = template.replace("__DATA__", data).replace("__ENGINE__", (HERE / "engine.js").read_text())
 (HERE / "index.html").write_text(page)
 # index.html is a page body for hosts that supply the document shell; standalone.html is a

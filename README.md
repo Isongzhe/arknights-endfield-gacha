@@ -100,7 +100,8 @@ print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 **Reproduce every table and figure**: `uv run gacha experiment all` writes to `results/`.
 
 A browsable write-up with an interactive calculator lives in `docs/site/`; build it with
-`uv run python docs/site/build.py` and open `docs/site/standalone.html`.
+`uv run python docs/site/build.py` and open `docs/site/standalone.html` (built pages are not
+committed; `docs/site/fetch_icons.py` optionally downloads operator icons for the checklist).
 
 ## How it works
 

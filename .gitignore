@@ -6,3 +6,9 @@ __pycache__/
 dist/
 results/
 .superpowers/
+
+# built site pages and downloaded game art (see docs/rules/roster.md)
+docs/site/icons/
+docs/site/index.html
+docs/site/standalone.html
+docs/site/data.json

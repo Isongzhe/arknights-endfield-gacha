@@ -73,7 +73,9 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .calc input[type=number],.calc input[type=date]{font-family:var(--mono);font-size:16px;padding:7px 9px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
 .calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .cap{font-size:13px;color:var(--muted)}
-.own{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:4px 10px}
+.own{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 10px}
+.own label{align-items:center}
+.own img{width:30px;height:30px;border-radius:5px;flex:none}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
@@ -152,19 +154,12 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <label for="in-quota">現有保障配額<input id="in-quota" type="number" min="0" value="10" inputmode="numeric"></label>
       <span class="cap">已擁有的五星，抽到重複的每隻給 10 配額：</span>
       <div class="own">
-        <label class="check" for="in-5-0"><input id="in-5-0" class="own5" type="checkbox" checked>Alesh</label>
-        <label class="check" for="in-5-1"><input id="in-5-1" class="own5" type="checkbox" checked>Arclight</label>
-        <label class="check" for="in-5-2"><input id="in-5-2" class="own5" type="checkbox" checked>Avywenna</label>
-        <label class="check" for="in-5-3"><input id="in-5-3" class="own5" type="checkbox" checked>Chen Qianyu</label>
-        <label class="check" for="in-5-4"><input id="in-5-4" class="own5" type="checkbox" checked>Da Pan</label>
-        <label class="check" for="in-5-5"><input id="in-5-5" class="own5" type="checkbox" checked>Perlica</label>
-        <label class="check" for="in-5-6"><input id="in-5-6" class="own5" type="checkbox" checked>Purrchena</label>
-        <label class="check" for="in-5-7"><input id="in-5-7" class="own5" type="checkbox" checked>Snowshine</label>
-        <label class="check" for="in-5-8"><input id="in-5-8" class="own5" type="checkbox" checked>Wulfgard</label>
-        <label class="check" for="in-5-9"><input id="in-5-9" class="own5" type="checkbox" checked>Xaihi</label>
+__OWN5__
       </div>
-      <label for="in-off6">歪池的六星裡你已經有幾隻<input id="in-off6" type="number" min="0" max="20" value="0" inputmode="numeric"></label>
-      <label for="in-off6n">歪池的六星總數（常駐加前兩期限定）<input id="in-off6n" type="number" min="1" max="20" value="7" inputmode="numeric"></label>
+      <span class="cap">歪池的六星，已擁有的打勾，抽到重複的每隻給 50 配額。常駐 5 隻固定，後 2 隻是前兩期限定，每個限定池會換：</span>
+      <div class="own">
+__OWN6__
+      </div>
       <span class="cap" id="calc-rebate"></span>
     </fieldset>
   </form>
@@ -726,7 +721,7 @@ __ENGINE__
     const c1=claims('in-date1'), c2=claims('in-date2');
     $('calc-days').textContent=`月卡還能領：復刻池結束前 ${c1} 次，新角色池結束前 ${c2} 次。每天 04:00 換日，兩種池都在換日之後才結束，所以結束當天也領得到。`;
     const own5=[...document.querySelectorAll('.own5')], f5=own5.length?own5.filter(e=>e.checked).length/own5.length:0;
-    const f6=Math.min(1,num('in-off6')/Math.max(1,num('in-off6n'))), q0=num('in-quota');
+    const own6=[...document.querySelectorAll('.own6')], f6=own6.length?own6.filter(e=>e.checked).length/own6.length:0, q0=num('in-quota');
     const perPull=10*D.rates.five*f5+50*D.rates.six*0.5*f6, eff=n=>Math.floor((n+q0/25)/(1-perPull/25));
     const now=tk+Math.floor(jade0/500), raw1=tk+Math.floor((jade0+daily*c1)/500), B1=eff(raw1);
     const jade=jade0+daily*c2, rawB=tk+Math.floor(jade/500)+num('in-other'), B=eff(rawB);
