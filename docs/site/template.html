@@ -265,7 +265,9 @@ __OWN6__
   <p>抽到已擁有的五星給 10 保障配額，已擁有的六星給 50，每 25 配額換 1 張通用憑證。五星的基礎機率是 8%，加上十抽必出五星以上的保底後，長期平均是每抽 13.4%；六星是每抽 1.86%。這兩個數字由六星保底與五星保底的聯合穩態分布算出。</p>
   <div class="math">$$\rho=\frac{10\,r_5\,s_5+50\,r_6\,(1-q)\,s_6}{25},\qquad N=\frac{S_0+Q_0/25}{1-\rho}$$</div>
   <p>\(r_5\)、\(r_6\) 是每抽出五星、六星的長期機率，\(s_5\)、\(s_6\) 是五星池與歪池六星裡你已擁有的比例，\(Q_0\) 是現有配額，\(S_0\) 是原本的抽數，\(N\) 是把回收再投入之後的抽數。五星全部擁有時 \(\rho\) 約 5.4%，相當於每 19 抽多 1 抽。</p>
-  <p>這一項是期望值近似，不是精確解：實際回收的抽數有高有低，免費抽與贈送的抽產生的配額也沒有算。報告其餘的部分都是精確的。</p>
+  <p>這一項是期望值近似，不是精確解：實際回收的抽數有高有低，免費抽與贈送的抽產生的配額也沒有算。報告其餘的部分都是精確的。下表顯示回收比估計多 2 抽或少 2 抽時，結論會移動多少。</p>
+  <div class="scroll"><table id="rep-band"></table></div>
+  <p id="rep-band-note"></p>
 </section>
 
 <section id="flow">
@@ -717,6 +719,12 @@ __ENGINE__
       xlabel:'花費上限（百元）',ylabel:'兩隻都有',xname:'上限（百元）',vfmt:pct,h:280,mark:Math.min(nM,Math.round(M/100)),series:[{name:'兩隻都有',y:curve}]});
     const inc=[0,10,20,30,40].map(e=>{const rr=decide(fa,fb,S+e), x=Math.min(h,rr.length-1), r=rr[x];return [e,pc(r.a),pc(r.b),pc(r.both),r.b];});
     tbl('rep-income',['額外多拿（抽）','復刻角色','新角色','兩隻都有'],inc.map(r=>r.slice(0,4)));
+    const band=[-2,0,2].map(d=>{const rr=decide(fa,fb,Math.max(0,S+d)), x=Math.min(h,rr.length-1), r=rr[x];
+      return {d,S:Math.max(0,S+d),b:r.b,both:r.both,worst:costFor(maxA+maxB-(S+d),left)};});
+    tbl('rep-band',['回收的抽數','可用抽數','新角色','兩隻都有','兩隻都保證的最壞花費'],
+      band.map(r=>[r.d<0?'比估計少 2 抽':r.d>0?'比估計多 2 抽':'目前的估計',r.S,pc(r.b),pc(r.both),nt(r.worst)]));
+    const spread=Math.max(Math.abs(band[0].both-band[1].both),Math.abs(band[2].both-band[1].both))*100;
+    $('rep-band-note').textContent=perPull>0?`以復刻池抽 ${h} 抽停為前提。回收差 2 抽，兩隻都有的機率最多移動 ${spread.toFixed(1)} 個百分點`+(spread<1.5?'，不影響該停在哪裡的判斷。':'。這個幅度不小，代表你的抽數剛好落在某個保底門檻附近，判斷時要保守一點。'):'目前沒有計入回收，這張表只顯示可用抽數差 2 抽的影響。';
     const gain=((inc[4][4]-inc[0][4])/4)*100;
     $('rep-income-note').textContent=`以復刻池抽 ${h} 抽停為前提。每多 10 抽，新角色的機率平均多 ${gain.toFixed(1)} 個百分點。`+
       (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
