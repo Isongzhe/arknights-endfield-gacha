@@ -122,18 +122,24 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 
 <section id="calc">
   <h2>試算：兩個池都想要，該怎麼分配</h2>
-  <p>填入你的資源與兩個池的進度，下面的數字會即時重算。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
+  <p>填入你的資源、兩個池的進度與剩餘天數，下面的數字會即時重算。月卡收入會依天數自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
   <form id="calc-form" class="calc" onsubmit="return false">
     <fieldset><legend>資源</legend>
       <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
       <label for="in-jade">合成玉<input id="in-jade" type="number" min="0" step="50" value="19950" inputmode="numeric"></label>
       <label for="in-stone">源石（1 顆 = 75 合成玉）<input id="in-stone" type="number" min="0" value="243" inputmode="numeric"></label>
       <label for="in-money">最多願意花多少（NT$）<input id="in-money" type="number" min="0" step="100" value="4000" inputmode="numeric"></label>
-      <label for="in-future">新角色開池前預估還能拿到幾抽<input id="in-future" type="number" min="0" value="11" inputmode="numeric"></label>
+    </fieldset>
+    <fieldset><legend>時間與收入</legend>
+      <label for="in-d1">復刻池還剩幾天<input id="in-d1" type="number" min="0" value="8" inputmode="numeric"></label>
+      <label for="in-d2">新角色池結束還剩幾天<input id="in-d2" type="number" min="0" value="29" inputmode="numeric"></label>
+      <label class="check" for="in-card"><input id="in-card" type="checkbox" checked>有月卡，每天 200 合成玉</label>
+      <label for="in-other">其他預估收入（抽），活動、開版獎勵、每週任務，不確定就填 0<input id="in-other" type="number" min="0" value="0" inputmode="numeric"></label>
     </fieldset>
     <fieldset><legend>復刻池（先開）</legend>
       <label for="in-an">本池累積已抽<input id="in-an" type="number" min="0" max="119" value="30" inputmode="numeric"></label>
       <label for="in-ap">再幾抽必出六星<input id="in-ap" type="number" min="1" max="80" value="50" inputmode="numeric"></label>
+      <span class="cap">這兩個數字各自獨立。累積抽數不會歸零，保底計數每次出六星就重來，而且所有復刻池共用。</span>
     </fieldset>
     <fieldset><legend>限定新角色池（後開）</legend>
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
@@ -148,7 +154,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <div class="ftitle">復刻池投入上限對三種結果的影響</div>
       <div class="legend"><span><i style="border-color:var(--s1)"></i>兩隻都有</span><span><i style="border-color:var(--s2)"></i>拿到復刻角色</span><span><i style="border-color:var(--s3)"></i>拿到新角色</span></div>
       <div class="chart" id="c-calc-cap"></div>
-      <figcaption>橫軸是你願意在復刻池從現在起最多再抽幾抽，沒拿到就停手，剩下的全留給新角色。陡升的區段是軟保底區，六星多半在那裡出現。</figcaption>
+      <figcaption>橫軸是你願意在復刻池從現在起最多再抽幾抽，沒拿到就停手，剩下的全留給新角色。橫軸最遠只到復刻池結束前你拿得出的抽數。陡升的區段是軟保底區，六星多半在那裡出現。</figcaption>
     </figure>
     <div class="scroll"><table id="calc-table"></table></div>
     <h3>要花多少錢</h3>
@@ -625,21 +631,24 @@ __ENGINE__
     let msg='';
     if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
     else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
+    else if(num('in-d2')<num('in-d1'))msg='新角色池結束的天數不能比復刻池還短。';
     if(msg){err.textContent=msg;err.hidden=false;out.hidden=true;return;}
     err.hidden=true;out.hidden=false;
-    const jade=num('in-jade')+num('in-stone')*75, now=num('in-ticket')+Math.floor(jade/500), B=now+num('in-future');
+    const jade0=num('in-jade')+num('in-stone')*75, daily=$('in-card').checked?200:0, tk=num('in-ticket');
+    const now=tk+Math.floor(jade0/500), B1=tk+Math.floor((jade0+daily*num('in-d1'))/500);
+    const jade=jade0+daily*num('in-d2'), B=tk+Math.floor(jade/500)+num('in-other');
     const fa=firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
     const left=jade%500, M=num('in-money');
-    const rows=decide(fa,fb,B), best=Math.max(...rows.map(r=>r.both));
-    const pick=rows.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
+    const rows=decide(fa,fb,B), capMax=Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
+    const pick=usable.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
     const pc=v=>(v*100).toFixed(1)+'%';
-    $('calc-keys').innerHTML=[[B,'可用總抽數'+(B>now?`，其中現有 ${now}`:'')],[pc(best),'兩隻都拿到的最高機率'],[pick.x,'建議的復刻池投入上限'],
+    $('calc-keys').innerHTML=[[B,`到新角色池結束可用的總抽數。現有 ${now}，復刻池結束前 ${B1}`],[pc(best),'兩隻都拿到的最高機率'],[pick.x,'建議的復刻池投入上限'],
       ['NT$'+costFor(need-B,left).toLocaleString(),`兩隻都保證的最壞花費，運氣最差時才會花到，差 ${Math.max(0,need-B)} 抽`]].map(k=>`<div><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
     const skip=rows[0];
     $('calc-advice').textContent=best<0.005?'以目前的抽數，兩隻都拿到的機率接近零。':
       pick.x===0?'復刻池不值得投入，把抽數全留給新角色。':
       `復刻池最多抽 ${pick.x} 抽，沒拿到就停手。這樣拿到復刻角色的機率是 ${pc(pick.a)}，新角色是 ${pc(pick.b)}，兩隻都有是 ${pc(pick.both)}。完全不抽復刻池時，新角色是 ${pc(skip.b)}。`;
-    const xs=[...new Set([0,10,20,30,40,ap,ap+10,maxA,B].filter(x=>x<=B))].sort((a,b)=>a-b);
+    const xs=[...new Set([0,10,20,30,40,ap,ap+10,maxA,capMax].filter(x=>x<=capMax))].sort((a,b)=>a-b);
     $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到復刻角色</th><th class="n">拿到新角色</th><th class="n">兩隻都有</th></tr>'+
       xs.map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
     // spend when the second target is chased to its guarantee and the first is capped at x
@@ -660,10 +669,10 @@ __ENGINE__
     const ms=[...new Set([0,ap,ap+10,maxA,Math.max(0,afford)])].filter(x=>x<=maxA).sort((a,b)=>a-b);
     $('calc-money').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到復刻角色</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞花費</th></tr>'+
       ms.map(x=>{const r=spend(x);return `<tr><td class="n">${x}${x===afford?' ◀':''}</td><td class="n">${pc(pA(x))}</td><td class="n">${pc(r.free)}</td><td class="n">${nt(r.avg)}</td><td class="n">${nt(r.q90)}</td><td class="n">${nt(r.mx)}</td></tr>`;}).join('');
-    const xm=Math.max(1,Math.min(B,maxA+10));
+    const xm=Math.max(1,Math.min(capMax,maxA+10));
     lineChart('c-calc-cap',{label:'復刻池投入上限的影響',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
-      series:[{name:'兩隻都有',y:rows.map(r=>r.both)},{name:'復刻角色',y:rows.map(r=>r.a)},{name:'新角色',y:rows.map(r=>r.b)}]});
+      series:[{name:'兩隻都有',y:usable.map(r=>r.both)},{name:'復刻角色',y:usable.map(r=>r.a)},{name:'新角色',y:usable.map(r=>r.b)}]});
     const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
