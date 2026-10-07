@@ -1,0 +1,652 @@
+<title>終末地抽卡精確模型筆記</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* layout: lab notebook — sticky section index on the left, one reading column, figures break out with their own captions */
+:root{
+  --bg:#f5f7f9; --surface:#ffffff; --ink:#13202c; --ink2:#465564; --muted:#7b8794; --rule:#d9e0e6;
+  --accent:#1f5fae; --accent-soft:#e3edf8;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100;
+  --ok:#0b7a0b; --warn:#a05a00;
+  --display:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f151b; --surface:#172029; --ink:#eef2f5; --ink2:#b9c4ce; --muted:#8793a0; --rule:#2a3642;
+  --accent:#7fb2ee; --accent-soft:#1b2c40;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --ok:#3fbf3f; --warn:#e0a040; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f151b; --surface:#172029; --ink:#eef2f5; --ink2:#b9c4ce; --muted:#8793a0; --rule:#2a3642;
+  --accent:#7fb2ee; --accent-soft:#1b2c40;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --ok:#3fbf3f; --warn:#e0a040; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.8}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 80px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:48px}
+nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-size:14px}
+nav .label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+nav ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--rule)}
+nav a{display:block;padding:5px 12px;color:var(--ink2);text-decoration:none;border-left:2px solid transparent;margin-left:-1px}
+nav a:hover,nav a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
+main{min-width:0;display:flex;flex-direction:column;gap:56px}
+header h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,4.4vw,42px);line-height:1.25;margin:0 0 12px;text-wrap:balance}
+header p{color:var(--ink2);max-width:42em;margin:0}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:.04em}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:20px}
+h2{font-family:var(--display);font-size:26px;line-height:1.3;margin:0;padding-bottom:10px;border-bottom:1px solid var(--rule);text-wrap:balance}
+h3{font-size:18px;font-weight:700;margin:14px 0 0}
+p,ul,ol.steps{max-width:42em;margin:0}
+ul,ol.steps{padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:3px}
+pre.code{font-family:var(--mono);font-size:13px;line-height:1.6;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;overflow-x:auto;margin:0}
+.keys{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.keys div{background:var(--surface);padding:14px 16px}
+.keys b{display:block;font-family:var(--mono);font-weight:500;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.2}
+.keys span{font-size:13px;color:var(--ink2);line-height:1.5;display:block;margin-top:4px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;font-size:14px;min-width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:7px 12px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top;line-height:1.55}
+th{font-weight:500;color:var(--muted);font-size:12.5px;white-space:nowrap}
+td.n,th.n{text-align:right;font-family:var(--mono);white-space:nowrap}
+.tag{font-family:var(--mono);font-size:11.5px;padding:1px 7px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}
+.tag.ok{color:var(--ok)} .tag.q{color:var(--warn)} .tag.later{color:var(--muted)}
+figure{margin:6px 0 0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:16px 16px 12px}
+figcaption{font-size:13.5px;color:var(--ink2);line-height:1.6;margin-top:10px;max-width:46em}
+.ftitle{font-weight:700;font-size:15px;margin-bottom:8px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--ink2);margin-bottom:6px}
+.legend i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:6px}
+.legend i.dash{border-top-style:dashed}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.chart .axl{fill:var(--ink2);font-family:var(--body);font-size:12px}
+.grid{stroke:var(--rule);stroke-width:1}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:12px;line-height:1.5;padding:6px 9px;border-radius:4px;white-space:nowrap;z-index:2}
+.math{overflow-x:auto;padding:4px 0}
+.note{border-left:3px solid var(--accent);padding:2px 0 2px 14px;color:var(--ink2);max-width:42em}
+pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px;overflow-x:auto;margin:0;text-align:center}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.two>*{min-width:0}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.calc fieldset{border:1px solid var(--rule);border-radius:6px;background:var(--surface);padding:12px 14px 14px;margin:0;min-width:0;display:flex;flex-direction:column;gap:10px}
+.calc legend{font-weight:700;font-size:14px;padding:0 6px}
+.calc label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink2);line-height:1.4}
+.calc input[type=number]{font-family:var(--mono);font-size:16px;padding:7px 9px;border:1px solid var(--rule);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
+.calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
+#calc-out{display:flex;flex-direction:column;gap:18px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);gap:24px}nav{position:static}nav ol{flex-direction:row;flex-wrap:wrap;border-left:0;gap:4px 4px}nav a{border-left:0;border-bottom:2px solid transparent;margin:0;padding:3px 8px}}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'},options:{enableMenu:false}};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+
+<div class="wrap">
+<nav aria-label="章節">
+  <div class="label">章節</div>
+  <ol>
+    <li><a href="#overview">總覽</a></li>
+    <li><a href="#calc">試算</a></li>
+    <li><a href="#case">案例</a></li>
+    <li><a href="#flow">研究與計算流程</a></li>
+    <li><a href="#rules">卡池規則</a></li>
+    <li><a href="#theory">統計理論</a></li>
+    <li><a href="#algo">演算法</a></li>
+    <li><a href="#results">結果</a></li>
+    <li><a href="#verify">驗證</a></li>
+    <li><a href="#next">待確認與下一步</a></li>
+  </ol>
+</nav>
+<main>
+
+<header>
+  <div class="meta">限定角色池與復刻池 · 2026-10-07 重新計算</div>
+  <h1>終末地抽卡的精確等待時間模型</h1>
+  <p>這份筆記記錄目前做了什麼、怎麼算、背後的機率理論，以及算出來的數字。所有結果都由有限狀態的精確遞迴得到，Monte Carlo 只用來核對。單位一律是<b>付費抽數</b>，免費抽不計入。</p>
+</header>
+
+<section id="overview">
+  <h2>總覽</h2>
+  <p>出發點是 Hou、Zhu、Zhang 在 <i>Symmetry</i> 2026 的論文。它把「抽到一隻稀有角色要幾抽」寫成吸收馬可夫鏈的吸收時間，用反向遞迴直接算出期望、變異數與完整分布。這裡把同一套想法搬到《明日方舟：終末地》的限定角色池，並處理論文列為未來工作的兩件事：跨池繼承，以及有預算上限時的分布。</p>
+  <div class="keys">
+    <div><b>74.3</b><span>拿到第一隻當期 UP 的期望付費抽數</span></div>
+    <div><b>67</b><span>中位數</span></div>
+    <div><b>115</b><span>最壞情況，也是 90% 分位數</span></div>
+    <div><b>32.8%</b><span>一路抽到 120 保底才拿到的機率</span></div>
+    <div><b>+7.7</b><span>連抽兩池時，把兩池當獨立會高估的期望抽數</span></div>
+  </div>
+  <p>最壞是 115 而不是 120，因為每池開頭有 5 抽免費，會計入 120 保底的進度。</p>
+</section>
+
+<section id="calc">
+  <h2>試算：兩個池都想要，該怎麼分配</h2>
+  <p>填入你的資源與兩個池的進度，下面的數字會即時重算。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
+  <form id="calc-form" class="calc" onsubmit="return false">
+    <fieldset><legend>資源</legend>
+      <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
+      <label for="in-jade">合成玉<input id="in-jade" type="number" min="0" step="50" value="19950" inputmode="numeric"></label>
+      <label for="in-stone">源石（1 顆 = 75 合成玉）<input id="in-stone" type="number" min="0" value="243" inputmode="numeric"></label>
+      <label for="in-future">新角色開池前預估還能拿到幾抽<input id="in-future" type="number" min="0" value="11" inputmode="numeric"></label>
+    </fieldset>
+    <fieldset><legend>復刻池（先開）</legend>
+      <label for="in-an">本池累積已抽<input id="in-an" type="number" min="0" max="119" value="30" inputmode="numeric"></label>
+      <label for="in-ap">再幾抽必出六星<input id="in-ap" type="number" min="1" max="80" value="50" inputmode="numeric"></label>
+    </fieldset>
+    <fieldset><legend>限定新角色池（後開）</legend>
+      <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
+      <label for="in-bf">開頭綁定的免費抽（登入 5 + 商店 5）<input id="in-bf" type="number" min="0" max="25" value="10" inputmode="numeric"></label>
+    </fieldset>
+  </form>
+  <p id="calc-error" class="note" hidden></p>
+  <div id="calc-out">
+    <div class="keys" id="calc-keys"></div>
+    <p id="calc-advice" class="note"></p>
+    <figure>
+      <div class="ftitle">復刻池投入上限對三種結果的影響</div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>兩隻都有</span><span><i style="border-color:var(--s2)"></i>拿到復刻角色</span><span><i style="border-color:var(--s3)"></i>拿到新角色</span></div>
+      <div class="chart" id="c-calc-cap"></div>
+      <figcaption>橫軸是你願意在復刻池從現在起最多再抽幾抽，沒拿到就停手，剩下的全留給新角色。陡升的區段是軟保底區，六星多半在那裡出現。</figcaption>
+    </figure>
+    <div class="scroll"><table id="calc-table"></table></div>
+    <figure>
+      <div class="ftitle">總抽數與兩隻都拿到的機率</div>
+      <div class="chart" id="c-calc-stock"></div>
+      <figcaption>垂直虛線是你目前的總抽數。曲線到達 100% 的位置是保證兩隻都拿到所需的抽數。花費以首儲雙倍用完後的價目估算：新角色池尋訪包 10 抽 490 元一次，其餘買一般源石。</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="case">
+  <h2>案例：伊馮復刻池與 1.6 新角色</h2>
+  <p>這是 2026 年 10 月 7 日的一個實際決策，用來示範模型怎麼回答「要不要投入、會不會影響下一隻」。上面試算器的預設值就是這個案例。</p>
+  <h3>手上的狀況</h3>
+  <div class="scroll"><table>
+    <tr><th>項目</th><th>數值</th></tr>
+    <tr><td>現有資源</td><td>通用憑證 2 張、合成玉 19,950、源石 243 顆，合計 78 抽</td></tr>
+    <tr><td>伊馮復刻池</td><td>累積已抽 30 抽，30 抽門檻的 10 連已用，再 50 抽必出六星，10/15 06:00 結束</td></tr>
+    <tr><td>限定池保底</td><td>再 32 抽必出六星，會帶進新角色池</td></tr>
+    <tr><td>新角色池</td><td>10/15 到 11/5。開版三天內登入送 5 抽，商店可再換 5 抽，共 10 抽綁定該池</td></tr>
+    <tr><td>月卡</td><td>每天 200 合成玉。到 10/15 多 3 抽，到 11/5 再多 8 抽</td></tr>
+    <tr><td>到 11/5 的可用總抽數</td><td>89 抽，不含活動、開版獎勵與保障配額換的抽</td></tr>
+  </table></div>
+  <h3>關鍵觀察</h3>
+  <p>伊馮池再 50 抽必出六星，軟保底從再抽第 36 抽開始。新角色池扣掉綁定的 10 抽後，自備第 22 抽必出六星，軟保底從第 8 抽開始。兩者合計 72 抽，手上的抽數夠兩邊各走到小保底，各賭一次 50%，還有餘裕。</p>
+  <p>兩個池的保底互不相通，所以它們只透過共用的抽數互相影響。在復刻池每多花一抽，新角色池就少一抽。</p>
+  <h3>伊馮池該抽到哪裡</h3>
+  <div class="scroll"><table>
+    <tr><th class="n">從現在起最多再抽</th><th class="n">伊馮</th><th class="n">新角色</th><th class="n">兩隻都有</th></tr>
+    <tr><td class="n">0，不抽</td><td class="n">0%</td><td class="n">78.2%</td><td class="n">0%</td></tr>
+    <tr><td class="n">40</td><td class="n">38.0%</td><td class="n">59.9%</td><td class="n">23.4%</td></tr>
+    <tr><td class="n">50，到必出六星 ◀</td><td class="n">54.8%</td><td class="n">59.0%</td><td class="n">33.2%</td></tr>
+    <tr><td class="n">67，只留 22 抽給新角色</td><td class="n">59.4%</td><td class="n">57.7%</td><td class="n">35.8%</td></tr>
+    <tr><td class="n">81，10/15 前全部投入</td><td class="n">62.7%</td><td class="n">40.4%</td><td class="n">37.0%</td></tr>
+  </table></div>
+  <p>核心是前 50 抽，六星幾乎都在第 36 到 50 抽之間出現。在那之前停手最不划算，例如只抽 40 抽，伊馮只有 38%。超過 50 抽之後，每一抽只有 0.4% 拿到伊馮。最多可以抽到 67 抽，因為那樣還剩 22 抽，剛好夠新角色走到小保底。再多就會把新角色的機率砍到 40%。抽 50 抽停手時，四種結局是：兩隻都有 33.2%、只有伊馮 21.6%、只有新角色 25.8%、都沒有 19.4%。</p>
+  <p class="note">操作規則：抽到出六星為止，最晚是第 50 抽。拿到伊馮就停。歪了的話可以停，也可以再抽到第 67 抽為止，但一定要留 22 抽給新角色。歪掉不是全損，復刻池的進度會留到下次同名復刻，那時最多再 40 抽就保證拿到。</p>
+  <h3>如果願意花錢</h3>
+  <p>補抽的價格取首儲雙倍用完之後的價目：新角色池的尋訪包 10 抽 490 元，其餘用一般源石，最便宜的檔位每抽 55.1 元。</p>
+  <div class="scroll"><table>
+    <tr><th>打法</th><th class="n">伊馮</th><th class="n">新角色</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞</th></tr>
+    <tr><td>不抽伊馮，新角色追到底</td><td class="n">0%</td><td class="n">100%</td><td class="n">78.2%</td><td class="n">224</td><td class="n">1,110</td><td class="n">1,110</td></tr>
+    <tr><td>伊馮抽 50 抽停，新角色追到底</td><td class="n">54.8%</td><td class="n">100%</td><td class="n">59.0%</td><td class="n">1,050</td><td class="n">3,480</td><td class="n">3,960</td></tr>
+    <tr><td>兩隻都追到底</td><td class="n">100%</td><td class="n">100%</td><td class="n">37.1%</td><td class="n">1,574</td><td class="n">4,670</td><td class="n">6,120</td></tr>
+  </table></div>
+  <p>金額單位是台幣，假設缺多少補多少。</p>
+  <div class="scroll"><table>
+    <tr><th class="n">花費上限</th><th class="n">多幾抽</th><th class="n">兩隻都有的最高機率</th></tr>
+    <tr><td class="n">0</td><td class="n">0</td><td class="n">36.2%</td></tr>
+    <tr><td class="n">1,000</td><td class="n">18</td><td class="n">59.2%</td></tr>
+    <tr><td class="n">2,000</td><td class="n">37</td><td class="n">69.4%</td></tr>
+    <tr><td class="n">3,000</td><td class="n">55</td><td class="n">75.1%</td></tr>
+    <tr><td class="n">4,000</td><td class="n">73</td><td class="n">84.9%</td></tr>
+    <tr><td class="n">5,000</td><td class="n">91</td><td class="n">91.5%</td></tr>
+    <tr><td class="n">6,120</td><td class="n">111</td><td class="n">100%</td></tr>
+  </table></div>
+  <p>前 1,000 元的效果最大，兩隻都有的機率從 36% 升到 59%。那 18 抽讓伊馮吃滿 120 大保底之後，還夠新角色走到小保底。之後每 1,000 元大約多 6 到 10 個百分點。</p>
+  <h3>零星多拿的抽數幫助有限</h3>
+  <p>在伊馮抽 50 抽停手的前提下，活動與開版獎勵每多 10 抽，新角色的機率只多 2 到 3 個百分點。原因是新角色池的小保底在第 22 抽，歪了之後要再走 65 抽以上才會進入下一個軟保底區，中間每抽只有 0.4%。</p>
+  <h3>沒有算進去的來源</h3>
+  <p>保障配額每 25 換 1 張通用憑證。重複拿到五星給 10、重複的六星給 50。若抽到的五星大多已經有，大約每 25 抽能回收 1 抽，相當於抽數多 3% 到 4%。這個回收目前沒有建模，所以上面的機率略為保守。</p>
+</section>
+
+<section id="flow">
+  <h2>研究與計算流程</h2>
+  <h3>這個專案是怎麼做出來的</h3>
+  <ol class="steps">
+    <li>讀完論文全文，整理它的模型、遞迴式與沒處理的部分。</li>
+    <li>把終末地規則與英文 wiki 交叉比對，寫成規則登記簿，每條規則對應一個可開關的參數。</li>
+    <li>寫設計規格，再拆成 15 個實作任務，每個任務都先寫會失敗的測試再寫程式。</li>
+    <li>用論文公布的數字當回歸測試，確認引擎正確後才套用到終末地規則。</li>
+    <li>由另一個獨立的審查者檢查整個分支，修掉三個問題後合併。</li>
+  </ol>
+  <h3>一次計算怎麼流動</h3>
+  <pre class="mermaid">
+flowchart LR
+  R["規則參數<br/>機率、保底、贈抽"] --> M["模型<br/>狀態與單步轉移"]
+  M --> C["列舉可達狀態<br/>建成稀疏矩陣"]
+  C --> F["正向傳播<br/>付費抽數分布"]
+  C --> B["反向遞迴<br/>期望、變異數、預算內成功率"]
+  C --> S["Monte Carlo<br/>抽樣同一份轉移"]
+  F --> K["風險指標<br/>分位數、CVaR、完成率"]
+  B --> K
+  S --> V["與精確值核對"]
+  K --> O["表格、圖、命令列工具"]
+  </pre>
+  <p class="note">規則只寫在一個地方。精確引擎與模擬器讀的是同一份單步轉移，所以兩邊一致是結構上保證的，不是靠兩份程式碰巧寫得一樣。</p>
+</section>
+
+<section id="rules">
+  <h2>卡池規則</h2>
+  <p>下表是模型實際採用的規則。「已確認」表示你的描述與 wiki 一致。「待確認」是我先做的建模假設，改一個參數就能換。</p>
+  <div class="scroll"><table>
+    <tr><th>編號</th><th>規則</th><th>狀態</th></tr>
+    <tr><td>R2</td><td>六星機率隨保底計數 t 變化。前 65 抽 0.8%，第 66 抽起每抽加 5%，第 80 抽必出。限定池與復刻池相同。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R3</td><td>抽到任何六星就把 t 歸零。t 跨限定池繼承。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R4</td><td>每隻六星有 50% 是當期 UP，各次獨立，沒有「歪了下次必中」。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R5</td><td>本池第 120 抽若還沒拿過 UP 則必出 UP。每池一次，不跨池。該抽會把 t 歸零。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R6</td><td>本池第 30 抽送 10 抽。這 10 抽不影響任何計數，抽中 UP 也不讓 120 保底失效。每抽六星率固定 0.8%。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R7</td><td>本池抽滿 60 抽，下一池開頭送 10 抽。這 10 抽是正常抽，會推進所有計數。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R8</td><td>本池每 240 抽送一個 UP 信物，用來提升潛能。一隻角色最多六張，即本體加五潛。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R9</td><td>每個限定池有 10 抽綁定該池：版本開始三天內登入累積送 5 抽，商店可再兌換 5 抽。本頁「結果」一節的通用數字仍以 5 抽計算，案例與試算器用 10 抽。</td><td><span class="tag ok">已確認</span></td></tr>
+    <tr><td>R10–12</td><td>歪掉時常駐與舊限定的比例、五星層、限定角留存三池。</td><td><span class="tag later">留到後續階段</span></td></tr>
+  </table></div>
+  <h3>對玩家行為的假設</h3>
+  <ul>
+    <li>免費抽一定會用，而且先於付費抽。跳過的池也會把免費抽用掉，因為它不花錢又能墊保底。</li>
+    <li>想抽的池會一直抽到拿到目標張數，或抽到該池的付費上限為止。</li>
+    <li>等待時間只算付費抽數。</li>
+  </ul>
+  <h3>復刻池（重構尋訪）</h3>
+  <p>復刻池是獨立系列，與限定池的規則大致相同，差別在計數怎麼保留。</p>
+  <div class="scroll"><table>
+    <tr><th>編號</th><th>規則</th><th>與限定池的差異</th></tr>
+    <tr><td>RR1</td><td>與限定池、常駐池互不影響、互不繼承。</td><td>只透過共用的抽數相連。</td></tr>
+    <tr><td>RR2</td><td>80 保底計數由所有復刻池共用，並在復刻池之間繼承。30、60、90、120、240 的累積抽數只在同名復刻池之間保留。</td><td>限定池的池內進度每池歸零。</td></tr>
+    <tr><td>RR3</td><td>累積 30、60、90 抽各送 10 抽，每個門檻一生一次，不計入累積。</td><td>限定池只有 30 抽送一次，60 抽送的是下一池的 10 抽。</td></tr>
+    <tr><td>RR4–6</td><td>80 抽必出六星且 50% 為 UP、首次 120 抽保證 UP、240 抽送信物。</td><td>相同，但進度可跨同名場次累積。</td></tr>
+    <tr><td>RR7</td><td>沒有送下一池的 10 抽，開頭沒有免費 5 抽。</td><td>攻略未提，暫時這樣假設。</td></tr>
+  </table></div>
+  <h3>課金價目</h3>
+  <p>換算是 1 源石等於 75 合成玉，500 合成玉 1 抽。下表只列與角色抽有關的項目，單位台幣。</p>
+  <div class="scroll"><table>
+    <tr><th>來源</th><th class="n">價格</th><th class="n">角色抽</th><th class="n">每抽</th><th>限制</th></tr>
+    <tr><td>月卡</td><td class="n">170</td><td class="n">13.8</td><td class="n">12.3</td><td>30 天分次領，剩餘天數上限 180</td></tr>
+    <tr><td>源石，首儲雙倍 2000 元檔</td><td class="n">2,000</td><td class="n">58.2</td><td class="n">34.4</td><td>每檔一次</td></tr>
+    <tr><td>尋訪包</td><td class="n">490</td><td class="n">10</td><td class="n">49.0</td><td>每個限定池一次，只能用在該池，復刻池沒有</td></tr>
+    <tr><td>源石，一般 2000 元檔</td><td class="n">2,000</td><td class="n">36.3</td><td class="n">55.1</td><td>無上限</td></tr>
+    <tr><td>人才包</td><td class="n">590</td><td class="n">10</td><td class="n">59.0</td><td>一次性，另附武庫配額 2,000</td></tr>
+    <tr><td>源石，一般 60 至 990 元檔</td><td class="n">—</td><td class="n">—</td><td class="n">58.9 至 66.7</td><td>無上限</td></tr>
+    <tr><td>協議源流包</td><td class="n">890</td><td class="n">10</td><td class="n">89.0</td><td>週期更新，另附武庫配額 2,000</td></tr>
+  </table></div>
+  <p>禮包附的武庫配額若以特惠武器包的 420 元折算，人才包每抽降到 17 元，協議源流包降到 47 元。成本層還沒有寫進套件，目前只有試算器與上面的案例用到這份價目。</p>
+  <figure>
+    <div class="ftitle">下一抽出六星的機率</div>
+    <div class="legend"><span><i style="border-color:var(--s1)"></i>終末地</span><span><i style="border-color:var(--s2)"></i>論文的代表性排程</span></div>
+    <div class="chart" id="c-sched"></div>
+    <figcaption>橫軸是已連續未出六星的抽數 t。終末地的軟保底從 t = 65 開始，在 t = 79 到達 100%。論文用的是 0.6% 基礎機率、從 t = 73 開始爬升、90 抽硬保底的排程。</figcaption>
+  </figure>
+</section>
+
+<section id="theory">
+  <h2>統計理論</h2>
+
+  <h3>論文的單計數器模型</h3>
+  <p>狀態只有保底計數 \(t\)。從 \(t\) 抽一次，以機率 \(p_t\) 成功並結束，否則走到 \(t+1\)。最後一個狀態必定成功，所以轉移矩陣的暫態部分 \(Q\) 是嚴格上三角，所有量都是有限和。令 \(E_t\)、\(V_t\) 為從 \(t\) 出發還需抽數的期望與變異數，\(f_t(j)\) 為剛好再抽 \(j\) 次的機率：</p>
+  <div class="math">$$E_t = 1 + (1-p_t)\,E_{t+1},\qquad V_t=(1-p_t)\,V_{t+1}+p_t(1-p_t)\,E_{t+1}^2,\qquad f_t(j)=(1-p_t)\,f_{t+1}(j-1).$$</div>
+  <p>要拿 \(m\) 隻時，論文假設每一段獨立同分布，總抽數 \(T_m=\tau_1+\dots+\tau_m\) 的分布就是單段分布自己摺積 \(m\) 次。這個假設在終末地不成立，原因見下。</p>
+
+  <h3>終末地的狀態：兩個計數器加一個會過期的保底</h3>
+  <p>終末地沒有「歪了下次必中」的狀態，取而代之的是池內的一次性保底。單池狀態需要四個量：</p>
+  <div class="math">$$s=(t,\;n,\;c,\;u)$$</div>
+  <ul>
+    <li>\(t\in\{0,\dots,79\}\)：保底計數，跨池帶著走。</li>
+    <li>\(n\)：本池已抽的計數抽數，含免費抽。它決定 30、60、120、240 這些里程碑。</li>
+    <li>\(c\)：本池已拿到的 UP 張數，到達目標張數就封頂。</li>
+    <li>\(u\in\{0,1\}\)：是否已從計數抽拿過 UP。一旦為 1，120 保底失效。</li>
+  </ul>
+  <p>六星機率是</p>
+  <div class="math">$$p_t=\begin{cases}0.008, & 0\le t\le 64\\ 0.008+0.05\,(t-64), & 65\le t\le 78\\ 1, & t=79.\end{cases}$$</div>
+  <p>令 \(q=0.5\) 為 UP 佔比。從 \(s\) 抽一次，\(n\) 變成 \(n+1\)，其餘依下列規則：</p>
+  <div class="math">$$\begin{aligned}
+  &\text{若 } u=0 \text{ 且 } n+1=120:&& (0,\,n{+}1,\,c{+}1,\,1)\ \text{機率 }1\\[2pt]
+  &\text{否則}:&& (0,\,n{+}1,\,c{+}1,\,1)\ \text{機率 } p_t\,q\\
+  &&& (0,\,n{+}1,\,c,\,u)\ \text{機率 } p_t(1-q)\\
+  &&& (t{+}1,\,n{+}1,\,c,\,u)\ \text{機率 } 1-p_t
+  \end{aligned}$$</div>
+  <p>另外有兩個加在分支上的獎勵。\(n+1\) 是 240 的倍數時 \(c\) 加一。\(n+1=30\) 時 \(c\) 再加上 \(K\)，其中 \(K\sim\mathrm{Binomial}(10,\;0.008\,q)\) 是送的 10 抽裡的 UP 數，與鏈上其他事件獨立。</p>
+
+  <h3>付費抽數是加權的吸收時間</h3>
+  <p>令 \(f\) 為本池開頭的免費抽數，沒有上池贈抽時是 5，有則是 15。每個轉移帶一個成本</p>
+  <div class="math">$$\mathrm{cost}=\mathbf 1\{n\ge f\}\in\{0,1\},\qquad T=\sum_{\text{路徑上的轉移}}\mathrm{cost}.$$</div>
+  <p>免費抽照樣推進 \(t\) 與 \(n\)，只是成本為零。所以 \(T\) 不是一般的步數，而是成本加權的吸收時間。吸收有兩種：拿到目標張數是成功，付費抽數達到該池上限還沒拿到是失敗。成功機率可以小於 1，這種分布稱為虧損分布。</p>
+  <p>狀態圖是有向無環圖，因為每一步 \(n\) 都嚴格增加。這保證所有遞迴都在有限步內結束，也讓 \(T\) 的支撐有確定的上界。只要一隻時，120 保底使 \(T\le 120-f\)。</p>
+
+  <h3>多池：為什麼不能直接摺積</h3>
+  <p>連續多池的狀態再加上池編號 \(k\) 與贈抽旗標 \(d\)，成為 \((k,t,n,c,u,d)\)。一池結束時做邊界轉移：</p>
+  <div class="math">$$(k,\,t,\,n,\,c,\,u,\,d)\;\longrightarrow\;(k{+}1,\;t,\;0,\;0,\;0,\;\mathbf 1\{n\ge 60\}).$$</div>
+  <p>保底計數 \(t\) 原封不動帶到下一池，上一池有沒有抽滿 60 抽決定下一池多不多 10 抽免費。因此第二池的起始狀態取決於第一池怎麼結束，兩池的抽數並不獨立，分布也不相同。論文的 \(T_m\) 摺積公式在這裡會系統性偏高，結果一節有量化的差距。</p>
+
+  <h3>風險指標</h3>
+  <p>令 \(F(j)=P(T\le j)\)。給定預算 \(b\) 抽：</p>
+  <div class="math">$$\begin{aligned}
+  \text{完成率}&=P(\text{成功且 }T\le b)\\
+  \mathrm{VaR}_\alpha&=\min\{j:\;F(j)\ge\alpha\}\\
+  \mathrm{CVaR}_\alpha&=E\,[\,T\mid T\ge \mathrm{VaR}_\alpha\,]\\
+  \text{期望超支}&=E\,[(T-b)^+]
+  \end{aligned}$$</div>
+  <p>虧損分布要分清楚兩個隨機變數。一個是「抽到成功或抽到上限為止」的花費，質量恆為 1，預算與尾端風險用這個。另一個是「在成功的條件下」的抽數。成功機率為 1 時兩者相同。</p>
+
+  <h3>待推導的命題</h3>
+  <ul>
+    <li><b>保底的價值是單調的。</b>進池時的 \(t\) 越大，期望付費抽數不會變多。這並不顯然，因為早出六星會讓 \(t\) 在較小的 \(n\) 歸零，離 120 保底反而更遠。數值上對全部 80 個起始值都成立。</li>
+    <li><b>保底門檻的隨機序。</b>把 120 改小，\(T\) 在通常隨機序下變小，可用與論文命題 4 相同的耦合論證。</li>
+    <li><b>30 抽贈送是獨立混合。</b>只要一隻時，它把第 30 抽時還活著的質量乘上 \(1-0.996^{10}\approx 3.9\%\) 直接變成成功。</li>
+    <li><b>支撐與尖峰。</b>\(P(T=120-f)\) 等於抽到第 120 抽都沒拿到 UP 的機率，目前算出來是 32.8%。</li>
+  </ul>
+</section>
+
+<section id="algo">
+  <h2>演算法</h2>
+  <h3>列舉</h3>
+  <p>從起始狀態做廣度優先搜尋，把每個可達狀態編號，並把轉移依成本拆成兩個稀疏矩陣 \(Q_0\)（免費）與 \(Q_1\)（付費），以及四個吸收向量。同時做拓樸排序，若發現環就報錯。</p>
+  <div class="scroll"><table>
+    <tr><th>模型</th><th class="n">狀態數</th></tr>
+    <tr><td>單池、完整規則、要一隻</td><td class="n">6,601</td></tr>
+    <tr><td>連續兩池</td><td class="n">21,863</td></tr>
+    <tr><td>連續三池</td><td class="n">38,179</td></tr>
+  </table></div>
+
+  <h3>正向：付費抽數的完整分布</h3>
+  <p>令 \(\mu_j\) 為「已付 \(j\) 抽、正要做下一個動作」時在各狀態的質量。每一層先把免費轉移走到底，再付一抽：</p>
+  <div class="math">$$W_j=\mu_j\sum_{i\ge 0}Q_0^{\,i},\qquad \mu_{j+1}=W_j\,Q_1.$$</div>
+  <p>\(Q_0\) 是冪零的，所以這個和有限。在第 \(j\) 層經由免費轉移吸收的質量記在 \(j\)，經由付費轉移吸收的記在 \(j+1\)。每一層質量守恆：</p>
+  <div class="math">$$\mu_j\mathbf 1=W_j\,a_0+W_j\,a_1+\mu_{j+1}\mathbf 1 .$$</div>
+  <pre class="code">for j = 0 .. J:
+    W = mu;  v = mu
+    repeat: v = v · Q0;  W += v   until v == 0      # 免費抽走到底
+    f_succ[j]   += W · a0_succ ;  f_fail[j]   += W · a0_fail
+    f_succ[j+1] += W · a1_succ ;  f_fail[j+1] += W · a1_fail
+    mu = W · Q1                                      # 付一抽</pre>
+
+  <h3>反向：每個狀態的期望、變異數與預算內成功率</h3>
+  <p>依拓樸序由後往前，對每個狀態 \(s\) 與它的轉移 \((p,\,s',\,c)\)：</p>
+  <div class="math">$$E[s]=\sum p\,(c+E[s']),\qquad M_2[s]=\sum p\,\bigl(c^2+2c\,E[s']+M_2[s']\bigr),\qquad \mathrm{Var}[s]=M_2[s]-E[s]^2 .$$</div>
+  <div class="math">$$S_b[s]=\sum p\;S_{\,b-c}[s'],\qquad S_b[\text{成功}]=1 .$$</div>
+  <p>\(S_b[s]\) 是從 \(s\) 出發、最多再付 \(b\) 抽就成功的機率。一次反向掃描就得到所有狀態的值，所以「我現在 t 多少、池內抽了多少」的熱圖不需要對每個起點各算一次。套在單計數器模型上，\(E\) 與 \(\mathrm{Var}\) 的式子就退化成論文的命題 1 與 2。</p>
+
+  <h3>Monte Carlo</h3>
+  <p>模擬器不重寫規則，直接在列舉後的轉移陣列上抽樣，20 萬條路徑向量化同時前進。它的角色只有一個：確認精確值落在模擬估計的 3 個標準誤之內。</p>
+</section>
+
+<section id="results">
+  <h2>結果</h2>
+
+  <h3>單池：拿到第一隻 UP 要幾抽</h3>
+  <figure>
+    <div class="ftitle">付費抽數的機率分布，四種規則組合</div>
+    <div class="legend" id="l-pmf"></div>
+    <div class="chart" id="c-pmf"></div>
+    <figcaption>每條線右端的尖峰是吃到 120 保底的機率。完整規則下尖峰在 115，有上池贈抽時在 105。中間的鼓包是軟保底區，六星多半在那裡出現。左邊的小突起是第 30 抽贈送的 10 抽。只有 80 保底時沒有上界，尾巴拖得很長，第二個鼓包是連歪兩次。</figcaption>
+  </figure>
+  <div class="scroll"><table>
+    <tr><th>規則組合</th><th class="n">期望</th><th class="n">標準差</th><th class="n">中位數</th><th class="n">90%</th><th class="n">99%</th><th class="n">最大</th></tr>
+    <tr><td>僅 80 保底 + 50/50（上限 480）</td><td class="n">107.5</td><td class="n">81.1</td><td class="n">73</td><td class="n">213</td><td class="n">405</td><td class="n">480</td></tr>
+    <tr><td>加上 120 保底</td><td class="n">81.4</td><td class="n">35.3</td><td class="n">73</td><td class="n">120</td><td class="n">120</td><td class="n">120</td></tr>
+    <tr><td>完整規則（免費 5 抽）</td><td class="n">74.3</td><td class="n">36.0</td><td class="n">67</td><td class="n">115</td><td class="n">115</td><td class="n">115</td></tr>
+    <tr><td>完整規則 + 上池贈 10 抽</td><td class="n">64.7</td><td class="n">35.3</td><td class="n">57</td><td class="n">105</td><td class="n">105</td><td class="n">105</td></tr>
+  </table></div>
+  <p>120 保底把期望從 107.5 壓到 81.4，並把分布截斷。同一池要兩張時，期望是 162.8 抽，最壞 235 抽，後者來自 240 抽送的那個信物。</p>
+
+  <h3>保底值多少抽</h3>
+  <figure>
+    <div class="ftitle">進池時的保底計數對期望付費抽數的影響</div>
+    <div class="chart" id="c-pity"></div>
+    <figcaption>完整規則、免費 5 抽、要一隻。曲線全程不上升，從全新的 74.3 抽降到 t = 79 的 37.5 抽。</figcaption>
+  </figure>
+  <div class="scroll"><table>
+    <tr><th class="n">保底 t</th><th class="n">池內已抽 n</th><th class="n">還需期望</th><th class="n">30 抽內</th><th class="n">60 抽內</th><th class="n">90 抽內</th></tr>
+    <tr><td class="n">0</td><td class="n">0</td><td class="n">79.3</td><td class="n">14.8%</td><td class="n">24.5%</td><td class="n">60.3%</td></tr>
+    <tr><td class="n">40</td><td class="n">40</td><td class="n">50.8</td><td class="n">33.8%</td><td class="n">56.2%</td><td class="n">100%</td></tr>
+    <tr><td class="n">64</td><td class="n">0</td><td class="n">44.6</td><td class="n">56.4%</td><td class="n">61.3%</td><td class="n">79.3%</td></tr>
+    <tr><td class="n">79</td><td class="n">0</td><td class="n">40.5</td><td class="n">57.2%</td><td class="n">62.1%</td><td class="n">80.0%</td></tr>
+    <tr><td class="n">0</td><td class="n">60</td><td class="n">53.4</td><td class="n">11.3%</td><td class="n">100%</td><td class="n">100%</td></tr>
+    <tr><td class="n">0</td><td class="n">100</td><td class="n">19.3</td><td class="n">100%</td><td class="n">100%</td><td class="n">100%</td></tr>
+  </table></div>
+  <p>這張表為了讓 n 直接等於已付抽數，把開頭免費 5 抽關掉了，所以全新狀態是 79.3 而不是上面的 74.3。</p>
+
+  <h3>跨池繼承：精確值與獨立摺積的差距</h3>
+  <div class="two">
+    <figure>
+      <div class="ftitle">連續兩池都要</div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>獨立摺積</span></div>
+      <div class="chart" id="c-k2"></div>
+    </figure>
+    <figure>
+      <div class="ftitle">連續三池都要</div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>獨立摺積</span></div>
+      <div class="chart" id="c-k3"></div>
+    </figure>
+  </div>
+  <p>縱軸是在預算內全部拿齊的機率。實線全程在虛線上方，因為前一池剩下的保底與贈抽都會幫到下一池。</p>
+  <div class="scroll"><table>
+    <tr><th class="n">池數</th><th class="n">精確期望</th><th class="n">摺積期望</th><th class="n">精確 90%</th><th class="n">摺積 90%</th><th class="n">最大累積機率差</th></tr>
+    <tr><td class="n">2</td><td class="n">140.9</td><td class="n">148.7</td><td class="n">220</td><td class="n">230</td><td class="n">0.201</td></tr>
+    <tr><td class="n">3</td><td class="n">207.6</td><td class="n">223.0</td><td class="n">277</td><td class="n">297</td><td class="n">0.152</td></tr>
+  </table></div>
+
+  <h3>尾端風險：連抽 1 到 5 池</h3>
+  <div class="scroll"><table>
+    <tr><th class="n">池數</th><th class="n">期望</th><th class="n">標準差</th><th class="n">中位數</th><th class="n">90%</th><th class="n">95%</th><th class="n">99%</th><th class="n">CVaR 95%</th><th class="n">每池 60 抽完成率</th><th class="n">每池 90 抽完成率</th></tr>
+    <tr><td class="n">1</td><td class="n">74.3</td><td class="n">36.0</td><td class="n">67</td><td class="n">115</td><td class="n">115</td><td class="n">115</td><td class="n">115.0</td><td class="n">26.0%</td><td class="n">61.6%</td></tr>
+    <tr><td class="n">2</td><td class="n">140.9</td><td class="n">48.8</td><td class="n">141</td><td class="n">220</td><td class="n">220</td><td class="n">220</td><td class="n">220.0</td><td class="n">34.7%</td><td class="n">82.5%</td></tr>
+    <tr><td class="n">3</td><td class="n">207.6</td><td class="n">59.0</td><td class="n">213</td><td class="n">277</td><td class="n">306</td><td class="n">325</td><td class="n">321.9</td><td class="n">33.6%</td><td class="n">81.5%</td></tr>
+    <tr><td class="n">4</td><td class="n">274.2</td><td class="n">67.6</td><td class="n">277</td><td class="n">365</td><td class="n">381</td><td class="n">430</td><td class="n">402.0</td><td class="n">31.7%</td><td class="n">89.2%</td></tr>
+    <tr><td class="n">5</td><td class="n">340.8</td><td class="n">75.2</td><td class="n">341</td><td class="n">436</td><td class="n">463</td><td class="n">499</td><td class="n">488.1</td><td class="n">30.0%</td><td class="n">93.4%</td></tr>
+  </table></div>
+  <figure>
+    <div class="ftitle">預算內全部拿齊的機率</div>
+    <div class="chart" id="c-heat"></div>
+    <figcaption>橫軸是總付費抽數預算，縱軸是連續想要的池數，顏色越深機率越高。這裡假設預算可以在各池之間自由流動。</figcaption>
+  </figure>
+
+  <h3>敏感度</h3>
+  <div class="scroll"><table>
+    <tr><th>改動</th><th class="n">期望</th><th class="n">90%</th><th class="n">99%</th></tr>
+    <tr><td>UP 佔比 50%（現行）</td><td class="n">74.3</td><td class="n">115</td><td class="n">115</td></tr>
+    <tr><td>UP 佔比 60%</td><td class="n">67.9</td><td class="n">115</td><td class="n">115</td></tr>
+    <tr><td>UP 佔比 70%</td><td class="n">62.0</td><td class="n">115</td><td class="n">115</td></tr>
+    <tr><td>拿掉軟保底，只留 80 硬保底</td><td class="n">77.8</td><td class="n">115</td><td class="n">115</td></tr>
+    <tr><td>保底門檻 100</td><td class="n">67.3</td><td class="n">95</td><td class="n">95</td></tr>
+    <tr><td>保底門檻 140</td><td class="n">80.3</td><td class="n">135</td><td class="n">135</td></tr>
+    <tr><td>沒有保底門檻（上限 240）</td><td class="n">93.9</td><td class="n">207</td><td class="n">235</td></tr>
+  </table></div>
+  <p>期望對 UP 佔比最敏感，但尾端完全由保底門檻決定。有沒有軟保底只讓期望差 3.5 抽，最壞情況不受影響。</p>
+</section>
+
+<section id="verify">
+  <h2>驗證</h2>
+  <h3>重現論文數字</h3>
+  <div class="scroll"><table>
+    <tr><th>項目</th><th class="n">論文</th><th class="n">本引擎</th></tr>
+    <tr><td>單段期望抽數</td><td class="n">62.34</td><td class="n">62.3377</td></tr>
+    <tr><td>單段變異數</td><td class="n">592.43</td><td class="n">592.434</td></tr>
+    <tr><td>只有硬保底的期望</td><td class="n">69.70</td><td class="n">69.6998</td></tr>
+    <tr><td>十隻的分位數 50/75/90/95/99%</td><td class="n">629/679/719/741/775</td><td class="n">完全相同</td></tr>
+    <tr><td>P(十隻 ≥ 724 抽)</td><td class="n">0.0876</td><td class="n">誤差 &lt; 0.0005</td></tr>
+    <tr><td>50/50 無保底：期望、標準差</td><td class="n">93.51 / 43.13</td><td class="n">93.5065 / 43.13</td></tr>
+    <tr><td>50/50 無保底：分位數 90/95/99%</td><td class="n">156/158/161</td><td class="n">完全相同</td></tr>
+  </table></div>
+  <h3>與官方公布的綜合機率核對</h3>
+  <p>遊戲內的復刻池說明寫了兩個含信物的六星綜合機率。模型不需要任何調整就能算出同樣的數字，這同時驗證了軟保底、80 保底、120 大保底與 240 信物這幾條規則。</p>
+  <div class="scroll"><table>
+    <tr><th>項目</th><th class="n">官方</th><th class="n">模型</th><th>模型怎麼算</th></tr>
+    <tr><td>首次拿到 UP 之後</td><td class="n">2.2720%</td><td class="n">2.2720%</td><td>一個保底循環平均 53.90 抽出一隻六星，加上每 240 抽一個信物</td></tr>
+    <tr><td>首次拿到 UP 時及之前</td><td class="n">2.0387%</td><td class="n">2.0387%</td><td>拿到第一隻 UP 前的期望六星數，除以期望抽數</td></tr>
+  </table></div>
+  <h3>與 Monte Carlo 核對</h3>
+  <div class="scroll"><table>
+    <tr><th>量</th><th class="n">精確</th><th class="n">模擬 20 萬條</th><th class="n">標準誤</th><th class="n">z</th></tr>
+    <tr><td>期望付費抽數</td><td class="n">74.3312</td><td class="n">74.3857</td><td class="n">0.0805</td><td class="n">0.68</td></tr>
+    <tr><td>P(T ≥ 60)</td><td class="n">0.7433</td><td class="n">0.7435</td><td class="n">0.0010</td><td class="n">0.12</td></tr>
+    <tr><td>P(T ≥ 90)</td><td class="n">0.3870</td><td class="n">0.3876</td><td class="n">0.0011</td><td class="n">0.48</td></tr>
+    <tr><td>P(T ≥ 110)</td><td class="n">0.3388</td><td class="n">0.3395</td><td class="n">0.0011</td><td class="n">0.62</td></tr>
+  </table></div>
+  <h3>測試</h3>
+  <ul>
+    <li>共 97 個自動測試，全部通過。</li>
+    <li>引擎性質：質量守恆、正向分布算出的動差與反向遞迴一致、有環時報錯。</li>
+    <li>可手算的對照：把 UP 佔比設成 1 時與論文的存活和公式一致，把硬保底設成 1 時是截斷的幾何分布。</li>
+    <li>規則的邊界：120 保底只觸發一次、贈送的 10 抽不讓保底失效、跳過的池只用免費抽。</li>
+    <li>獨立審查另外在真實模型上確認守恆誤差不超過 2×10⁻¹⁵。</li>
+  </ul>
+</section>
+
+<section id="next">
+  <h2>待確認與下一步</h2>
+  <h3>需要你確認的規則</h3>
+  <ul>
+    <li>每池開頭的免費 5 抽是否計入本池的 30、60、120、240 進度。</li>
+    <li>復刻池開頭有沒有免費 5 抽。</li>
+  </ul>
+  <p>這幾條都是參數，改了之後數字會跟著重算。10 月 7 日已確認：5 抽綁池、第 120 抽會把保底歸零、240 抽送的是潛能信物且上限六張。這三條與模型原本的設定相同。軟保底一度被關掉，同一天確認它確實存在，限定池與復刻池都適用，本頁數字都以有軟保底計算。</p>
+  <h3>尚未開始的階段</h3>
+  <div class="scroll"><table>
+    <tr><th>階段</th><th>內容</th><th>需要的資料</th></tr>
+    <tr><td>第二階段</td><td>把台幣價目寫進套件，成為每抽的邊際成本曲線。在固定預算下，求每池該抽到幾抽就停，使全部拿齊的機率最大。支援任意的卡池排程。</td><td>過去的卡池排程紀錄、每版本可拿到的免費資源</td></tr>
+    <tr><td>第三階段</td><td>武器池、保障配額與集成配額換抽、歪掉時拿到舊限定的比例。</td><td>武器池 40 與 100 抽節點的確切規則</td></tr>
+  </table></div>
+  <h3>自己動手算</h3>
+  <p>上面的試算器在瀏覽器裡跑的是同一套遞迴的移植版，每次建置網站都會與 Python 引擎逐點比對。要算別的情境，可以直接用命令列或 Python：</p>
+  <pre class="code">from gacha.kernel.chain import EnumeratedChain
+from gacha.kernel.forward import hitting_time
+from gacha.models.endfield import BannerState, SingleBannerModel
+from gacha.rules.endfield import BannerSpec, rerun_rules
+
+# 復刻池：已抽 30、保底計數 30、要一隻
+model = SingleBannerModel(BannerSpec(rerun_rules(), 1, 120), start=BannerState(30, 30, 0, 0))
+dist = hitting_time(EnumeratedChain.from_model(model))   # dist.f_succ[j] = 剛好再抽 j 抽拿到的機率</pre>
+  <pre class="code">uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60
+uv run gacha evaluate --plan plan.toml --budget 300
+uv run gacha experiment all</pre>
+</section>
+
+<footer>參考文獻：Hou, S.; Zhu, Y.; Zhang, S. State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models. <i>Symmetry</i> 2026, 18(6), 1051. 本頁數字由專案內的精確引擎於 2026-10-07 計算。</footer>
+</main>
+</div>
+
+<script>
+const D = __DATA__;
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+const COLORS=['var(--s1)','var(--s2)','var(--s3)','var(--s4)'];
+
+function lineChart(id,o){
+  const host=document.getElementById(id);host.innerHTML='';const W=720,H=o.h||300,m={l:52,r:14,t:10,b:40};
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':o.label},host);
+  const x0=o.xmin||0,x1=o.xmax,y1=o.ymax,y0=o.ymin||0;
+  const X=x=>m.l+(x-x0)/(x1-x0)*(W-m.l-m.r), Y=y=>H-m.b-(y-y0)/(y1-y0)*(H-m.t-m.b);
+  for(const t of o.yticks){el('line',{class:'grid',x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},svg);
+    el('text',{x:m.l-8,y:Y(t)+4,'text-anchor':'end'},svg).textContent=o.yfmt?o.yfmt(t):t;}
+  for(const t of o.xticks){el('text',{x:X(t),y:H-m.b+16,'text-anchor':'middle'},svg).textContent=t;}
+  el('text',{class:'axl',x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle'},svg).textContent=o.xlabel;
+  el('text',{class:'axl',x:12,y:(m.t+H-m.b)/2,'text-anchor':'middle',transform:`rotate(-90 12 ${(m.t+H-m.b)/2})`},svg).textContent=o.ylabel;
+  o.series.forEach((s,i)=>{
+    let d='';const n=Math.min(s.y.length-1,x1);
+    for(let k=x0;k<=n;k++){const yy=Math.min(s.y[k],y1);
+      if(o.step&&k>x0)d+=`H${X(k).toFixed(1)}`;
+      d+=(k===x0?'M':'L')+X(k).toFixed(1)+' '+Y(yy).toFixed(1);}
+    el('path',{d,fill:'none',style:`stroke:${s.color||COLORS[i]}`,'stroke-width':2,'stroke-linejoin':'round','stroke-dasharray':s.dash?'6 4':''},svg);
+  });
+  if(o.mark!=null&&o.mark>=x0&&o.mark<=x1)el('line',{x1:X(o.mark),x2:X(o.mark),y1:m.t,y2:H-m.b,style:'stroke:var(--ink2)','stroke-width':1.2,'stroke-dasharray':'3 4'},svg);
+  const cross=el('line',{class:'grid',y1:m.t,y2:H-m.b,style:'stroke:var(--muted)',visibility:'hidden'},svg);
+  const tip=document.createElement('div');tip.className='tip';tip.hidden=true;host.appendChild(tip);
+  const move=ev=>{const r=svg.getBoundingClientRect();const px=(ev.clientX-r.left)/r.width*W;
+    let k=Math.round(x0+(px-m.l)/(W-m.l-m.r)*(x1-x0));k=Math.max(x0,Math.min(x1,k));
+    cross.setAttribute('x1',X(k));cross.setAttribute('x2',X(k));cross.setAttribute('visibility','visible');
+    tip.innerHTML=`${o.xname} ${k}<br>`+o.series.map(s=>`${s.name}: ${k<s.y.length?(o.vfmt?o.vfmt(s.y[k]):s.y[k]):'—'}`).join('<br>');
+    tip.hidden=false;const left=(X(k)/W)*r.width;tip.style.top='8px';
+    if(left>r.width/2){tip.style.left='';tip.style.right=(r.width-left+10)+'px';}else{tip.style.right='';tip.style.left=(left+10)+'px';}};
+  svg.addEventListener('pointermove',move);svg.addEventListener('pointerdown',move);
+  svg.addEventListener('pointerleave',()=>{tip.hidden=true;cross.setAttribute('visibility','hidden');});
+}
+const pct=v=>(v*100).toFixed(1)+'%';
+__ENGINE__
+(function(){
+  const $=id=>document.getElementById(id), num=id=>Math.max(0,Math.floor(Number($(id).value)||0));
+  const ticks=(max,n)=>{const st=[5,10,20,25,50,100].find(s=>max/s<=n)||200;const a=[];for(let v=0;v<=max;v+=st)a.push(v);return a;};
+  const TIERS=[[2000,121],[990,56],[620,34],[390,20],[260,13],[60,3]];  // TWD, jade/150 (non-double stones)
+  const memo=[0];
+  const stoneCost=u=>{for(let j=memo.length;j<=u;j++)memo[j]=Math.min(...TIERS.map(([c,g])=>c+memo[Math.max(0,j-g)]));return memo[Math.max(0,u)];};
+  function costFor(k,left){if(k<=0)return 0;const plain=n=>stoneCost(Math.ceil(Math.max(0,n*500-left)/150));
+    return Math.min(plain(k),490+(k>10?plain(k-10):0));}
+  function run(){
+    const err=$('calc-error'),out=$('calc-out');
+    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf'),soft=true;
+    let msg='';
+    if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
+    else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
+    if(msg){err.textContent=msg;err.hidden=false;out.hidden=true;return;}
+    err.hidden=true;out.hidden=false;
+    const jade=num('in-jade')+num('in-stone')*75, now=num('in-ticket')+Math.floor(jade/500), B=now+num('in-future');
+    const fa=firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
+    const rows=decide(fa,fb,B), best=Math.max(...rows.map(r=>r.both));
+    const pick=rows.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
+    const pc=v=>(v*100).toFixed(1)+'%';
+    $('calc-keys').innerHTML=[[B,'可用總抽數'+(B>now?`，其中現有 ${now}`:'')],[pc(best),'兩隻都拿到的最高機率'],[pick.x,'建議的復刻池投入上限'],
+      [Math.max(0,need-B),`距離保證兩隻還差的抽數，共需 ${need}`],['NT$'+costFor(need-B,(jade%500)+num('in-future')*0).toLocaleString(),'把差的抽數補滿的最低花費']].map(k=>`<div><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
+    const skip=rows[0];
+    $('calc-advice').textContent=best<0.005?'以目前的抽數，兩隻都拿到的機率接近零。':
+      pick.x===0?'復刻池不值得投入，把抽數全留給新角色。':
+      `復刻池最多抽 ${pick.x} 抽，沒拿到就停手。這樣拿到復刻角色的機率是 ${pc(pick.a)}，新角色是 ${pc(pick.b)}，兩隻都有是 ${pc(pick.both)}。完全不抽復刻池時，新角色是 ${pc(skip.b)}。`;
+    const xs=[...new Set([0,10,20,30,40,ap,ap+10,maxA,B].filter(x=>x<=B))].sort((a,b)=>a-b);
+    $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到復刻角色</th><th class="n">拿到新角色</th><th class="n">兩隻都有</th></tr>'+
+      xs.map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
+    const xm=Math.max(1,Math.min(B,maxA+10));
+    lineChart('c-calc-cap',{label:'復刻池投入上限的影響',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
+      xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
+      series:[{name:'兩隻都有',y:rows.map(r=>r.both)},{name:'復刻角色',y:rows.map(r=>r.a)},{name:'新角色',y:rows.map(r=>r.b)}]});
+    const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
+    lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
+      xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
+  }
+  $('calc-form').addEventListener('input',run);run();
+})();
+
+
+lineChart('c-sched',{label:'六星機率排程',xmax:89,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:[0,20,40,60,65,80,89],
+  xlabel:'保底計數 t',ylabel:'機率',xname:'t =',vfmt:pct,step:true,h:260,
+  series:[{name:'終末地',y:D.sched_endfield},{name:'論文',y:D.sched_paper}]});
+
+document.getElementById('l-pmf').innerHTML=D.pmf.map((s,i)=>`<span><i style="border-color:${COLORS[i]}"></i>${s.name}</span>`).join('');
+lineChart('c-pmf',{label:'付費抽數機率分布',xmax:200,ymax:.36,yticks:[0,.1,.2,.3],yfmt:v=>(v*100).toFixed(0)+'%',xticks:[0,25,50,75,105,115,150,200],
+  xlabel:'付費抽數',ylabel:'機率',xname:'付費',vfmt:v=>(v*100).toFixed(2)+'%',step:true,h:320,series:D.pmf});
+
+lineChart('c-pity',{label:'保底的價值',xmax:79,ymin:30,ymax:80,yticks:[30,40,50,60,70,80],xticks:[0,20,40,60,65,79],
+  xlabel:'進池時的保底計數 t',ylabel:'期望付費抽數',xname:'t =',vfmt:v=>v.toFixed(1)+' 抽',h:260,
+  series:[{name:'期望',y:D.e_t0}]});
+
+for(const k of [2,3]){const c=D.carry[k];
+  lineChart('c-k'+k,{label:`連續 ${k} 池的累積分布`,xmax:c.exact.length-1,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,
+    xticks:k===2?[0,50,100,150,200,230]:[0,100,200,300,345],xlabel:'總付費抽數預算',ylabel:'拿齊機率',xname:'預算',vfmt:pct,h:300,
+    series:[{name:'精確',y:c.exact},{name:'摺積',y:c.iid,dash:true}]});}
+
+(function(){
+  const host=document.getElementById('c-heat'),B=D.completion.budgets,G=D.completion.grid;
+  const W=720,H=220,m={l:52,r:14,t:6,b:40},cw=(W-m.l-m.r)/B.length,ch=(H-m.t-m.b)/G.length;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'預算內拿齊機率熱圖'},host);
+  const tip=document.createElement('div');tip.className='tip';tip.hidden=true;host.appendChild(tip);
+  G.forEach((row,r)=>row.forEach((v,c)=>{
+    const x=m.l+c*cw,y=m.t+(G.length-1-r)*ch;
+    el('rect',{x,y,width:cw+.3,height:ch-2,fill:'none',style:'fill:var(--accent-soft)'},svg);
+    const rc=el('rect',{x,y,width:cw+.3,height:ch-2,style:'fill:var(--s1)','fill-opacity':v.toFixed(3)},svg);
+    rc.addEventListener('pointerenter',()=>{const b=svg.getBoundingClientRect();tip.innerHTML=`${r+1} 池 · 預算 ${B[c]} 抽<br>拿齊機率 ${pct(v)}`;tip.hidden=false;
+      const left=(x/W)*b.width;tip.style.top=((y/H)*b.height-44)+'px';
+      if(left>b.width/2){tip.style.left='';tip.style.right=(b.width-left+6)+'px';}else{tip.style.right='';tip.style.left=(left+6)+'px';}});
+  }));
+  svg.addEventListener('pointerleave',()=>tip.hidden=true);
+  G.forEach((_,r)=>el('text',{x:m.l-8,y:m.t+(G.length-1-r)*ch+ch/2+3,'text-anchor':'end'},svg).textContent=(r+1)+' 池');
+  for(const t of [0,115,230,345,460,575]){const c=t/5;el('text',{x:m.l+c*cw,y:H-m.b+16,'text-anchor':'middle'},svg).textContent=t;}
+  el('text',{class:'axl',x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle'},svg).textContent='總付費抽數預算';
+})();
+</script>
