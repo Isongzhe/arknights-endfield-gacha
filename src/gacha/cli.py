@@ -7,6 +7,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+from gacha.analysis.two_banner import cap_table, first_up_pmf, recommend
+from gacha.cost.menu import ENDFIELD_TW_STANDARD
 from gacha.experiments import EXPERIMENTS, run_experiment
 from gacha.kernel.chain import EnumeratedChain
 from gacha.kernel.forward import hitting_time
@@ -14,6 +16,7 @@ from gacha.models.endfield import BannerState, SingleBannerModel
 from gacha.models.plan import Plan
 from gacha.risk import metrics as rk
 from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacha.scenario import load_scenario
 
 PLAN_TOML_HELP = """\
 plan file (TOML), banners in chronological order; target_copies = 0 means a skipped banner
@@ -81,6 +84,34 @@ def _evaluate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _decide(args: argparse.Namespace) -> int:
+    sc = load_scenario(Path(args.scenario))
+    pmf_a, pmf_b = first_up_pmf(sc.first.model()), first_up_pmf(sc.second.model())
+    stock = sc.stock_total
+    rows = cap_table(pmf_a, pmf_b, stock)
+    pick = recommend(rows)
+    need = (len(pmf_a) - 1) + (len(pmf_b) - 1)
+    menu = ENDFIELD_TW_STANDARD
+    pc = lambda v: f"{v * 100:5.1f}%"  # noqa: E731
+    print(f"stock: {stock} pulls ({sc.stock_now} now + {sc.future_pulls} expected)")
+    print(f"first banner ({sc.first.kind}): guaranteed within {len(pmf_a) - 1} pulls")
+    print(f"second banner ({sc.second.kind}): guaranteed within {len(pmf_b) - 1} own pulls")
+    print()
+    print("cap on first   P(first)  P(second)  P(both)")
+    to_six = sc.first.rules.hard_pity - sc.first.start.t
+    caps = sorted({0, 10, 20, 30, 40, to_six, to_six + 10, len(pmf_a) - 1, pick.cap, stock})
+    for cap in (c for c in caps if c <= stock):
+        r = rows[cap]
+        mark = "  <- suggested" if cap == pick.cap else ""
+        print(f"{cap:>12}   {pc(r.p_first)}    {pc(r.p_second)}   {pc(r.p_both)}{mark}")
+    print()
+    short = max(0, need - stock)
+    cost = menu.min_cost(short, sc.leftover_jade)
+    print(f"to guarantee both: {need} pulls, {short} more than the stock")
+    print(f"worst-case top-up (standard price list): {menu.currency}{cost:,}")
+    return 0
+
+
 def _experiment(args: argparse.Namespace) -> int:
     names = EXPERIMENTS if args.name == "all" else [args.name]
     for name in names:
@@ -144,6 +175,18 @@ def main(argv: list[str] | None = None) -> int:
     ev.add_argument("--plan", type=str, default=None, help="TOML plan file (multi-banner)")
     ev.set_defaults(func=_evaluate)
 
+    de = sub.add_parser(
+        "decide",
+        help="two banners, one stock: how far to go on the first banner",
+        description=(
+            "Read a scenario file (see examples/rerun_then_limited.toml) and print, for each cap "
+            "on the first banner, the probability of getting the first target, the second "
+            "target, and both."
+        ),
+    )
+    de.add_argument("scenario", help="TOML scenario file")
+    de.set_defaults(func=_decide)
+
     ex = sub.add_parser("experiment", help="run a registered experiment or 'all'")
     ex.add_argument("name")
     ex.add_argument("--out", default="results")
@@ -151,4 +194,8 @@ def main(argv: list[str] | None = None) -> int:
     ex.set_defaults(func=_experiment)
 
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except (ValueError, KeyError, FileNotFoundError, tomllib.TOMLDecodeError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2

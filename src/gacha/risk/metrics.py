@@ -70,7 +70,8 @@ def sd(ht: HittingTime, which: str = "stop") -> float:
 
 
 def cv(ht: HittingTime, which: str = "stop") -> float:
-    return sd(ht, which) / mean(ht, which)
+    m = mean(ht, which)
+    return sd(ht, which) / m if m > 0 else float("nan")
 
 
 def cdf(ht: HittingTime, b: int, which: str = "stop") -> float:
@@ -127,7 +128,7 @@ def skewness(ht: HittingTime, which: str = "stop") -> float:
     m = float((j * pmf).sum())
     s2 = float(((j - m) ** 2 * pmf).sum())
     m3 = float(((j - m) ** 3 * pmf).sum())
-    return m3 / s2**1.5
+    return m3 / s2**1.5 if s2 > 0 else float("nan")
 
 
 def entropy_nats(ht: HittingTime, which: str = "stop") -> float:

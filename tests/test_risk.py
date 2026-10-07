@@ -90,3 +90,11 @@ def test_normal_approximation_on_binomial():
     h = rk.from_pmf(pmf)
     assert normal_approx_cdf(h, 20) == pytest.approx(rk.cdf(h, 20), abs=0.01)
     assert max_abs_cdf_error(h) < 0.01
+
+
+def test_degenerate_distribution_does_not_crash():
+    h = rk.from_pmf(np.array([1.0]))  # already done: zero pulls with certainty
+    assert rk.mean(h) == 0.0 and rk.sd(h) == 0.0
+    assert math.isnan(rk.skewness(h)) and math.isnan(rk.cv(h))
+    df = rk.summary(h, budgets=(0,))
+    assert dict(zip(df["metric"], df["value"], strict=True))["completion_at_0"] == 1.0

@@ -26,8 +26,8 @@ class Transition:
     absorb: str | None = None
 
     def __post_init__(self) -> None:
-        if self.prob < 0.0:
-            raise ValueError("prob must be >= 0")
+        if not 0.0 <= self.prob <= 1.0 + 1e-12:
+            raise ValueError("prob must be in [0, 1]")
         if self.cost not in (0, 1):
             raise ValueError("cost must be 0 or 1")
         if (self.next is None) != (self.absorb is not None):
@@ -47,8 +47,9 @@ class HittingTime:
     """Distribution of paid pulls until absorption.
 
     ``f_succ[j]`` / ``f_fail[j]`` = P(absorbed as success / fail with exactly j paid pulls).
-    ``residual`` is the mass still unabsorbed at the horizon; ``residual_states`` maps the
-    states holding that mass to their probability.
+    ``residual`` is the mass still unabsorbed at the horizon. ``residual_states`` maps each state
+    reached after ``horizon`` paid pulls (and any free moves) to the probability that the path is
+    there and its next move would be a paid pull.
     """
 
     f_succ: np.ndarray

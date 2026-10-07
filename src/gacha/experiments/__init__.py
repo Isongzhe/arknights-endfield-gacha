@@ -24,5 +24,9 @@ def run_experiment(name: str, out_dir: Path, results_md: Path | None = None) -> 
     module = importlib.import_module(f"gacha.experiments.{name}")
     headline = module.run(Path(out_dir))
     if results_md is not None:
-        update_results_md(Path(results_md), name, [f"- {k}: {v}" for k, v in headline.items()])
+        lines = [
+            f"- {k}: {v:.10g}" if isinstance(v, float) else f"- {k}: {v}"
+            for k, v in headline.items()
+        ]
+        update_results_md(Path(results_md), name, lines)
     return headline

@@ -1,0 +1,19 @@
+# Two banners sharing one stock of pulls: a re-run banner now, a limited banner next.
+# Run:  uv run gacha decide examples/rerun_then_limited.toml
+
+[stock]
+tickets = 2          # universal headhunting permits
+jade = 19950         # 合成玉 (500 per pull)
+stones = 243         # 源石 (75 jade each)
+future_pulls = 11    # pulls you expect to earn before the second banner ends
+
+[first]              # the banner you must decide on first
+kind = "rerun"       # "rerun" (重構尋訪) or "limited" (特許尋訪)
+pulls_done = 30      # counted pulls already made on this banner (bonus pulls excluded)
+pulls_to_six_star = 50   # pulls left until the 80-pull hard pity
+
+[second]
+kind = "limited"
+pulls_done = 0
+pulls_to_six_star = 32
+free_pulls = 10      # banner-bound free pulls (login 5 + shop 5)
