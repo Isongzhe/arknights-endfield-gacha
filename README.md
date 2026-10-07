@@ -77,6 +77,8 @@ to guarantee both: 200 pulls, 111 more than the stock
 worst-case top-up (standard price list): NT$6,120
 ```
 
+**Weapon banner** — what an amount of arsenal quota buys: `uv run gacha weapon --quota 43940`.
+
 **A sequence of limited banners** with carried pity: `uv run gacha evaluate --plan plan.toml`
 (schema in `uv run gacha evaluate --help`).
 
@@ -120,8 +122,8 @@ function, so they cannot drift apart. The mathematics is summarised in
 
 ## Scope and limits
 
-- Covers Endfield limited character banners and re-run banners. The weapon banner, the 5★ layer
-  and quota currencies are not modelled yet.
+- Covers Endfield limited character banners, re-run banners and the first rate-up copy on the
+  weapon banner. The 保障配額 rebate is an expected-value approximation; 集成配額 is not modelled.
 - Every rule and its source is listed in [docs/assumptions.md](docs/assumptions.md). A few are
   still assumptions; results change if they are wrong.
 - The price menu is the Taiwan list without first-purchase bonuses. Prices are data: check them

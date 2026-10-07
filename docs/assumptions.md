@@ -42,6 +42,23 @@ the caller passing the saved (t, n, c, u) as the start state.
 | RR6 | 240 pulls: UP token | guide; "every 240" assumed | potential_every=240 |
 | RR7 | no next-banner dossier and no free start pulls | assumed (guide silent) | dossier_at=None, free_start_pulls=0 |
 
+## Weapon banner (武庫申領), source: docs/rules/weapon-banner.md
+
+`WeaponBannerRules` in `src/gacha/rules/weapon.py`, model in `src/gacha/models/weapon.py`. The
+unit of cost is one issue (a ten-pull).
+
+| ID | Rule | Status | Parameter / code |
+|----|------|--------|------------------|
+| W1 | pulls come only in tens; one issue costs 1,980 武庫配額 | owner and wiki | pulls_per_issue, issue_cost |
+| W2 | 4% 6★ weapon per pull, 25% of them the rate-up weapon | owner and wiki | six_rate, up_share |
+| W3 | a 6★ weapon at the latest on the 40th pull since the last one | owner; rolling counter assumed (a one-time 40th-pull rule differs by at most 3 points in issues 5-7) | six_pity |
+| W4 | the rate-up weapon at the latest on the 80th pull of the banner | owner and wiki | up_guarantee |
+| W5 | every operator pulled on a character banner grants 武庫配額: 4★ 20, 5★ 200, 6★ 2,000 | owner | arsenal_four/five/six on `EndfieldCharacterRules` |
+| W6 | counters do not carry between weapon banners; the re-run weapon banner is assumed to follow the same rules | owner; re-run equivalence assumed | start state |
+
+Not modeled: the 6★ weapon box at 100 pulls, the extra rate-up weapon at 180 pulls and the
+alternation every 80 pulls afterwards (irrelevant for a first copy).
+
 ### Calibration against the official published rates (2026-10-07)
 
 The in-game rule text for 「絢麗異彩」 states a comprehensive 6★ rate (tokens included) of 2.0387% up to

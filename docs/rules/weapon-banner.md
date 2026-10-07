@@ -1,6 +1,6 @@
 # 武器池（武庫申領）規則紀錄
 
-狀態：**僅紀錄，尚未寫進套件**。來源：專案作者 2026-09-16 的說明，以及 endfield.wiki.gg 的 Arsenal Exchange 頁面。
+狀態：**已建模**（`gacha.rules.weapon`、`gacha.models.weapon`、`gacha weapon` 指令與網站的武器一節），規則編號 W1 至 W6 見 `docs/assumptions.md`。100 抽武器箱與 180 抽的第二把尚未建模。來源：專案作者 2026-09-16 的說明，以及 endfield.wiki.gg 的 Arsenal Exchange 頁面。
 
 ## 資源
 

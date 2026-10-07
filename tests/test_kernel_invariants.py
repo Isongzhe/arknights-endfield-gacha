@@ -9,8 +9,10 @@ from gacha.kernel.forward import hitting_time
 from gacha.models.endfield import BannerState, SingleBannerModel
 from gacha.models.paper import Featured5050Model, SingleCounterModel
 from gacha.models.plan import Plan
+from gacha.models.weapon import WeaponBannerModel
 from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules, rerun_rules
 from gacha.rules.paper import PaperSchedule
+from gacha.rules.weapon import WeaponBannerRules
 
 FULL = EndfieldCharacterRules()
 MODELS = {
@@ -21,6 +23,8 @@ MODELS = {
     "rerun_resumed": lambda: SingleBannerModel(
         BannerSpec(rerun_rules(), 1, 120), start=BannerState(30, 30, 0, 0)
     ),
+    "weapon_banner": lambda: WeaponBannerModel(WeaponBannerRules()),
+    "weapon_banner_capped": lambda: WeaponBannerModel(WeaponBannerRules(), cap_issues=3),
     "plan_want_skip_want": lambda: Plan(
         [BannerSpec(FULL, 1, 120), BannerSpec(FULL, 0, 0), BannerSpec(FULL, 1, 60)]
     ),

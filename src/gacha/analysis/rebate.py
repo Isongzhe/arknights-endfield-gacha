@@ -69,3 +69,10 @@ def effective_stock(
     if per_pull >= quota_per_permit:
         raise ValueError("rebate per pull must be below the price of a permit")
     return int((stock + quota_now / quota_per_permit) / (1.0 - per_pull / quota_per_permit))
+
+
+def arsenal_per_pull(rules: EndfieldCharacterRules) -> float:
+    """Expected 武庫配額 earned per character pull (every operator pulled grants some)."""
+    rate6, rate5 = star_rates(rules)
+    rate4 = 1.0 - rate5 - rate6
+    return rules.arsenal_four * rate4 + rules.arsenal_five * rate5 + rules.arsenal_six * rate6

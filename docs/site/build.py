@@ -101,6 +101,20 @@ def check_browser_engine():
     )
     if out.returncode != 0:
         raise SystemExit(f"browser engine disagrees with Python: {out.stdout} {out.stderr}")
+    from gacha.models.weapon import WeaponBannerModel, WeaponState
+    from gacha.rules.weapon import WeaponBannerRules
+
+    wpayload = []
+    for done in (0, 3, 4, 7):
+        m = WeaponBannerModel(WeaponBannerRules(), start=WeaponState(done * 10, (done * 10) % 40))
+        wpayload.append({"o": {"issuesDone": done}, "pmf": [float(x) for x in ht(m)[0].f_succ]})
+    wout = subprocess.run(
+        ["node", "-e", runner.replace("{firstUp}", "{weaponUp:firstUp}"), str(HERE / "engine.js")],
+        input=json.dumps(wpayload), capture_output=True, text=True,
+    )
+    if wout.returncode != 0:
+        raise SystemExit(f"browser weapon engine disagrees with Python: {wout.stdout} {wout.stderr}")
+    print("browser weapon engine max abs diff vs Python:", wout.stdout.strip())
     print("browser engine max abs diff vs Python:", out.stdout.strip())
 
 

@@ -53,3 +53,30 @@ function convolve(a, b) {
   return out;
 }
 if (typeof module !== "undefined") module.exports = { firstUp, decide, convolve, cumsum };
+// Weapon banner (src/gacha/models/weapon.py): pmf[k] = P(rate-up weapon arrives in the k-th
+// issue from now). o: {issuesDone} ; 4% 6*, 25% rate-up, 6* forced on the 40th pull since the
+// last one, rate-up forced on the 80th pull of the banner.
+function weaponUp(o) {
+  const P6 = 0.04, UP = 0.25, PITY = 40, GUAR = 80, n0 = o.issuesDone * 10;
+  let m = new Float64Array(PITY);
+  m[o.sinceSix == null ? n0 % PITY : o.sinceSix] = 1;
+  const pmf = [0];
+  for (let n = n0; n < GUAR; n++) {
+    const k = Math.floor((n - n0) / 10) + 1;
+    if (pmf.length <= k) pmf[k] = 0;
+    if (n + 1 === GUAR) { let alive = 0; for (let s = 0; s < PITY; s++) alive += m[s]; pmf[k] += alive; break; }
+    const nm = new Float64Array(PITY);
+    let six = 0;
+    for (let s = 0; s < PITY; s++) {
+      if (!m[s]) continue;
+      const p = s === PITY - 1 ? 1 : P6;
+      six += m[s] * p;
+      if (p < 1) nm[s + 1] += m[s] * (1 - p);
+    }
+    pmf[k] += six * UP;
+    nm[0] += six * (1 - UP);
+    m = nm;
+  }
+  return pmf;
+}
+if (typeof module !== "undefined") module.exports.weaponUp = weaponUp;

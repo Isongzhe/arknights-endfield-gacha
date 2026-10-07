@@ -7,6 +7,8 @@
 - Re-run banner rules (`rerun_rules()`): bonus pulls at 30/60/90 and persistent counters.
 - Rule register updated with confirmed rules and a calibration against the official
   comprehensive rates (2.0387% and 2.2720%).
+- Weapon banner model and `gacha weapon`; arsenal quota earned from character pulls.
+- 保障配額 rebate as an expected-value layer (`gacha.analysis.rebate`).
 - Documentation site with an interactive calculator whose JavaScript engine is verified against
   the Python engine at build time.
 - CLI reports invalid input as a one-line error instead of a traceback.

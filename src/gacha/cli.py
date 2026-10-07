@@ -14,8 +14,10 @@ from gacha.kernel.chain import EnumeratedChain
 from gacha.kernel.forward import hitting_time
 from gacha.models.endfield import BannerState, SingleBannerModel
 from gacha.models.plan import Plan
+from gacha.models.weapon import WeaponBannerModel, WeaponState
 from gacha.risk import metrics as rk
 from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacha.rules.weapon import WeaponBannerRules
 from gacha.scenario import load_scenario
 
 PLAN_TOML_HELP = """\
@@ -112,6 +114,29 @@ def _decide(args: argparse.Namespace) -> int:
     return 0
 
 
+def _weapon(args: argparse.Namespace) -> int:
+    rules = WeaponBannerRules()
+    done = args.issues_done * rules.pulls_per_issue
+    since = done % rules.six_pity if args.since_six is None else args.since_six
+    model = WeaponBannerModel(rules, start=WeaponState(done, since))
+    ht = hitting_time(EnumeratedChain.from_model(model))
+    cdf = ht.f_succ.cumsum()
+    can = args.quota // rules.issue_cost
+    print(f"arsenal quota {args.quota:,}: {can} issues affordable ({rules.issue_cost:,} each)")
+    print(f"rate-up weapon guaranteed within {ht.horizon} more issues")
+    print()
+    print("issues   P(rate-up weapon)")
+    for k in range(1, ht.horizon + 1):
+        mark = "  <- your quota" if k == min(can, ht.horizon) else ""
+        print(f"{k:>6}   {cdf[k] * 100:5.1f}%{mark}")
+    print()
+    got = float(cdf[min(can, ht.horizon)])
+    short = max(0, ht.horizon * rules.issue_cost - args.quota)
+    print(f"with your quota: {got * 100:.1f}%; expected issues until it drops: {rk.mean(ht):.2f}")
+    print(f"quota still needed to guarantee it: {short:,}")
+    return 0
+
+
 def _experiment(args: argparse.Namespace) -> int:
     names = EXPERIMENTS if args.name == "all" else [args.name]
     for name in names:
@@ -186,6 +211,17 @@ def main(argv: list[str] | None = None) -> int:
     )
     de.add_argument("scenario", help="TOML scenario file")
     de.set_defaults(func=_decide)
+
+    we = sub.add_parser("weapon", help="weapon banner: what an amount of arsenal quota buys")
+    we.add_argument("--quota", type=int, required=True, help="武庫配額 in hand")
+    we.add_argument("--issues-done", type=int, default=0, help="ten-pulls already made here")
+    we.add_argument(
+        "--since-six",
+        type=int,
+        default=None,
+        help="pulls since the last 6* weapon (default: assume none has dropped yet)",
+    )
+    we.set_defaults(func=_weapon)
 
     ex = sub.add_parser("experiment", help="run a registered experiment or 'all'")
     ex.add_argument("name")

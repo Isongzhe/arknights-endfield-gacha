@@ -28,6 +28,9 @@ class EndfieldCharacterRules:
     quota_per_permit: int = 25  # R13: 保障配額 for one universal permit
     quota_five_dupe: int = 10  # R13
     quota_six_dupe: int = 50  # R13
+    arsenal_four: int = 20  # W5: arsenal quota from each operator pulled
+    arsenal_five: int = 200  # W5
+    arsenal_six: int = 2000  # W5
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.up_share <= 1.0:
