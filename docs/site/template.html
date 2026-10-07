@@ -79,6 +79,7 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .cap{font-size:13px;color:var(--muted)}
 .own{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px}
 .own label{align-items:center}
+.own.offers{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
 .own img{width:30px;height:30px;border-radius:5px;flex:none}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
@@ -163,6 +164,20 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
       <label for="in-bf">開頭綁定的免費抽（登入 5 + 商店 5）<input id="in-bf" type="number" min="0" max="25" value="10" inputmode="numeric"></label>
     </fieldset>
+    <fieldset class="wide"><legend>還能買的項目<small>勾選你還沒買過、願意買的；一般源石不限次數，一律可買</small></legend>
+      <div class="own offers">
+        <label class="check" for="in-of-0"><input id="in-of-0" class="offer" type="checkbox" data-price="490" data-jade="5000" checked>新角色池尋訪包，10 抽 490 元，每個限定池一次</label>
+        <label class="check" for="in-of-1"><input id="in-of-1" class="offer" type="checkbox" data-price="890" data-jade="5000">協議源流包，10 張通用票 890 元，另附武庫配額</label>
+        <label class="check" for="in-of-2"><input id="in-of-2" class="offer" type="checkbox" data-price="590" data-jade="5000">人才包，10 張通用票 590 元，一次性，另附武庫配額</label>
+        <label class="check" for="in-of-3"><input id="in-of-3" class="offer" type="checkbox" data-price="2000" data-jade="29100">首儲雙倍 2,000 元，388 源石</label>
+        <label class="check" for="in-of-4"><input id="in-of-4" class="offer" type="checkbox" data-price="990" data-jade="13800">首儲雙倍 990 元，184 源石</label>
+        <label class="check" for="in-of-5"><input id="in-of-5" class="offer" type="checkbox" data-price="620" data-jade="8550">首儲雙倍 620 元，114 源石</label>
+        <label class="check" for="in-of-6"><input id="in-of-6" class="offer" type="checkbox" data-price="390" data-jade="5100">首儲雙倍 390 元，68 源石</label>
+        <label class="check" for="in-of-7"><input id="in-of-7" class="offer" type="checkbox" data-price="260" data-jade="3150">首儲雙倍 260 元，42 源石</label>
+        <label class="check" for="in-of-8"><input id="in-of-8" class="offer" type="checkbox" data-price="60" data-jade="900">特殊優惠 60 元，12 源石</label>
+      </div>
+      <span class="cap">每個勾選的項目最多買一次。月卡是分 30 天領，不列在這裡，請用上面的月卡選項。協議源流包與人才包附的武庫配額沒有折算成價值。</span>
+    </fieldset>
     <fieldset class="wide"><legend>保障配額回收<small>抽到已擁有的角色會回收配額，25 換 1 抽</small></legend>
       <div class="fields"><label for="in-quota">現有保障配額<input id="in-quota" type="number" min="0" value="10" inputmode="numeric"></label></div>
       <span class="cap">已擁有的五星，抽到重複的每隻給 10 配額：</span>
@@ -192,11 +207,11 @@ __OWN6__
     <p>下表假設新角色一定要拿到，缺多少補多少。上方的「最壞花費」是運氣最差時的金額，多數情況遠低於它。</p>
     <p id="calc-afford" class="note"></p>
     <div class="scroll"><table id="calc-money"></table></div>
-    <p class="cap">花費以首儲雙倍用完後的價目估算：新角色池尋訪包 10 抽 490 元一次，其餘買一般源石。</p>
+    <p class="cap">花費依上方「還能買的項目」勾選的內容，取最便宜的買法；不夠的部分買一般源石。</p>
     <figure>
       <div class="ftitle">總抽數與兩隻都拿到的機率</div>
       <div class="chart" id="c-calc-stock"></div>
-      <figcaption>垂直虛線是你目前的總抽數。曲線到達 100% 的位置是保證兩隻都拿到所需的抽數。花費以首儲雙倍用完後的價目估算：新角色池尋訪包 10 抽 490 元一次，其餘買一般源石。</figcaption>
+      <figcaption>垂直虛線是你目前的總抽數。曲線到達 100% 的位置是保證兩隻都拿到所需的抽數。花費依「還能買的項目」的勾選，取最便宜的買法。</figcaption>
     </figure>
   </div>
 </section>
@@ -655,8 +670,14 @@ __ENGINE__
   const TIERS=[[2000,121],[990,56],[620,34],[390,20],[260,13],[60,3]];  // TWD, jade/150 (non-double stones)
   const memo=[0];
   const stoneCost=u=>{for(let j=memo.length;j<=u;j++)memo[j]=Math.min(...TIERS.map(([c,g])=>c+memo[Math.max(0,j-g)]));return memo[Math.max(0,u)];};
-  function costFor(k,left){if(k<=0)return 0;const plain=n=>stoneCost(Math.ceil(Math.max(0,n*500-left)/150));
-    return Math.min(plain(k),490+(k>10?plain(k-10):0));}
+  // one-time offers chosen by the viewer: every subset as [price, jade]; repeatable stones fill the rest
+  let combos=[[0,0]], costMemo=new Map();
+  function setOffers(){const of=[...document.querySelectorAll('.offer')].filter(e=>e.checked).map(e=>[+e.dataset.price,+e.dataset.jade]);
+    combos=[[0,0]];for(const [p,j] of of)combos=combos.concat(combos.map(([a,b])=>[a+p,b+j]));costMemo=new Map();}
+  function costFor(k,left){if(k<=0)return 0;const key=k*1000+left;if(costMemo.has(key))return costMemo.get(key);
+    const need=k*500-left;let best=Infinity;
+    for(const [p,j] of combos){const c=p+stoneCost(Math.ceil(Math.max(0,need-j)/150));if(c<best)best=c;}
+    costMemo.set(key,best);return best;}
   // Monthly-card claims left: the daily reset (04:00) comes before either banner closes
   // (re-run 06:00, limited 12:00), so the end date itself still counts.
   function claims(id){const v=$(id).value;if(!v)return 0;const [y,m,d]=v.split('-').map(Number),t=new Date();
@@ -730,6 +751,7 @@ __ENGINE__
       (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
   }
   function run(){
+    setOffers();
     const err=$('calc-error'),out=$('calc-out');
     const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf'),soft=true;
     let msg='';
