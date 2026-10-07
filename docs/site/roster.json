@@ -2,18 +2,86 @@
   "source": "endfield.wiki.gg/wiki/Operator/List, fetched 2026-10-07; Chinese names for the off-rate 6-stars supplied by the project owner",
   "icon_url": "https://endfield.wiki.gg/images/thumb/{file}_icon.png/90px-{file}_icon.png",
   "five": [
-    {"en": "Alesh"}, {"en": "Arclight"}, {"en": "Avywenna"}, {"en": "Chen Qianyu"}, {"en": "Da Pan"},
-    {"en": "Perlica"}, {"en": "Purrchena"}, {"en": "Snowshine"}, {"en": "Wulfgard"}, {"en": "Xaihi"}
+    {
+      "en": "Alesh"
+    },
+    {
+      "en": "Arclight"
+    },
+    {
+      "en": "Avywenna"
+    },
+    {
+      "en": "Chen Qianyu"
+    },
+    {
+      "en": "Da Pan"
+    },
+    {
+      "en": "Perlica"
+    },
+    {
+      "en": "Purrchena"
+    },
+    {
+      "en": "Snowshine"
+    },
+    {
+      "en": "Wulfgard"
+    },
+    {
+      "en": "Xaihi"
+    }
   ],
-  "six_offrate": [
-    {"en": "Ardelia", "zh": "艾爾戴拉", "pool": "standard"},
-    {"en": "Last Rite", "zh": "別禮", "pool": "standard"},
-    {"en": "Ember", "zh": "餘燼", "pool": "standard"},
-    {"en": "Pogranichnik", "zh": "駿衛", "pool": "standard"},
-    {"en": "Lifeng", "zh": "黎風", "pool": "standard"},
-    {"en": "Typhoeus", "zh": "提佛洛斯", "pool": "previous limited (in the 1.6 first-half banner)"},
-    {"en": "Liino", "zh": "梨諾", "pool": "previous limited (in the 1.6 first-half banner)"}
+  "six_other": [
+    "Arcane",
+    "Argent Flow",
+    "Camille",
+    "Endministrator",
+    "Gilberta",
+    "Laevatain",
+    "Liino",
+    "Mi Fu",
+    "Rossi",
+    "Si",
+    "Tangtang",
+    "Typhoeus",
+    "Yvonne",
+    "Zhuang Fangyi"
   ],
-  "six_other": ["Arcane", "Argent Flow", "Camille", "Endministrator", "Gilberta", "Laevatain", "Mi Fu", "Rossi", "Si", "Tangtang", "Yvonne", "Zhuang Fangyi"],
-  "four": ["Akekuri", "Antal", "Catcher", "Estella", "Fluorite"]
+  "four": [
+    "Akekuri",
+    "Antal",
+    "Catcher",
+    "Estella",
+    "Fluorite"
+  ],
+  "six_standard": [
+    {
+      "en": "Ardelia",
+      "zh": "艾爾戴拉",
+      "pool": "standard"
+    },
+    {
+      "en": "Last Rite",
+      "zh": "別禮",
+      "pool": "standard"
+    },
+    {
+      "en": "Ember",
+      "zh": "餘燼",
+      "pool": "standard"
+    },
+    {
+      "en": "Pogranichnik",
+      "zh": "駿衛",
+      "pool": "standard"
+    },
+    {
+      "en": "Lifeng",
+      "zh": "黎風",
+      "pool": "standard"
+    }
+  ],
+  "six_previous_limited_note": "The two most recent limited operators join the off-rate pool of each limited banner; they change every banner, so the site only asks how many of the two the player owns. For the 1.6 first-half banner they are Typhoeus (提佛洛斯) and Liino (梨諾)."
 }

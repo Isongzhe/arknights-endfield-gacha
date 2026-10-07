@@ -138,7 +138,7 @@ def checklist(entries, cls):
 
 roster = json.loads((HERE / "roster.json").read_text())
 template = template.replace("__OWN5__", checklist(roster["five"], "own5"))
-template = template.replace("__OWN6__", checklist(roster["six_offrate"], "own6"))
+template = template.replace("__OWN6__", checklist(roster["six_standard"], "own6"))
 page = template.replace("__DATA__", data).replace("__ENGINE__", (HERE / "engine.js").read_text())
 (HERE / "index.html").write_text(page)
 # index.html is a page body for hosts that supply the document shell; standalone.html is a

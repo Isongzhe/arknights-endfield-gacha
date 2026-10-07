@@ -190,10 +190,11 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <div class="own">
 __OWN5__
       </div>
-      <span class="cap">歪池的六星，已擁有的打勾，抽到重複的每隻給 50 配額。常駐 5 隻固定，後 2 隻是前兩期限定，每個限定池會換：</span>
+      <span class="cap">歪池有 7 隻六星：常駐 5 隻固定，另外 2 隻是前兩期的限定角，每個限定池會換。抽到已擁有的每隻給 50 配額，潛能幾階不影響。常駐的已擁有請打勾：</span>
       <div class="own">
 __OWN6__
       </div>
+      <div class="fields"><label for="in-prev6">前兩期的限定角，你有幾隻（0 到 2）<input id="in-prev6" type="number" min="0" max="2" value="2" inputmode="numeric"></label></div>
       <span class="cap" id="calc-rebate"></span>
     </fieldset>
     <div class="formbar wide"><button type="submit" id="calc-go">計算</button><span class="cap" id="calc-saved"></span></div>
@@ -773,7 +774,7 @@ __ENGINE__
     const c1=claims('in-date1'), c2=claims('in-date2');
     $('calc-days').textContent=`月卡還能領：復刻池結束前 ${c1} 次，新角色池結束前 ${c2} 次。每天 04:00 換日，兩種池都在換日之後才結束，所以結束當天也領得到。`;
     const own5=[...document.querySelectorAll('.own5')], f5=own5.length?own5.filter(e=>e.checked).length/own5.length:0;
-    const own6=[...document.querySelectorAll('.own6')], f6=own6.length?own6.filter(e=>e.checked).length/own6.length:0, q0=num('in-quota');
+    const own6=[...document.querySelectorAll('.own6')], prev=Math.min(2,num('in-prev6')), f6=(own6.filter(e=>e.checked).length+prev)/(own6.length+2), q0=num('in-quota');
     const perPull=10*D.rates.five*f5+50*D.rates.six*0.5*f6, eff=n=>Math.floor((n+q0/25)/(1-perPull/25));
     const now=tk+Math.floor(jade0/500), raw1=tk+Math.floor((jade0+daily*c1)/500), B1=eff(raw1);
     const jade=jade0+daily*c2, rawB=tk+Math.floor(jade/500)+num('in-other'), B=eff(rawB);

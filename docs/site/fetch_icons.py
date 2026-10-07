@@ -11,7 +11,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 roster = json.loads((HERE / "roster.json").read_text())
-names = [o["en"] for o in roster["five"] + roster["six_offrate"]] + roster["six_other"] + roster["four"]
+names = [o["en"] for o in roster["five"] + roster["six_standard"]] + roster["six_other"] + roster["four"]
 (HERE / "icons").mkdir(exist_ok=True)
 for name in names:
     file = name.replace(" ", "_")
