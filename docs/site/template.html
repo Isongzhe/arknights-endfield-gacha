@@ -81,6 +81,9 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .own label{align-items:center}
 .own.offers{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
 .own img{width:30px;height:30px;border-radius:5px;flex:none}
+.formbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.formbar button{font:inherit;font-size:14px;padding:7px 14px;border:1px solid var(--rule);border-radius:4px;background:var(--surface);color:var(--ink);cursor:pointer}
+.formbar button:hover,.formbar button:focus-visible{border-color:var(--accent);color:var(--accent);outline:none}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
 #calc-out h3,#case h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
@@ -191,6 +194,7 @@ __OWN6__
       <span class="cap" id="calc-rebate"></span>
     </fieldset>
   </form>
+  <div class="formbar"><span class="cap" id="calc-saved"></span><button type="button" id="calc-reset">恢復成範例值</button></div>
   <p id="calc-error" class="note" hidden></p>
   <div id="calc-out">
     <h3>結果</h3>
@@ -814,7 +818,19 @@ __ENGINE__
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
   }
-  $('calc-form').addEventListener('input',run);run();
+  // remember the viewer's inputs in this browser so a new version of the page does not wipe them
+  const KEY='gacha-calc-v1', fields=()=>[...$('calc-form').querySelectorAll('input[id]')];
+  const read=e=>e.type==='checkbox'?e.checked:e.value, write=(e,v)=>{if(e.type==='checkbox')e.checked=!!v;else e.value=v;};
+  const defaults={};fields().forEach(e=>defaults[e.id]=read(e));
+  const note=t=>{$('calc-saved').textContent=t;};
+  try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('已載入你上次填的數字。');}
+    else note('你填的數字會存在這個瀏覽器裡，頁面更新後不會消失。');
+  }catch(_){note('這個瀏覽器不允許儲存，重新整理後會回到範例值。');}
+  const save=()=>{try{const o={};fields().forEach(e=>o[e.id]=read(e));localStorage.setItem(KEY,JSON.stringify(o));note('已儲存。');}catch(_){}};
+  $('calc-form').addEventListener('input',()=>{save();run();});
+  $('calc-reset').addEventListener('click',()=>{fields().forEach(e=>write(e,defaults[e.id]));try{localStorage.removeItem(KEY);}catch(_){}note('已恢復成範例值。');run();});
+  run();
 })();
 
 
