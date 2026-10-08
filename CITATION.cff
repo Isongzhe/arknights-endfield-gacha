@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite it as below."
+title: "gacha-risk: exact waiting-time and budget-risk models for gacha banners (Arknights: Endfield)"
+type: software
+authors:
+  - family-names: Lin
+    given-names: Sung-Che
+version: 0.2.0
+date-released: 2026-10-08
+license: MIT
+repository-code: "https://github.com/Isongzhe/arknights-endfield-gacha"
+keywords:
+  - gacha
+  - Markov chain
+  - hitting time
+  - risk
+  - Arknights Endfield
+references:
+  - type: article
+    title: "State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models: Exact Recurrences, Tail Risk, and Featured-Target Extensions"
+    authors:
+      - family-names: Hou
+        given-names: Saisai
+      - family-names: Zhu
+        given-names: Yunzhi
+      - family-names: Zhang
+        given-names: Sen
+    journal: Symmetry
+    volume: 18
+    issue: 6
+    start: 1051
+    year: 2026
+    doi: 10.3390/sym18061051

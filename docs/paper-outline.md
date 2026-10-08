@@ -64,6 +64,9 @@ lie on those thresholds and monetary risk is bimodal.
 | Spend distribution and VaR/CVaR by strategy | new experiment from `gacharisk.cost` | no |
 | Free pulls on a skipped banner by entering pity | new experiment | no |
 
+Formal statements of the problems, with what is solved and what is open, are in
+[theory-problems.md](theory-problems.md).
+
 ## What must not be claimed
 
 - An "optimal strategy" without a stated objective; optimality depends on how a player values

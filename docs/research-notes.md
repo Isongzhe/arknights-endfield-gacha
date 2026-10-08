@@ -37,6 +37,8 @@ Symmetry 2026, 18(6), 1051, doi:10.3390/sym18061051 (CC BY 4.0).
 
 ## Planned
 
+The open problems are stated formally in [theory-problems.md](theory-problems.md) (P5 to P9).
+
 - **Hybrid 保障配額 rebate.** Put the 6★ part into the exact chain: an off-rate 6★ that the player
   already owns grants 50 quota, i.e. two pulls, so the state only needs the number of banked
   rebate pulls. This part is lumpy and correlated with the outcome (it arrives exactly when the

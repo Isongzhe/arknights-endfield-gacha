@@ -15,6 +15,7 @@ Start with [../ARCHITECTURE.md](../ARCHITECTURE.md) for how the code is organise
 | [rules/roster.md](rules/roster.md) | Operator roster and the off-rate 6★ pool (Chinese) |
 | [rules/pricing.md](rules/pricing.md) | Taiwan price list and purchase limits (Chinese) |
 | [site/](site/) | Browsable write-up with calculators; `uv run python docs/site/build.py` builds `index.html` and `standalone.html` |
+| [theory-problems.md](theory-problems.md) | The mathematical problems behind the project, each with its status (solved, partial, open), classical prototypes and references |
 | [paper-outline.md](paper-outline.md) | Working outline of the paper: claims, status of each contribution, figures still to produce |
 
 Data files used by the site live in `site/`: `roster.json`, `banners.json`, and the generated

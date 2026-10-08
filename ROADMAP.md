@@ -43,5 +43,6 @@ pity systems. Work is ordered so that each step serves both.
 - Player-behaviour, harm or revenue modelling: no data, and outside the scope of an exact model.
 - A hosted backend: every computation runs in milliseconds in the browser.
 
-See [docs/paper-outline.md](docs/paper-outline.md) for the paper plan and
+See [docs/theory-problems.md](docs/theory-problems.md) for the problems stated formally,
+[docs/paper-outline.md](docs/paper-outline.md) for the paper plan and
 [docs/research-notes.md](docs/research-notes.md) for dated findings.

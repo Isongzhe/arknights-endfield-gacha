@@ -146,6 +146,12 @@ Waiting-Time Models: Exact Recurrences, Tail Risk, and Featured-Target Extension
 treats one pity counter and lists carry-over between banners, budget-dependent stopping and
 currency conversion as future work; those are what this project adds.
 
+## Citing
+
+See [CITATION.cff](CITATION.cff); GitHub shows it under "Cite this repository". The underlying
+problems, with their status and references, are listed in
+[docs/theory-problems.md](docs/theory-problems.md).
+
 ## Disclaimer
 
 This is an unofficial fan and research project. It is not affiliated with or endorsed by
