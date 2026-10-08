@@ -83,7 +83,7 @@
       "pool": "standard"
     }
   ],
-  "six_previous_limited_note": "The two most recent limited operators join the off-rate pool of each limited banner; they change every banner, so the site only asks how many of the two the player owns. For the 1.6 first-half banner they are Typhoeus (提佛洛斯) and Liino (梨諾).",
+  "six_previous_limited_note": "The off-rate pool of a limited banner is the standard five plus the rate-up operators of the previous two limited banners (see banners.json). The two rotating operators are not listed here; the site only asks how many of them the player owns, so this file changes only when the standard pool or the rule changes.",
   "zh_names": {
     "Laevatain": "萊萬汀",
     "Gilberta": "潔爾佩塔",
@@ -92,9 +92,9 @@
     "Last Rite": "別禮",
     "Ember": "餘燼",
     "Lifeng": "黎風",
-    "Typhoeus": "提佛洛斯",
-    "Liino": "梨諾",
+    "Typhoeus": "提豐",
+    "Liino": "萊諾",
     "Yvonne": "伊馮"
   },
-  "zh_names_note": "萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; the others were typed by the project owner and may differ from the official spelling."
+  "zh_names_note": "A plain name dictionary, not pool membership. 萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; 提豐、萊諾、伊馮 and the others were supplied by the project owner."
 }
