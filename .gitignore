@@ -12,3 +12,6 @@ docs/site/icons/
 docs/site/index.html
 docs/site/standalone.html
 docs/site/data.json
+
+# internal step-by-step implementation plans (working notes, not documentation)
+docs/design/*-implementation-plan.md

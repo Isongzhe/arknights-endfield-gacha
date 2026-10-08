@@ -13,7 +13,7 @@
 | [rules/roster.md](rules/roster.md) | Operator roster and the off-rate 6★ pool (Chinese) |
 | [rules/pricing.md](rules/pricing.md) | Taiwan price list and purchase limits (Chinese) |
 | [site/](site/) | Browsable write-up with calculators; `uv run python docs/site/build.py` builds `index.html` and `standalone.html` |
-| [design/](design/) | The original Phase 1 design and implementation plan, kept as a record |
+| [design/](design/) | The original Phase 1 design, kept as a record |
 
 Data files used by the site live in `site/`: `roster.json`, `banners.json`, and the generated
 `data.json`. Operator icons are game art and are not committed; `site/fetch_icons.py` downloads
