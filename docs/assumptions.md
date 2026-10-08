@@ -23,7 +23,7 @@ policy in `src/gacha/models/endfield.py` / `plan.py`. Change a rule here first, 
 | ID | Policy assumption | Code |
 |----|-------------------|------|
 | P1 | free pulls are used before paid pulls; paid = max(0, n − f) | `pull()` cost rule |
-| P2 | free pulls are always used, even on skipped banners | `Plan` (cap 0 banners), `status()` |
+| P2 | free pulls are always used, even on skipped banners. This is not always the best play: once the free pulls would push the pity counter into the soft-pity zone (roughly pity + free pulls ≥ 67) they tend to release the 6★ on the unwanted banner and reset the pity; see research-notes | `Plan` (cap 0 banners), `status()` |
 | P3 | pull until target or cap; finish remaining free pulls after success | `status()` |
 | P4 | T counts paid pulls only | `Transition.cost` |
 

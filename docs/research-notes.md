@@ -46,6 +46,15 @@ Symmetry 2026, 18(6), 1051, doi:10.3390/sym18061051 (CC BY 4.0).
 
 ## Findings
 
+- 2026-10-08, free pulls on a skipped banner. Expected own pulls for the next wanted UP (10 free
+  pulls there), by entering pity t0, when the skipped banner's free pulls are not used / 5 used /
+  10 used: t0 = 0: 69.5 / 67.8 / 66.2; t0 = 48: 46.3 / 43.9 / 41.6; t0 = 58: 39.4 / 38.2 / 46.7;
+  t0 = 62: 37.4 / 41.9 / 62.6; t0 = 70: 35.5 / 66.3 / 67.1. Far from pity the free pulls bank a
+  few pulls of pity; once they reach the soft-pity zone they usually release the 6★ on the banner
+  nobody wanted and the saved pity is gone. Policy P2 (always use them) is therefore suboptimal
+  for t0 + free pulls above about 67, and the 集成配額 shop exchange should be skipped there too.
+  The comparison values only the wanted UP; the stray 6★ is counted as worth nothing.
+
 - 2026-10-07, rule R2: for a few hours the default schedule was flat 0.8% (the user believed
   Endfield had no soft pity), then the user confirmed the ramp does exist on both limited and
   re-run banners, matching endfield.wiki.gg. The default is again +5% per pull from the 66th pull
