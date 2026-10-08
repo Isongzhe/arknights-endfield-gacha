@@ -356,7 +356,7 @@ __OWN6__
   <div class="scroll"><table id="rep-wprob"></table></div>
   <p class="cap">上表是累計抽到第幾次十連時，已經拿到 UP 武器的機率。六星武器每抽 4%，其中 25% 是當期 UP；連續 40 抽沒出六星武器時必出一把，池內第 80 抽必出 UP。前 7 次是慢慢爬的，第 8 次才補滿，所以要抽就準備好 8 次的量。</p>
   <h3>三個卡池內補不補得到</h3>
-  <p>限定角色的武器池會開三個卡池。這段期間你抽角色還會進帳武庫配額，平均每抽 81，但實際進帳要看出了幾隻六星，所以分成偏少、一般、偏多三種情況來看。復刻角色的武器池會提早關閉，只能用現有的配額。</p>
+  <p id="rep-wfuture-intro"></p>
   <div class="scroll"><table id="rep-wfuture"></table></div>
   <p id="rep-wfuture-note"></p>
   <h3>角色抽得越少，武器越買不起</h3>
@@ -876,14 +876,15 @@ __ENGINE__
       const sdQ=Math.sqrt(c.wpulls*(2000*2000*r6+200*200*r5)), fA=wantA?wA:null, fBw=wantB?wB:null;
       const usedA=[];if(fA){let acc=0;for(let u=0;u<=Math.min(can,fA.length-1);u++){usedA[u]=fA[u]||0;acc+=usedA[u];}usedA[Math.min(can,fA.length-1)]+=1-acc;}else usedA[0]=1;
       const pAnow=fA?cw(fA)(can):null;
-      const fut=[['偏少',-1],['一般',0],['偏多',1]].map(([name,z])=>{const inc=Math.max(0,Math.round(perChar*c.wpulls+z*sdQ))+c.wextra;
+      const fut=[['六星出得比平均少',-1],['平均',0],['六星出得比平均多',1]].map(([name,z])=>{const inc=Math.max(0,Math.round(perChar*c.wpulls+z*sdQ))+c.wextra;
         let pB=null;if(fBw){pB=0;const cB=cw(fBw);usedA.forEach((pu,u)=>{pB+=pu*cB(Math.floor((wq-ISSUE*u+inc)/ISSUE));});}
         return [name,inc.toLocaleString(),(wq+inc).toLocaleString(),Math.floor((wq+inc)/ISSUE),pAnow===null?'—':pc(pAnow),pB===null?'—':pc(pB),pB];});
-      tbl('rep-wfuture',['進帳情況','三個卡池內進帳','加上現有','可抽十連','復刻角色的武器','新角色的武器'],fut.map(r=>r.slice(0,6)));
+      $('rep-wfuture-intro').textContent=`你填了接下來三個卡池預計抽 ${c.wpulls} 抽角色。每抽到一隻角色都會給武庫配額：四星 20、五星 200、六星 2,000，平均下來每抽約 ${perChar.toFixed(0)}，${c.wpulls} 抽大約進帳 ${Math.round(perChar*c.wpulls).toLocaleString()}`+(c.wextra?`，再加上你填的其他來源 ${c.wextra.toLocaleString()}`:'')+`。但六星一隻就給 2,000，同樣的抽數，六星出得多或少會讓進帳差很多，所以下表分三種運氣來看。限定角色的武器池會開三個卡池，這些進帳都來得及用；復刻角色的武器池會提早關閉，只能用你現在手上的配額。`;
+      tbl('rep-wfuture',['這段期間的運氣','抽角色進帳的配額','加上現有的配額','總共可抽十連','復刻角色的武器，只用現有配額','新角色的武器，用剩下的加上進帳'],fut.map(r=>r.slice(0,6)));
       const needB=fBw?(fBw.length-1)*ISSUE:0, mid=fut[1][6];
       $('rep-wfuture-note').textContent=!fBw?'沒有勾選新角色的武器。復刻角色的武器只能用現有的配額。':
-        mid>=0.9995?`以預計的 ${c.wpulls} 抽角色來看，一般情況下新角色的武器在三個卡池內保證拿得到。`+(fut[0][6]<0.9995?`但如果六星出得少、進帳偏少，機率只有 ${pc(fut[0][6])}，差的那一兩次十連要另外想辦法。`:'就算進帳偏少也夠。'):
-        `以預計的 ${c.wpulls} 抽角色來看，一般情況下新角色的武器拿到的機率是 ${pc(mid)}，還不到保證。要保證需要 ${needB.toLocaleString()} 配額`+(fA?'，而且要先扣掉復刻武器用掉的部分':'')+`。每多抽 25 抽角色大約多一次十連；特惠武器包 420 元給 2,000 配額，約等於一次十連。`;
+        mid>=0.9995?`怎麼讀：運氣平均的話，新角色的武器在三個卡池內保證拿得到。`+(fut[0][6]<0.9995?`但如果六星出得少，機率只有 ${pc(fut[0][6])}，差的那一兩次十連要另外想辦法。`:'就算六星出得少也夠。'):
+        `怎麼讀：運氣平均的話，新角色的武器拿到的機率是 ${pc(mid)}，還不到保證；六星出得少是 ${pc(fut[0][6])}，出得多是 ${pc(fut[2][6])}。要保證需要 ${needB.toLocaleString()} 配額`+(fA?'，而且要先扣掉復刻武器用掉的部分':'')+`。每多抽 25 抽角色大約多一次十連；特惠武器包 420 元給 2,000 配額，約等於一次十連。`;
       const scen=[['免費抽就出',0,1],['必出六星那一抽出',hardB,1],['歪一次，抽到大保底才出',maxB,2]].map(([name,own,six])=>{
         const pulls=own+bf+(own+bf>=30?10:0), gainQ=Math.round(minor*pulls+2000*six), tot=wq+gainQ, k=Math.floor(tot/ISSUE);
         return [name,own,gainQ.toLocaleString(),tot.toLocaleString(),k,pc(cAll(k))];});
