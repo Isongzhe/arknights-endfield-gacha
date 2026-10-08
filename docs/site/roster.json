@@ -21,9 +21,6 @@
       "en": "Perlica"
     },
     {
-      "en": "Purrchena"
-    },
-    {
       "en": "Snowshine"
     },
     {
@@ -96,5 +93,9 @@
     "Liino": "梨諾",
     "Yvonne": "伊馮"
   },
-  "zh_names_note": "A plain name dictionary, not pool membership; nothing here has to change when banners rotate. 萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; the others were supplied by the project owner."
+  "zh_names_note": "A plain name dictionary, not pool membership; nothing here has to change when banners rotate. 萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; the others were supplied by the project owner.",
+  "five_not_in_pool": [
+    "Purrchena"
+  ],
+  "five_note": "Operators in `five` are the 5-star operators obtainable from headhunting. Purrchena is listed on the wiki as a 5-star but is not in the pool (project owner, 2026-10-08); move it into `five` if it is added later."
 }

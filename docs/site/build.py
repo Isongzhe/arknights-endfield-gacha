@@ -155,7 +155,7 @@ def checklist(entries, cls):
     import base64
 
     out = []
-    for i, entry in enumerate(entries):
+    for entry in entries:
         en = entry["en"]
         label = f"{entry['zh']} {en}" if entry.get("zh") else en
         icon = HERE / "icons" / f"{en.replace(' ', '_')}.png"
@@ -163,8 +163,10 @@ def checklist(entries, cls):
         if icon.exists():
             b64 = base64.b64encode(icon.read_bytes()).decode()
             img = f'<img alt="" src="data:image/png;base64,{b64}">'
+        # ids use the operator's name, so a saved form survives roster changes
+        key = f"in-{cls}-{en.lower().replace(' ', '-')}"
         out.append(
-            f'        <label class="check" for="in-{cls}-{i}"><input id="in-{cls}-{i}" '
+            f'        <label class="check" for="{key}"><input id="{key}" '
             f'class="{cls}" type="checkbox" checked>{img}{label}</label>'
         )
     return "\n".join(out)

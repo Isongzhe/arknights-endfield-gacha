@@ -24,9 +24,11 @@
 
 所以歪池固定是 7 隻。只要常駐池沒有擴充、規則沒有改，這一節就不用更新。工具也只需要知道「常駐 5 隻你有哪些」與「輪替的 2 隻你有幾隻」，不需要輪替角色的名字。復刻池的歪池組成尚未確認。
 
-## 五星（共 10）
+## 卡池內的五星（共 9）
 
-Alesh、Arclight、Avywenna、Chen Qianyu、Da Pan、Perlica、Purrchena、Snowshine、Wulfgard、Xaihi
+Alesh、Arclight、Avywenna、Chen Qianyu、Da Pan、Perlica、Snowshine、Wulfgard、Xaihi
+
+Purrchena 在 wiki 上列為五星，但目前不在卡池內（作者 2026-10-08），所以不列入。之後若加入卡池，在 `roster.json` 把它從 `five_not_in_pool` 移到 `five` 即可，網站的勾選清單會自動多一格。
 
 ## 其他六星（共 12）
 
