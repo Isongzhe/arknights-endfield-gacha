@@ -1,5 +1,6 @@
 # gacha-risk
 
+[![Calculator](https://img.shields.io/badge/calculator-open%20the%20site-2a78d6.svg)](https://isongzhe.github.io/arknights-endfield-gacha/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
 [![CI](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml/badge.svg)](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -149,8 +150,9 @@ The notebook text is in Traditional Chinese. Change the numbers marked 改這裡
 
 **Reproduce every table and figure**: `uv run gacha-risk experiment all` writes to `results/`.
 
-A browsable write-up with calculators (re-run plus next limited banner, three consecutive limited
-banners with skip patterns, weapons) lives in `docs/site/`; build it with
+The calculator site is published at <https://isongzhe.github.io/arknights-endfield-gacha/> (re-run
+plus next limited banner, three consecutive limited banners with skip patterns, weapons, and a
+report generated from your inputs). Its source lives in `docs/site/`; build it with
 `uv run python docs/site/build.py` and open `docs/site/standalone.html` (built pages are not
 committed; `docs/site/fetch_icons.py` optionally downloads operator icons for the checklist).
 
@@ -206,6 +208,8 @@ advice; gacha spending carries real cost, so set a limit before you pull.
 MIT, see [LICENSE](LICENSE).
 
 ## 繁體中文
+
+**直接使用**：<https://isongzhe.github.io/arknights-endfield-gacha/>，打開就是試算器，不用安裝。
 
 這是一套抽卡機率的精確計算工具，目前支援《明日方舟：終末地》的限定角色池與復刻池。
 

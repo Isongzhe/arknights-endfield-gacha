@@ -1,0 +1,43 @@
+name: Site
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: uv sync
+      # Operator icons are fetched at build time and embedded in the page; they are never
+      # committed. The site works without them, so a failed download does not stop the build.
+      - run: uv run python docs/site/fetch_icons.py
+        continue-on-error: true
+      # build.py recomputes the chart data and refuses to build if the browser engines
+      # disagree with the Python engine.
+      - run: uv run python docs/site/build.py
+      - run: mkdir -p _site && cp docs/site/standalone.html _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

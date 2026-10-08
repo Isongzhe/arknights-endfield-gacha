@@ -182,11 +182,11 @@ SHELL = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
-%s
+__PAGE__
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true,theme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'default'});</script>
 </body></html>
 """
-(HERE / "standalone.html").write_text(SHELL % page)
+(HERE / "standalone.html").write_text(SHELL.replace("__PAGE__", page))
 print({x["name"]: x["states"] for x in d["pmf"]}, {k: v["states"] for k, v in d["carry"].items()})
 print("e_t0 range", min(d["e_t0"]), max(d["e_t0"]), "pmf max", max(max(x["y"]) for x in d["pmf"]))
