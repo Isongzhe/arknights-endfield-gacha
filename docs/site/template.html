@@ -308,7 +308,23 @@ __OWN6__
   <div class="scroll"><table id="rep-wprob"></table></div>
   <p class="cap">累計抽到第幾次十連時，已經拿到一把 UP 武器的機率。前 7 次慢慢爬，第 8 次才補滿。</p>
 
-  <h3>九、推導</h3>
+  <h3>九、祀想抽潛能</h3>
+  <p>同一池想要不只一隻時，120 保底只給一次，之後只能靠 50% 和累積 240 抽送的信物。這一節從你填的祀池狀態算起，假設抽數全部留給祀。</p>
+  <p id="rep-pot-note" class="note"></p>
+  <figure>
+    <div class="ftitle">幾抽內拿到的機率，依目標隻數</div>
+    <div class="legend"><span><i style="border-color:var(--s1)"></i>一隻</span><span><i style="border-color:var(--s2)"></i>一潛能，兩隻</span><span><i style="border-color:var(--s3)"></i>二潛能，三隻</span></div>
+    <div class="chart" id="c-rep-pot"></div>
+    <figcaption>橫軸是從現在起自備的抽數，垂直虛線是你的總抽數。一潛能的曲線在信物那一抽直接跳到 100%。</figcaption>
+  </figure>
+  <figure>
+    <div class="ftitle">一潛能剛好在第幾抽拿到的機率分布</div>
+    <div class="chart" id="c-rep-potpmf"></div>
+    <figcaption>左邊的鼓包是兩隻六星都中 UP，中間是歪過一次，最右邊的尖峰是靠 240 抽的信物補上第二隻。</figcaption>
+  </figure>
+  <div class="scroll"><table id="rep-pot"></table></div>
+
+  <h3>十、推導</h3>
   <p>令 \(T_A\)、\(T_B\) 為兩個池各自拿到目標所需的自備抽數，\(f_A(j)=P(T_A=j)\)、\(F_A(j)=P(T_A\le j)\)，\(B\) 池同理。兩種池的保底互不相通，所以 \(T_A\) 與 \(T_B\) 獨立。令 \(S\) 為到第二個池結束可用的總抽數，\(x\) 為第一個池的投入上限：最多抽 \(x\) 抽，拿到就提早停，剩下的全給第二個池。</p>
   <div class="math">$$P_{\text{both}}(x)=\sum_{j=0}^{x} f_A(j)\,F_B(S-j),\qquad P_A(x)=F_A(x),\qquad P_B(x)=P_{\text{both}}(x)+\bigl(1-F_A(x)\bigr)F_B(S-x).$$</div>
   <p>第一項是「第 \(j\) 抽拿到第一隻，剩下 \(S-j\) 抽夠拿第二隻」。\(P_B\) 多出來的那一項是「第一隻沒拿到，用掉 \(x\) 抽後剩下的還夠拿第二隻」。把上限從 \(x-1\) 提高到 \(x\)，三個機率的變化是</p>
@@ -371,13 +387,13 @@ __COPIES_FRESH__
     <li>二潛能（三隻）有 41.1% 剛好停在 235 抽。原因是抽到 240 時多半已經有兩隻，信物正好補成第三隻。所以一潛能抽到快 240 還沒出的話，多半順便就二潛能了。</li>
     <li>三潛能以上沒有實際的上限，表中用 99% 代替最壞值。滿潛有 26.0% 會抽到第二個信物（475 抽）才滿。</li>
   </ul>
-  <h4>以祀為例</h4>
-  <p>用試算器的預設狀態：保底再 32 抽必出六星、免費 10 抽、池內還沒抽。</p>
-  <div class="scroll"><table>
-    <tr><th>目標</th><th class="n">平均</th><th class="n">中位數</th><th class="n">九成情況內</th><th class="n">100 抽內</th><th class="n">150 抽內</th><th class="n">200 抽內</th><th class="n">250 抽內</th></tr>
-__COPIES_MINE__
-  </table></div>
-  <p>只要一隻的話平均 46.3 抽，一半的情況 17 抽內就出。想要一潛能，平均要 137.7 抽，是只要一隻的三倍；準備 150 抽大約一半機會，要保證得準備 230 抽。</p>
+  <figure>
+    <div class="ftitle">幾抽內拿到的機率，從零開始</div>
+    <div class="legend"><span><i style="border-color:var(--s1)"></i>一隻</span><span><i style="border-color:var(--s2)"></i>一潛能</span><span><i style="border-color:var(--s3)"></i>二潛能</span><span><i style="border-color:var(--s4)"></i>滿潛</span></div>
+    <div class="chart" id="c-copies"></div>
+    <figcaption>橫軸是自備抽數。垂直跳升的地方是 120 保底與 240、480 抽的信物。</figcaption>
+  </figure>
+  <p>從你自己的保底和抽數算潛能，見分析報告的「九、祀想抽潛能」。</p>
 
   <h3>保底值多少抽</h3>
   <figure>
@@ -833,6 +849,24 @@ __ENGINE__
     tbl('rep-band',['回收的抽數','可用抽數','祀','兩隻都有','兩隻都保證的最壞花費'],
       band.map(r=>[r.d<0?'比估計少 2 抽':r.d>0?'比估計多 2 抽':'目前的估計',r.S,pc(r.b),pc(r.both),nt(r.worst)]));
     const spread=Math.max(Math.abs(band[0].both-band[1].both),Math.abs(band[2].both-band[1].both))*100;
+    // potentials on the second banner, from the entered state, all pulls kept for it
+    {const names=['一隻','一潛能，兩隻','二潛能，三隻','三潛能，四隻','四潛能，五隻','滿潛，六隻'];
+      const fs=names.map((_,i)=>copiesUp({t:80-bp,n:0,free:bf,vac:[30],soft:true,guar:120,copies:i+1}));
+      const cs=fs.map(f=>cumsum(f)), cdf=(c,k)=>c[Math.max(0,Math.min(k,c.length-1))], qt=(c,q)=>c.findIndex(v=>v>=q-1e-12);
+      tbl('rep-pot',['祀的目標','平均','中位數','九成情況內',`你的 ${S} 抽拿到的機率`,'保證要幾抽'],
+        names.map((nm,i)=>{const f=fs[i],c=cs[i];let mean=0;f.forEach((v,j)=>mean+=v*j);
+          return [nm,mean.toFixed(1),qt(c,.5),qt(c,.9),pc(cdf(c,S)),i<2?f.length-1:'沒有實際上限'];}));
+      const xm=Math.max(260,Math.min(480,S+40)), padTo=c=>{const a=c.slice(0,xm+1);while(a.length<=xm)a.push(c[c.length-1]);return a;};
+      lineChart('c-rep-pot',{label:'依目標隻數的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
+        xlabel:'從現在起自備的抽數',ylabel:'拿到的機率',xname:'抽數',vfmt:pct,h:280,mark:S,
+        series:[0,1,2].map(i=>({name:names[i],y:padTo(cs[i]),color:`var(--s${i+1})`}))});
+      const f2=fs[1], ymax=Math.max(.05,Math.ceil(Math.max(...f2)*20)/20), x2=f2.length+4, y2=f2.slice();while(y2.length<=x2)y2.push(0);
+      lineChart('c-rep-potpmf',{label:'一潛能的自備抽數分布',xmax:x2,ymax,yticks:[0,ymax/2,ymax],yfmt:v=>(v*100).toFixed(1)+'%',xticks:ticks(x2,8),
+        xlabel:'從現在起自備的抽數',ylabel:'機率',xname:'抽數',vfmt:v=>(v*100).toFixed(2)+'%',step:true,h:260,mark:S,series:[{name:'一潛能',y:y2,color:'var(--s2)'}]});
+      const p1=cdf(cs[0],S), p2=cdf(cs[1],S), need=fs[1].length-1;
+      $('rep-pot-note').textContent=`你有 ${S} 抽。全部留給祀的話，拿到一隻的機率是 ${pc(p1)}，一潛能是 ${pc(p2)}，二潛能是 ${pc(cdf(cs[2],S))}。`+
+        (S>=need?'一潛能已經保證。':`一潛能要保證得 ${need} 抽，還差 ${need-S} 抽，最便宜要補 ${nt(costFor(need-S,left))}。`)+
+        ` 一潛能有 ${pc(f2[need])} 的機率要抽到信物那一抽才拿到。`;}
     $('rep-band-note').textContent=perPull>0?(got?'':`以復刻池抽 ${h} 抽停為前提。`)+`回收差 2 抽，兩隻都有的機率最多移動 ${spread.toFixed(1)} 個百分點`+(spread<1.5?'，不影響該停在哪裡的判斷。':'。這個幅度不小，代表你的抽數剛好落在某個保底門檻附近，判斷時要保守一點。'):'目前沒有計入回收，這張表只顯示可用抽數差 2 抽的影響。';
     // weapons are tied to character pulls: more character pulls bring more arsenal quota
     const ISSUE=1980, r5=D.rates.five, r6=D.rates.six, perChar=20*(1-r5-r6)+200*r5+2000*r6;
@@ -947,6 +981,10 @@ lineChart('c-sched',{label:'六星機率排程',xmax:89,ymax:1,yticks:[0,.25,.5,
 document.getElementById('l-pmf').innerHTML=D.pmf.map((s,i)=>`<span><i style="border-color:${COLORS[i]}"></i>${s.name}</span>`).join('');
 lineChart('c-pmf',{label:'自備抽數機率分布',xmax:200,ymax:.36,yticks:[0,.1,.2,.3],yfmt:v=>(v*100).toFixed(0)+'%',xticks:[0,25,50,75,105,115,150,200],
   xlabel:'自備抽數',ylabel:'機率',xname:'自備',vfmt:v=>(v*100).toFixed(2)+'%',step:true,h:320,series:D.pmf});
+
+{const xm=720, cs=[1,2,3,6].map(k=>{const c=cumsum(copiesUp({t:0,n:0,free:5,vac:[30],soft:true,guar:120,copies:k})).slice(0,xm+1);while(c.length<=xm)c.push(c[c.length-1]);return c;});
+  lineChart('c-copies',{label:'依目標隻數的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:v=>(v*100).toFixed(0)+'%',xticks:[0,115,235,355,475,600,720],
+    xlabel:'自備抽數',ylabel:'拿到的機率',xname:'自備',vfmt:v=>(v*100).toFixed(1)+'%',h:300,series:['一隻','一潛能','二潛能','滿潛'].map((name,i)=>({name,y:cs[i],color:`var(--s${i+1})`}))});}
 
 lineChart('c-pity',{label:'保底的價值',xmax:79,ymin:30,ymax:80,yticks:[30,40,50,60,70,80],xticks:[0,20,40,60,65,79],
   xlabel:'進池時的保底計數 t',ylabel:'期望自備抽數',xname:'t =',vfmt:v=>v.toFixed(1)+' 抽',h:260,

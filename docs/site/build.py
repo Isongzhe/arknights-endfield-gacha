@@ -102,6 +102,19 @@ def check_browser_engine():
     )
     if out.returncode != 0:
         raise SystemExit(f"browser engine disagrees with Python: {out.stdout} {out.stderr}")
+    cpayload = []
+    for copies, t0, free in ((2, 0, 5), (2, 48, 10), (3, 70, 20), (6, 48, 10), (4, 0, 0)):
+        rules = replace(full, free_start_pulls=free)
+        h, _ = ht(SingleBannerModel(BannerSpec(rules, copies, 1300), start=BannerState(t0, 0, 0, 0)))
+        o = {"t": t0, "n": 0, "free": free, "guar": 120, "vac": list(rules.vacuum_points), "soft": True, "copies": copies}
+        cpayload.append({"o": o, "pmf": [float(x) for x in h.f_succ]})
+    cout = subprocess.run(
+        ["node", "-e", runner.replace("{firstUp}", "{copiesUp}").replace("firstUp(c.o)", "copiesUp(c.o)"), str(HERE / "engine.js")],
+        input=json.dumps(cpayload), capture_output=True, text=True,
+    )
+    if cout.returncode != 0:
+        raise SystemExit(f"browser copies engine disagrees with Python: {cout.stdout} {cout.stderr}")
+    print("browser copies engine max abs diff vs Python:", cout.stdout.strip())
     from gacharisk.models.weapon import WeaponBannerModel, WeaponState
     from gacharisk.rules.weapon import WeaponBannerRules
 
@@ -180,10 +193,6 @@ def copies_rows(rules, start, budgets=None):
 
 
 template = template.replace("__COPIES_FRESH__", copies_rows(EndfieldCharacterRules(), BannerState(0, 0, 0, 0)))
-template = template.replace(
-    "__COPIES_MINE__",
-    copies_rows(replace(EndfieldCharacterRules(), free_start_pulls=10), BannerState(48, 0, 0, 0), (100, 150, 200, 250)),
-)
 for key, name in (("__ICON_A__", "Yvonne"), ("__ICON_B__", "Si")):
     icon = HERE / "icons" / f"{name}.png"
     if icon.exists():
