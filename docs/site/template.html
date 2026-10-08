@@ -294,7 +294,7 @@ __OWN6__
   <p>武器池只收武庫配額，1,980 換一次十連。配額主要是抽角色送的：每抽到一隻四星給 20、五星 200、六星 2,000。所以武器和角色是連動的，角色抽得越多，配額越多，武器越有把握。</p>
   <p id="rep-wkey" class="note"></p>
   <div class="scroll"><table id="rep-wlink"></table></div>
-  <p class="cap">進帳用的是平均值。實際進帳主要看出了幾隻六星，一隻就差 2,000 配額，大約一次十連。保證一把 UP 武器要 8 次十連，兩把要 16 次。</p>
+  <p class="cap">進帳用平均值，是因為抽角色之前不知道會出幾隻六星，只能先用長期平均估。實際每多或少一隻六星，就差 2,000 配額，大約一次十連，所以表中「可抽十連」請當成上下一兩次的估計。保證一把 UP 武器要 8 次十連，兩把要 16 次。</p>
   <div class="scroll"><table id="rep-wprob"></table></div>
   <p class="cap">累計抽到第幾次十連時，已經拿到一把 UP 武器的機率。前 7 次慢慢爬，第 8 次才補滿。</p>
 
@@ -797,7 +797,7 @@ __ENGINE__
       opts.map(n=>{const q=wq+Math.round(perChar*n), k=Math.floor(q/ISSUE);
         return [n+(n===mine?' ◀ 你的抽數全用掉':''),Math.round(perChar*n).toLocaleString(),q.toLocaleString(),k,pc(w1(k)),pc(w2(k))];}));
     const kNow=Math.floor(wq/ISSUE), need1=Math.max(0,8*ISSUE-wq), need2=Math.max(0,16*ISSUE-wq);
-    $('rep-wkey').textContent=`你現在有 ${wq.toLocaleString()} 武庫配額，可抽 ${kNow} 次十連。現在去抽，拿到一把 UP 武器的機率是 ${pc(w1(kNow))}，兩把都拿到是 ${pc(w2(kNow))}。抽角色平均每抽進帳 ${perChar.toFixed(0)} 配額。`+
+    $('rep-wkey').textContent=`你現在有 ${wq.toLocaleString()} 武庫配額，可抽 ${kNow} 次十連。現在去抽，拿到一把 UP 武器的機率是 ${pc(w1(kNow))}，兩把都拿到是 ${pc(w2(kNow))}。抽角色長期平均約 ${(1/r6).toFixed(0)} 抽出一隻六星、${(1/r5).toFixed(1)} 抽出一隻五星，換算每抽進帳 ${perChar.toFixed(0)} 配額。`+
       (need1===0?(need2===0?'兩把都已經保證得到。':`一把已經保證；要兩把都保證，還要再抽約 ${Math.ceil(need2/perChar)} 抽角色。`):`要保證一把，還要再抽約 ${Math.ceil(need1/perChar)} 抽角色；兩把約 ${Math.ceil(need2/perChar)} 抽。`);
     tbl('rep-wprob',['累計十連次數',...[1,2,3,4,5,6,7,8].map(k=>'第 '+k+' 次')],[['一把 UP 武器',...[1,2,3,4,5,6,7,8].map(k=>pc(w1(k)))]]);
     const gain=((inc[4][4]-inc[0][4])/4)*100;
