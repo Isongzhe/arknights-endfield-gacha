@@ -184,6 +184,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
       <label for="in-bf">登入送的免費抽<input id="in-bf" type="number" min="0" max="25" value="5" inputmode="numeric"></label>
       <label class="check" for="in-shop"><input id="in-shop" type="checkbox" checked>用集成配額到商店再換 5 抽</label>
+      <label class="check" for="in-dossier"><input id="in-dossier" type="checkbox">上一個限定池有抽滿 60 抽，這一池開頭多送 10 抽</label>
       <span class="cap">集成配額來自滿潛的四星、五星，老玩家通常用不完。新帳號換不起就取消勾選。</span>
     </fieldset>
     <fieldset class="wide"><legend>還能買的項目<small>勾選你還沒買過、願意買的；一般源石不限次數，一律可買</small></legend>
@@ -245,6 +246,7 @@ __OWN6__
     <p id="b-advice" class="note"></p>
     <h3>七種抽法的比較</h3>
     <p>○ 是要抽，✕ 是跳過，由左到右是最近的三個限定池。每一種都假設想要的池會一路追到拿到為止，保底與上池送的 10 抽照規則帶到下一池。◀ 是你現在勾選的抽法。</p>
+    <p class="cap">想要的隻數相同時，各種抽法的機率通常只差一兩個百分點。小差距來自兩件事：跳過的池的免費抽落在想要的池之前還是之後，以及抽滿 60 抽送的 10 抽是送到想要的池還是跳過的池。這個比較假設你的抽數一開始就全部在手上；實際上越晚的池有越多時間累積資源，所以把想要的池排在後面通常還會更有利一點。</p>
     <div class="scroll"><table id="b-patterns"></table></div>
     <figure>
       <div class="ftitle">你勾選的抽法：總共要自己出幾抽</div>
@@ -911,11 +913,11 @@ __ENGINE__
       (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
   }
   function runB(c){
-    const {S,now,left,M,bp,bf,pc}=c, nt=v=>'NT$'+Math.round(v).toLocaleString();
+    const {S,now,left,M,bp,bf,d0,pc}=c, nt=v=>'NT$'+Math.round(v).toLocaleString();
     const want=['in-w1','in-w2','in-w3'].map(id=>$(id).checked), useFree=$('in-usefree').checked, t0=80-bp;
     const sym=w=>w.map(x=>x?'○':'✕').join(' '), same=(a,b)=>a.every((x,i)=>x===b[i]);
     const mean=f=>f.reduce((a,p,j)=>a+p*j,0), cdfAt=(f,k)=>{let s=0;for(let j=0;j<=Math.min(k,f.length-1);j++)s+=f[j];return s;};
-    const evalP=w=>{const st=limitedPlan({t0,free:bf,want:w,useFree}).stages, fin=st[st.length-1], need=fin.length-1;
+    const evalP=w=>{const st=limitedPlan({t0,free:bf,want:w,useFree,d0}).stages, fin=st[st.length-1], need=fin.length-1;
       return {w,st,fin,need,k:st.length,pAll:cdfAt(fin,S),got:st.reduce((a,f)=>a+cdfAt(f,S),0),mean:mean(fin),worst:costFor(need-S,left)};};
     const all=[];for(let m=7;m>=1;m--)all.push(evalP([!!(m&4),!!(m&2),!!(m&1)]));
     const sel=all.find(r=>same(r.w,want));
@@ -929,7 +931,7 @@ __ENGINE__
       const better=all.filter(r=>r.k===sel.k&&r!==sel).sort((a,b)=>b.pAll-a.pAll)[0];
       $('b-advice').textContent=`抽法 ${sym(sel.w)}：用 ${S} 抽把想要的 ${sel.k} 隻全部拿到的機率是 ${pc(sel.pAll)}，平均拿到 ${sel.got.toFixed(2)} 隻。`+
         (S>=sel.need?'你的抽數已經足夠保證。':`要保證還差 ${sel.need-S} 抽，最壞要補 ${nt(sel.worst)}。`)+
-        (better&&better.pAll>sel.pAll+0.005?`同樣抽 ${sel.k} 隻，${sym(better.w)} 的機率是 ${pc(better.pAll)}，比較高，差別來自保底與免費抽帶到後面池子的時機。`:'');
+        (!better?'':better.pAll>sel.pAll+0.02?`同樣抽 ${sel.k} 隻，${sym(better.w)} 的機率是 ${pc(better.pAll)}，明顯比較高。`:Math.abs(better.pAll-sel.pAll)<=0.02?`同樣抽 ${sel.k} 隻的其他抽法，機率都在 2 個百分點以內，可以當成一樣。要抽哪幾池，看你想要哪幾隻角色就好，不用為了機率去調整順序。`:'');
       const xm=Math.max(sel.need,S)+5, cdf=cumsum(sel.fin);while(cdf.length<=xm)cdf.push(1);
       lineChart('c-b-cdf',{label:'總自備抽數的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
         xlabel:'自備的總抽數',ylabel:'全部拿到',xname:'抽數',vfmt:pct,h:280,mark:S,series:[{name:'全部拿到',y:cdf}]});
@@ -955,7 +957,7 @@ __ENGINE__
         (canNow>=need?'現有配額就足夠全部保證。':canFut>=need?'加上預估進帳後足夠全部保證，但進帳若偏少可能差一兩次。':`全部拿到的機率約 ${pc(last)}，要保證還差 ${((need-canFut)*ISSUE).toLocaleString()} 配額左右。`);
     }
     const opts=[[0,'不用']];if(bf>5)opts.push([5,'只用登入送的 5 抽']);if(bf>0)opts.push([bf,`${bf} 抽全部用掉`]);
-    const fr=opts.map(([k,name])=>{const f=limitedPlan({t0,free:bf,want:[false,true],skipFree:k}).stages[0];let acc=0,med=0;for(let j=0;j<f.length;j++){acc+=f[j];if(acc>=0.5-1e-12){med=j;break;}}return [name,mean(f),med,k];});
+    const fr=opts.map(([k,name])=>{const f=limitedPlan({t0,free:bf,want:[false,true],skipFree:k,d0}).stages[0];let acc=0,med=0;for(let j=0;j<f.length;j++){acc+=f[j];if(acc>=0.5-1e-12){med=j;break;}}return [name,mean(f),med,k];});
     const bestF=fr.slice().sort((a,b)=>a[1]-b[1])[0];
     tbl('b-free',['跳過的池的免費抽','下一池平均要自備','下一池的中位數'],fr.map(r=>[r[0]+(r===bestF?' ◀':''),r[1].toFixed(1),r[2]]));
     $('b-free-note').textContent=`你的保底再 ${bp} 抽必出六星。`+(bestF[3]===0?`這時候跳過的池不要用免費抽，商店那 5 抽也不用換。用掉會把保底推進軟保底區，六星多半出在不想要的池子。`:
@@ -967,7 +969,7 @@ __ENGINE__
   function run(){
     setOffers();
     const err=$('calc-error'),out=$('calc-out');
-    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf')+($('in-shop').checked?5:0),soft=true;
+    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),d0=$('in-dossier').checked,bfBase=num('in-bf')+($('in-shop').checked?5:0),bf=bfBase+(d0?10:0),soft=true;
     let msg='';
     if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
     else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
@@ -988,7 +990,7 @@ __ENGINE__
     const fa=got?[1]:firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
     const left=jade%500, M=num('in-money');
     const modeB=showMode();$('out-b').hidden=!modeB;$('case').hidden=modeB;
-    if(modeB){$('calc-error').hidden=true;$('calc-out').hidden=true;runB({S:B,now,left,M,bp,bf,pc:v=>(v*100).toFixed(1)+'%'});return;}
+    if(modeB){$('calc-error').hidden=true;$('calc-out').hidden=true;runB({S:B,now,left,M,bp,bf:bfBase,d0,pc:v=>(v*100).toFixed(1)+'%'});return;}
     const rows=decide(fa,fb,B), capMax=got?0:Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
     const pick=usable.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
     const pc=v=>(v*100).toFixed(1)+'%';

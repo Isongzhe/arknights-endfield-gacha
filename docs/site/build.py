@@ -118,11 +118,12 @@ def check_browser_engine():
     from gacha.models.plan import Plan
 
     ppayload = []
-    for t0, free, want in ((0, 5, [1, 1, 1]), (48, 10, [1, 0, 1]), (70, 5, [0, 1, 1]), (30, 10, [1, 1, 0])):
+    cases3 = ((0, 5, [1, 1, 1], 0), (48, 10, [1, 0, 1], 0), (70, 5, [0, 1, 1], 0), (30, 10, [1, 1, 0], 0), (48, 10, [1, 1, 0], 1), (20, 5, [0, 1, 1], 1))
+    for t0, free, want, d0 in cases3:
         rules = replace(full, free_start_pulls=free)
         specs = [BannerSpec(rules, 1, 120) if w else BannerSpec(rules, 0, 0) for w in want]
-        h, _ = ht(Plan(specs, start=BannerState(t0, 0, 0, 0)))
-        o = {"t0": t0, "free": free, "want": [bool(w) for w in want], "useFree": True}
+        h, _ = ht(Plan(specs, start=BannerState(t0, 0, 0, 0), dossier0=bool(d0)))
+        o = {"t0": t0, "free": free, "want": [bool(w) for w in want], "useFree": True, "d0": bool(d0)}
         ppayload.append({"o": o, "pmf": [float(x) for x in h.f_succ]})
     prunner = runner.replace("{firstUp}", "{limitedPlan}").replace(
         "const p=firstUp(c.o);", "const st=limitedPlan(c.o).stages;const p=st[st.length-1];"

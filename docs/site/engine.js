@@ -81,7 +81,7 @@ function weaponUp(o) {
 }
 if (typeof module !== "undefined") module.exports.weaponUp = weaponUp;
 // Consecutive limited banners with carried pity and the 60-pull dossier (src/gacha/models/plan.py).
-// o: {t0, free, want: [bool...], useFree} -> {stages: [pmf of own pulls after each wanted banner]}
+// o: {t0, free, want: [bool...], useFree, d0 (dossier held for the first banner)} -> {stages: [pmf of own pulls after each wanted banner]}
 // Policy: chase every wanted banner to its rate-up (at most 120 counted pulls); on a skipped
 // banner use the free pulls when useFree is true (dossier pulls are always used).
 function limitedPlan(o) {
@@ -134,7 +134,7 @@ function limitedPlan(o) {
     return list;
   }
   const L = o.want.filter(Boolean).length * GUAR + 1;
-  let dist = new Map([[o.t0 * 2, Float64Array.of(1)]]);  // key t*2+d -> pmf over own pulls
+  let dist = new Map([[o.t0 * 2 + (o.d0 ? 1 : 0), Float64Array.of(1)]]);  // key t*2+d -> pmf over own pulls
   const stages = [];
   o.want.forEach((wanted) => {
     const next = new Map();
