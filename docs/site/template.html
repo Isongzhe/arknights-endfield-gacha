@@ -244,6 +244,16 @@ __OWN6__
     <h3>結果</h3>
     <div class="keys" id="b-keys"></div>
     <p id="b-advice" class="note"></p>
+    <h3>這個模式算的是什麼</h3>
+    <p>計算本身是精確的：給定下面這些前提，數字沒有誤差，也和 Python 引擎逐點比對過。但前提是簡化的，所以請把它當成比較各種抽法的工具，不是對未來的預測。</p>
+    <ul>
+      <li>你的抽數被當成現在就全部在手上。實際上越晚的池有越多時間累積，後面的池會比這裡算的樂觀一些。</li>
+      <li>想要的池一律追到拿到為止，抽數用完就停。沒有「這池只抽到必出六星就收手」這種停損。</li>
+      <li>三個池的規則與免費抽數都相同。</li>
+      <li>抽數在某一池用完之後，後面的池當成拿不到。實際上還有免費抽的一點點機會，所以「平均拿到幾隻」略為保守。</li>
+      <li>保障配額的回收與武器的配額進帳用的是平均值。</li>
+      <li>九週內活動與版本會送多少抽，工具不知道，要靠你在「其他預估收入」填。這通常是最大的誤差來源。</li>
+    </ul>
     <h3>七種抽法的比較</h3>
     <p>○ 是要抽，✕ 是跳過，由左到右是最近的三個限定池。每一種都假設想要的池會一路追到拿到為止，保底與上池送的 10 抽照規則帶到下一池。◀ 是你現在勾選的抽法。</p>
     <p class="cap">想要的隻數相同時，各種抽法的機率通常只差一兩個百分點。小差距來自兩件事：跳過的池的免費抽落在想要的池之前還是之後，以及抽滿 60 抽送的 10 抽是送到想要的池還是跳過的池。這個比較假設你的抽數一開始就全部在手上；實際上越晚的池有越多時間累積資源，所以把想要的池排在後面通常還會更有利一點。</p>
@@ -590,22 +600,22 @@ flowchart LR
   </table></div>
   <p>這張表為了讓 n 直接等於已付抽數，把開頭免費 5 抽關掉了，所以全新狀態是 79.3 而不是上面的 74.3。</p>
 
-  <h3>跨池繼承：精確值與當成獨立相加的差距</h3>
+  <h3>跨池繼承：算入與忽略的差距</h3>
   <div class="two">
     <figure>
       <div class="ftitle">連續兩池都要</div>
-      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>當成獨立相加</span></div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>算入跨池繼承</span><span><i class="dash" style="border-color:var(--s2)"></i>忽略繼承，每池從零算</span></div>
       <div class="chart" id="c-k2"></div>
     </figure>
     <figure>
       <div class="ftitle">連續三池都要</div>
-      <div class="legend"><span><i style="border-color:var(--s1)"></i>精確，帶著保底與贈抽</span><span><i class="dash" style="border-color:var(--s2)"></i>當成獨立相加</span></div>
+      <div class="legend"><span><i style="border-color:var(--s1)"></i>算入跨池繼承</span><span><i class="dash" style="border-color:var(--s2)"></i>忽略繼承，每池從零算</span></div>
       <div class="chart" id="c-k3"></div>
     </figure>
   </div>
   <p>縱軸是在預算內全部拿齊的機率。實線全程在虛線上方，因為前一池剩下的保底與贈抽都會幫到下一池。</p>
   <div class="scroll"><table>
-    <tr><th class="n">池數</th><th class="n">精確期望</th><th class="n">獨立相加的期望</th><th class="n">精確 90%</th><th class="n">獨立相加 90%</th><th class="n">最大累積機率差</th></tr>
+    <tr><th class="n">池數</th><th class="n">算入繼承的平均</th><th class="n">忽略繼承的平均</th><th class="n">算入繼承 90%</th><th class="n">忽略繼承 90%</th><th class="n">最大累積機率差</th></tr>
     <tr><td class="n">2</td><td class="n">140.9</td><td class="n">148.7</td><td class="n">220</td><td class="n">230</td><td class="n">0.201</td></tr>
     <tr><td class="n">3</td><td class="n">207.6</td><td class="n">223.0</td><td class="n">277</td><td class="n">297</td><td class="n">0.152</td></tr>
   </table></div>
@@ -1070,7 +1080,7 @@ lineChart('c-pity',{label:'保底的價值',xmax:79,ymin:30,ymax:80,yticks:[30,4
 for(const k of [2,3]){const c=D.carry[k];
   lineChart('c-k'+k,{label:`連續 ${k} 池的累積分布`,xmax:c.exact.length-1,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,
     xticks:k===2?[0,50,100,150,200,230]:[0,100,200,300,345],xlabel:'總付費抽數預算',ylabel:'拿齊機率',xname:'預算',vfmt:pct,h:300,
-    series:[{name:'精確',y:c.exact},{name:'獨立相加',y:c.iid,dash:true}]});}
+    series:[{name:'算入繼承',y:c.exact},{name:'忽略繼承',y:c.iid,dash:true}]});}
 
 (function(){
   const host=document.getElementById('c-heat'),B=D.completion.budgets,G=D.completion.grid;
