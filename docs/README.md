@@ -1,5 +1,7 @@
 # Documentation
 
+Start with [../ARCHITECTURE.md](../ARCHITECTURE.md) for how the code is organised and [../ROADMAP.md](../ROADMAP.md) for what comes next.
+
 | File | What it is |
 |---|---|
 | [assumptions.md](assumptions.md) | Every game rule the models use, its source and status, and the calibration against the official published rates |
@@ -13,7 +15,7 @@
 | [rules/roster.md](rules/roster.md) | Operator roster and the off-rate 6★ pool (Chinese) |
 | [rules/pricing.md](rules/pricing.md) | Taiwan price list and purchase limits (Chinese) |
 | [site/](site/) | Browsable write-up with calculators; `uv run python docs/site/build.py` builds `index.html` and `standalone.html` |
-| [design/](design/) | The original Phase 1 design, kept as a record |
+| [paper-outline.md](paper-outline.md) | Working outline of the paper: claims, status of each contribution, figures still to produce |
 
 Data files used by the site live in `site/`: `roster.json`, `banners.json`, and the generated
 `data.json`. Operator icons are game art and are not committed; `site/fetch_icons.py` downloads

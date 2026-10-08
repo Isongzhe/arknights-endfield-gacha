@@ -1,7 +1,8 @@
 # gacha — exact gacha waiting-time models
 
-Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfield. Design:
-`docs/design/2026-09-16-endfield-gacha-phase1-design.md`. Rules and assumptions:
+Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfield. Goals: a
+planning tool and a paper (`ROADMAP.md`, `docs/paper-outline.md`). Structure: `ARCHITECTURE.md`.
+Rules and assumptions:
 `docs/assumptions.md`. Research direction: `docs/research-notes.md`. Numbers: `docs/results.md`.
 
 ## Commands

@@ -41,7 +41,7 @@ addopts = "-q"
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-extend-exclude = [".claude", ".superpowers", "docs"]
+extend-exclude = [".claude", ".superpowers", "docs", "*.ipynb"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]

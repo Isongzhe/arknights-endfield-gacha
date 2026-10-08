@@ -8,7 +8,7 @@ distribution** from your **current state**, by finite recursion rather than simu
 it to answer planning questions: how likely is my stock to be enough, where should I stop on
 this banner, and what does pulling here cost my chances on the next one.
 
-[繁體中文說明](#繁體中文) · [Rules and assumptions](docs/assumptions.md) · [Documentation index](docs/README.md)
+[繁體中文說明](#繁體中文) · [Rules and assumptions](docs/assumptions.md) · [Architecture](ARCHITECTURE.md) · [Roadmap](ROADMAP.md) · [Documentation index](docs/README.md)
 
 ## What it does
 
@@ -101,6 +101,9 @@ dist = hitting_time(EnumeratedChain.from_model(model))
 print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 ```
 
+**In a notebook, nothing to install** — [open the demo in Colab](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
+(the text is in Traditional Chinese; the repository has to be public for this link to work).
+
 **Reproduce every table and figure**: `uv run gacha experiment all` writes to `results/`.
 
 A browsable write-up with calculators (re-run plus next limited banner, three consecutive limited
@@ -161,6 +164,8 @@ MIT, see [LICENSE](LICENSE).
 - **從你現在的狀態算**：保底計數、池內已抽幾抽、手上有多少抽。
 - **回答停損問題**：兩個池共用資源時，第一個池該抽到哪裡停，會讓第二個池的機率掉多少。
 - **換算成錢**：差的抽數最便宜要花多少。
+
+不想安裝的話，可以直接[在 Colab 開啟示範筆記](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)，改幾個數字就能算自己的情況。
 
 把你的狀況寫成一個檔案（範例見 [examples/rerun_then_limited.toml](examples/rerun_then_limited.toml)），然後執行：
 
