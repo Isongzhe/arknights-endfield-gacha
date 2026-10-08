@@ -32,6 +32,14 @@ Everything else follows from that contract:
 What "cost" means is the model's choice: one own pull for character banners, one ten-pull issue
 for the weapon banner.
 
+## What kind of model this is
+
+Every model here is a Markov chain evaluated under a fixed policy (for example "pull until the
+target or until the cap"). The engine computes the exact distribution of the outcome of that
+policy; comparing policies means evaluating each one. It is not yet a Markov decision process:
+nothing in the code optimises over actions. Posing the budgeted problem as an MDP on the same
+state space is the planned next step (`docs/theory-problems.md`, P5).
+
 ## Rules, data and state are kept apart
 
 | Kind | Changes | Lives in |

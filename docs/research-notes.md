@@ -48,6 +48,22 @@ The open problems are stated formally in [theory-problems.md](theory-problems.md
 
 ## Findings
 
+- 2026-10-08, several copies on one banner. Six copies (full potential): mean 451.8 own pulls,
+  sd 108.8, maximum 1195. By counted pull 479 the probability is 0.489, by pull 480 it is 0.749:
+  the second token arrives on pull 480 and that single pull carries 26% of the mass; pull 720
+  brings it to 0.993. A renewal estimate (first copy 74.3, then 1 / (q/E[C] + 1/240) = 74.4 pulls
+  per copy) gives 446, close to the exact mean, so averages do not need the chain. A normal
+  approximation gives 0.583 and 0.586 at pulls 479 and 480 and misses the jump entirely, so
+  questions of the form "is my stock enough" do need the exact distribution.
+- 2026-10-08, rate-up copies from probability alone in a 240-pull window starting at pity 0:
+  0: 0.072, 1: 0.257, 2: 0.350, 3: 0.227, 4: 0.076; mean 2.03. Reaching pull 240 with only the
+  guarantee and the token has probability 0.341 × 0.339 = 0.115.
+- 2026-10-08, why a banner can be good on paper and feel bad (theory-problems P9, P10). Against
+  the reference paper's 50/50 schedule, Endfield has the lower mean (74.3 vs 93.5), spread and
+  maximum (115 vs 180), but 32.8% of outcomes are exactly the maximum (about 0 there), 67.9% of
+  first-6★ losses run to the guarantee, and a run of three guarantee outcomes has probability
+  0.035 per three banners and 0.235 somewhere in twelve.
+
 - 2026-10-08, free pulls on a skipped banner. Expected own pulls for the next wanted UP (10 free
   pulls there), by entering pity t0, when the skipped banner's free pulls are not used / 5 used /
   10 used: t0 = 0: 69.5 / 67.8 / 66.2; t0 = 48: 46.3 / 43.9 / 41.6; t0 = 58: 39.4 / 38.2 / 46.7;

@@ -42,7 +42,7 @@ what `gacha-risk decide` and the site's calculator are built for.
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-git clone <this repository>
+git clone https://github.com/Isongzhe/arknights-endfield-gacha.git
 cd arknights-endfield-gacha
 uv sync
 uv run pytest
