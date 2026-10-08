@@ -92,9 +92,9 @@
     "Last Rite": "別禮",
     "Ember": "餘燼",
     "Lifeng": "黎風",
-    "Typhoeus": "提豐",
-    "Liino": "萊諾",
+    "Typhoeus": "提佛洛斯",
+    "Liino": "梨諾",
     "Yvonne": "伊馮"
   },
-  "zh_names_note": "A plain name dictionary, not pool membership. 萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; 提豐、萊諾、伊馮 and the others were supplied by the project owner."
+  "zh_names_note": "A plain name dictionary, not pool membership; nothing here has to change when banners rotate. 萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; the others were supplied by the project owner."
 }
