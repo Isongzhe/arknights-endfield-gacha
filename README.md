@@ -1,7 +1,6 @@
 # gacha-risk
 
 [![Calculator](https://img.shields.io/badge/calculator-open%20the%20site-2a78d6.svg)](https://isongzhe.github.io/arknights-endfield-gacha/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
 [![CI](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml/badge.svg)](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)
@@ -46,12 +45,10 @@ flowchart TD
     Q -->|A re-run now and a limited banner next,<br/>one stock of pulls| D["gacha-risk decide scenario.toml"]
     Q -->|Several limited banners in a row| P["gacha-risk evaluate --plan plan.toml"]
     Q -->|What my arsenal quota buys| W["gacha-risk weapon --quota N"]
-    Q -->|Try it without installing| C["Colab notebook"]
     E --> R["Exact distribution of own pulls:<br/>mean, quantiles, worst case,<br/>chance within a budget"]
     D --> T["For every stopping point on the first banner:<br/>P(first), P(second), P(both),<br/>cheapest top-up to guarantee both"]
     P --> R
     W --> I["Chance of the rate-up weapon<br/>per ten-pull, quota still needed"]
-    C --> R
 ```
 
 How a result is computed:
@@ -142,16 +139,10 @@ dist = hitting_time(EnumeratedChain.from_model(model))
 print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 ```
 
-**In a notebook, nothing to install**
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
-
-The notebook text is in Traditional Chinese. Change the numbers marked 改這裡 and rerun the cell.
-
 **Reproduce every table and figure**: `uv run gacha-risk experiment all` writes to `results/`.
 
 The calculator site is published at <https://isongzhe.github.io/arknights-endfield-gacha/> (re-run
-plus next limited banner, three consecutive limited banners with skip patterns, weapons, and a
+plus next limited banner, weapons, and a
 report generated from your inputs). Its source lives in `docs/site/`; build it with
 `uv run python docs/site/build.py` and open `docs/site/standalone.html` (built pages are not
 committed; `docs/site/fetch_icons.py` optionally downloads operator icons for the checklist).
@@ -217,10 +208,6 @@ MIT, see [LICENSE](LICENSE).
 - **從你現在的狀態算**：保底計數、池內已抽幾抽、手上有多少抽。
 - **回答停損問題**：兩個池共用資源時，第一個池該抽到哪裡停，會讓第二個池的機率掉多少。
 - **換算成錢**：差的抽數最便宜要花多少。
-
-不想安裝的話，點下面的按鈕在 Colab 開啟示範筆記，改幾個數字就能算自己的情況。
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
 
 把你的狀況寫成一個檔案（範例見 [examples/rerun_then_limited.toml](examples/rerun_then_limited.toml)），然後執行：
 

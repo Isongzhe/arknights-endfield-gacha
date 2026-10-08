@@ -115,26 +115,6 @@ def check_browser_engine():
     if wout.returncode != 0:
         raise SystemExit(f"browser weapon engine disagrees with Python: {wout.stdout} {wout.stderr}")
     print("browser weapon engine max abs diff vs Python:", wout.stdout.strip())
-    from gacharisk.models.plan import Plan
-
-    ppayload = []
-    cases3 = ((0, 5, [1, 1, 1], 0), (48, 10, [1, 0, 1], 0), (70, 5, [0, 1, 1], 0), (30, 10, [1, 1, 0], 0), (48, 10, [1, 1, 0], 1), (20, 5, [0, 1, 1], 1))
-    for t0, free, want, d0 in cases3:
-        rules = replace(full, free_start_pulls=free)
-        specs = [BannerSpec(rules, 1, 120) if w else BannerSpec(rules, 0, 0) for w in want]
-        h, _ = ht(Plan(specs, start=BannerState(t0, 0, 0, 0), dossier0=bool(d0)))
-        o = {"t0": t0, "free": free, "want": [bool(w) for w in want], "useFree": True, "d0": bool(d0)}
-        ppayload.append({"o": o, "pmf": [float(x) for x in h.f_succ]})
-    prunner = runner.replace("{firstUp}", "{limitedPlan}").replace(
-        "const p=firstUp(c.o);", "const st=limitedPlan(c.o).stages;const p=st[st.length-1];"
-    )
-    pout = subprocess.run(
-        ["node", "-e", prunner, str(HERE / "engine.js")],
-        input=json.dumps(ppayload), capture_output=True, text=True,
-    )
-    if pout.returncode != 0:
-        raise SystemExit(f"browser plan engine disagrees with Python: {pout.stdout} {pout.stderr}")
-    print("browser plan engine max abs diff vs Python:", pout.stdout.strip())
     print("browser engine max abs diff vs Python:", out.stdout.strip())
 
 

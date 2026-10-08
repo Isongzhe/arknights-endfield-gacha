@@ -10,8 +10,7 @@ Added
 - `gacharisk.cost`: price menus and the cheapest top-up for a number of pulls.
 - `gacharisk.analysis.rebate`: 保障配額 rebate as an expected-value layer, from the stationary 5★ and
   6★ rates.
-- Documentation site (`docs/site`): calculator for "re-run plus next limited" and for three
-  consecutive limited banners with skip patterns, weapons, a report generated from the inputs
+- Documentation site (`docs/site`): calculator for "re-run plus next limited", weapons, a report generated from the inputs
   with money risk metrics and derivations. Its JavaScript engines are checked against the Python
   engine on every build.
 - Data records: operator roster, past banner schedule, Taiwan price list, weapon and re-run rules.

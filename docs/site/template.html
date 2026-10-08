@@ -85,10 +85,7 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 .formbar button{font:inherit;font-weight:700;font-size:16px;padding:10px 34px;border:0;border-radius:5px;background:var(--accent);color:var(--bg);cursor:pointer}
 .formbar button:hover{filter:brightness(1.1)}
 .formbar button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-#calc-out.stale,#case.stale,#out-b.stale{opacity:.45}
-#out-b{display:flex;flex-direction:column;gap:18px}
-#out-b h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
-#out-b h3:first-child{border-top:0;padding-top:0;margin-top:6px}
+#calc-out.stale,#case.stale{opacity:.45}
 .calc label.check{flex-direction:row;align-items:flex-start;gap:8px}
 #calc-out{display:flex;flex-direction:column;gap:18px}
 #calc-out h3,#case h3{margin-top:22px;padding-top:14px;border-top:1px solid var(--rule)}
@@ -132,7 +129,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 
 <section id="overview">
   <h2>總覽</h2>
-  <p>出發點是 Hou、Zhu、Zhang 在 <i>Symmetry</i> 2026 的論文〈<a href="https://www.mdpi.com/2073-8994/18/6/1051">State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models</a>〉，開放取用，可以免費閱讀全文。它把「抽到一隻稀有角色要幾抽」寫成吸收馬可夫鏈的吸收時間，用反向遞迴直接算出期望、變異數與完整分布。這裡把同一套想法搬到《明日方舟：終末地》的限定角色池，並處理論文列為未來工作的兩件事：跨池繼承，以及有預算上限時的分布。</p>
+  <p>出發點是 Hou、Zhu、Zhang 在 <i>Symmetry</i> 2026 的論文〈<a href="https://www.mdpi.com/2073-8994/18/6/1051">State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models</a>〉，開放取用，可以免費閱讀全文。它把「抽到一隻稀有角色要幾抽」寫成吸收馬可夫鏈的吸收時間，用反向遞迴直接算出期望、變異數與完整分布。這裡把同一套想法搬到《明日方舟：終末地》的限定角色池。</p>
   <div class="keys">
     <div><b>74.3</b><span>拿到第一隻當期 UP 的期望付費抽數</span></div>
     <div><b>67</b><span>中位數</span></div>
@@ -140,19 +137,13 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
     <div><b>32.8%</b><span>一路抽到 120 保底才拿到的機率</span></div>
     <div><b>+7.7</b><span>連抽兩池時，把兩池當獨立會高估的期望抽數</span></div>
   </div>
-  <p>上面這排數字假設每池只有登入送的 5 抽免費，所以最壞是 115 而不是 120。這 5 抽人人都有。如果再用集成配額到商店換 5 抽，免費抽變成 10 抽，最壞是 110，期望也會再低約 5 抽。集成配額要四星或五星滿潛之後才有，新帳號通常換不起，所以通用的數字以 5 抽為準，下面的試算器則預設 10 抽，可以自己改。</p>
+  <p>上面這排數字假設每池只有登入送的 5 抽免費，所以最壞是 115 而不是 120。這 5 抽人人都有。如果再用集成配額到商店換 5 抽，免費抽變成 10 抽，最壞是 110，期望也會再低約 5 抽。通用的數字以 5 抽為準，下面的試算器預設 10 抽，可以自己改。</p>
 </section>
 
 <section id="calc">
   <h2>試算：兩個池都想要，該怎麼分配</h2>
   <p>填入你的資源、兩個池的進度與結束日期，按「計算」後，下面的結果與分析報告會一起更新。月卡收入會依日期自動計入。情境是先開的復刻池與之後的限定新角色池各要一隻，兩池保底互不相通，只共用抽數。預設值是一組範例。</p>
   <form id="calc-form" class="calc" novalidate>
-    <fieldset class="wide"><legend>要算哪一種情況</legend>
-      <div class="fields">
-      <label class="check" for="in-mode-a"><input id="in-mode-a" name="mode" type="radio" checked>復刻池，加上下一個限定池</label>
-      <label class="check" for="in-mode-b"><input id="in-mode-b" name="mode" type="radio">連續三個限定池，可以選擇跳過哪幾個</label>
-      </div>
-    </fieldset>
     <fieldset class="wide"><legend>資源</legend>
       <div class="fields">
       <label for="in-ticket">通用尋訪憑證<input id="in-ticket" type="number" min="0" value="2" inputmode="numeric"></label>
@@ -174,7 +165,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <span class="cap" id="calc-days"></span>
       <span class="cap">其他預估收入指活動、開版獎勵、每週任務等，不確定就填 0。</span>
     </fieldset>
-    <fieldset class="only-a"><legend>復刻池<small>先開</small></legend>
+    <fieldset><legend>復刻池<small>先開</small></legend>
       <label for="in-an">本池累積已抽<input id="in-an" type="number" min="0" max="119" value="30" inputmode="numeric"></label>
       <label for="in-ap">再幾抽必出六星<input id="in-ap" type="number" min="1" max="80" value="50" inputmode="numeric"></label>
       <label class="check" for="in-agot"><input id="in-agot" type="checkbox">已經拿到復刻角色，這個池不再抽</label>
@@ -182,10 +173,10 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
     </fieldset>
     <fieldset><legend>限定新角色池<small>後開</small></legend>
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
-      <label for="in-bf">登入送的免費抽<input id="in-bf" type="number" min="0" max="25" value="5" inputmode="numeric"></label>
+      <label class="check" for="in-bf"><input id="in-bf" type="checkbox" checked>登入送的 5 抽免費抽</label>
       <label class="check" for="in-shop"><input id="in-shop" type="checkbox" checked>用集成配額到商店再換 5 抽</label>
       <label class="check" for="in-dossier"><input id="in-dossier" type="checkbox">上一個限定池有抽滿 60 抽，這一池開頭多送 10 抽</label>
-      <span class="cap">集成配額來自滿潛的四星、五星，老玩家通常用不完。新帳號換不起就取消勾選。</span>
+      <span class="cap">集成配額來自滿潛的四星、五星。不換就取消勾選。</span>
     </fieldset>
     <fieldset class="wide"><legend>還能買的項目<small>勾選你還沒買過、願意買的；一般源石不限次數，一律可買</small></legend>
       <div class="own offers">
@@ -201,28 +192,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       </div>
       <span class="cap">每個勾選的項目最多買一次。月卡是分 30 天領，不列在這裡，請用上面的月卡選項。協議源流包與人才包附的武庫配額沒有折算成價值。</span>
     </fieldset>
-    <fieldset class="only-b" hidden><legend>三個限定池<small>由近到遠</small></legend>
-      <label class="check" for="in-w1"><input id="in-w1" type="checkbox" checked>第一池要抽</label>
-      <label class="check" for="in-w2"><input id="in-w2" type="checkbox" checked>第二池要抽</label>
-      <label class="check" for="in-w3"><input id="in-w3" type="checkbox">第三池要抽</label>
-      <label class="check" for="in-usefree"><input id="in-usefree" type="checkbox" checked>跳過的池也把免費抽用掉</label>
-      <span class="cap">保底與免費抽用「限定新角色池」那一區的設定，每一池都一樣。「新角色池結束日」請填第三池的結束日，用來算月卡收入。武器請在下方「武器池」勾選。</span>
-    </fieldset>
-    <fieldset class="wide"><legend>武器池<small>只用武庫配額，和角色池的抽數分開</small></legend>
-      <div class="fields">
+    <fieldset><legend>武器<small>武庫配額會隨抽角色進帳</small></legend>
       <label for="in-wq">現有武庫配額<input id="in-wq" type="number" min="0" value="43940" inputmode="numeric"></label>
-      <label data-mode="a" for="in-wai">復刻角色的武器池，已抽幾次十連<input id="in-wai" type="number" min="0" max="7" value="0" inputmode="numeric"></label>
-      <label data-mode="a" for="in-wbi">新角色的武器池，已抽幾次十連<input id="in-wbi" type="number" min="0" max="7" value="0" inputmode="numeric"></label>
-      <label data-mode="a" for="in-wpulls">接下來三個卡池，預計總共抽幾抽角色<input id="in-wpulls" type="number" min="0" value="100" inputmode="numeric"></label>
-      <label for="in-wextra">其他來源的武庫配額，活動、大月卡等<input id="in-wextra" type="number" min="0" value="0" inputmode="numeric"></label>
-      </div>
-      <div class="fields">
-      <label data-mode="a" class="check" for="in-wa"><input id="in-wa" type="checkbox" checked>想要復刻角色的武器</label>
-      <label data-mode="a" class="check" for="in-wb"><input id="in-wb" type="checkbox" checked>想要新角色的武器</label>
-      <label data-mode="b" class="check" for="in-ww1" hidden><input id="in-ww1" type="checkbox" checked>第一池角色的武器也要</label>
-      <label data-mode="b" class="check" for="in-ww2" hidden><input id="in-ww2" type="checkbox" checked>第二池角色的武器也要</label>
-      <label data-mode="b" class="check" for="in-ww3" hidden><input id="in-ww3" type="checkbox">第三池角色的武器也要</label>
-      </div>
     </fieldset>
     <fieldset class="wide"><legend>保障配額回收<small>抽到已擁有的角色會回收配額，25 換 1 抽</small></legend>
       <div class="fields"><label for="in-quota">現有保障配額<input id="in-quota" type="number" min="0" value="10" inputmode="numeric"></label></div>
@@ -240,44 +211,6 @@ __OWN6__
     <div class="formbar wide"><button type="submit" id="calc-go">計算</button><span class="cap" id="calc-saved"></span></div>
   </form>
   <p id="calc-error" class="note" hidden></p>
-  <div id="out-b" hidden>
-    <h3>結果</h3>
-    <div class="keys" id="b-keys"></div>
-    <p id="b-advice" class="note"></p>
-    <h3>這個模式算的是什麼</h3>
-    <p>計算本身是精確的：給定下面這些前提，數字沒有誤差，也和 Python 引擎逐點比對過。但前提是簡化的，所以請把它當成比較各種抽法的工具，不是對未來的預測。</p>
-    <ul>
-      <li>你的抽數被當成現在就全部在手上。實際上越晚的池有越多時間累積，後面的池會比這裡算的樂觀一些。</li>
-      <li>想要的池一律追到拿到為止，抽數用完就停。沒有「這池只抽到必出六星就收手」這種停損。</li>
-      <li>三個池的規則與免費抽數都相同。</li>
-      <li>抽數在某一池用完之後，後面的池當成拿不到。實際上還有免費抽的一點點機會，所以「平均拿到幾隻」略為保守。</li>
-      <li>保障配額的回收與武器的配額進帳用的是平均值。</li>
-      <li>九週內活動與版本會送多少抽，工具不知道，要靠你在「其他預估收入」填。這通常是最大的誤差來源。</li>
-    </ul>
-    <h3>七種抽法的比較</h3>
-    <p>○ 是要抽，✕ 是跳過，由左到右是最近的三個限定池。每一種都假設想要的池會一路追到拿到為止，保底與上池送的 10 抽照規則帶到下一池。◀ 是你現在勾選的抽法。</p>
-    <p class="cap">想要的隻數相同時，各種抽法的機率通常只差一兩個百分點。小差距來自兩件事：跳過的池的免費抽落在想要的池之前還是之後，以及抽滿 60 抽送的 10 抽是送到想要的池還是跳過的池。這個比較假設你的抽數一開始就全部在手上；實際上越晚的池有越多時間累積資源，所以把想要的池排在後面通常還會更有利一點。</p>
-    <div class="scroll"><table id="b-patterns"></table></div>
-    <figure>
-      <div class="ftitle">你勾選的抽法：總共要自己出幾抽</div>
-      <div class="chart" id="c-b-cdf"></div>
-      <figcaption>縱軸是在這麼多抽以內把想要的全部拿到的機率。垂直虛線是你可用的總抽數。</figcaption>
-    </figure>
-    <h3>逐池進度</h3>
-    <div class="scroll"><table id="b-stages"></table></div>
-    <h3>要花多少錢</h3>
-    <div class="scroll"><table id="b-money"></table></div>
-    <p class="cap">假設想要的每一隻都追到保證，缺多少補多少，依「還能買的項目」取最便宜的買法。</p>
-    <h3>武器</h3>
-    <p id="b-wkey" class="note"></p>
-    <div class="scroll"><table id="b-weapons"></table></div>
-    <p class="cap">武器池只用武庫配額，1,980 換一次十連，一把 UP 武器最多 8 次保證。限定角色的武器池會持續三個卡池，所以這三池抽角色進帳的配額都用得上。預估進帳是用這個抽法平均會抽的角色抽數乘上每抽 81 配額，實際會有高低。只會計算有勾選要抽的池的武器。</p>
-    <h3>跳過的池要不要用免費抽</h3>
-    <p>免費抽不花資源，但它會推進保底。保底還遠的時候，用掉等於替下一池墊保底。保底快到的時候，用掉很可能讓六星出在你不想要的池子，保底就歸零了。下表以「跳過眼前這一池，下一池要抽」為例，比較下一池平均要自己出幾抽。</p>
-    <div class="scroll"><table id="b-free"></table></div>
-    <p id="b-free-note"></p>
-    <p class="cap">這個比較只計算下一隻想要的 UP。在跳過的池意外出的六星被當成沒有價值；如果你也想要它，結論會不同。</p>
-  </div>
   <div id="calc-out">
     <h3>結果</h3>
     <div class="keys" id="calc-keys"></div>
@@ -348,21 +281,12 @@ __OWN6__
   <p id="rep-income-note"></p>
 
   <h3>八、武器</h3>
-  <p>武器池只收武庫配額，1,980 換一次十連，不能單抽，和角色池的抽數是兩筆分開的資源。一把當期 UP 武器最多 8 次十連保證拿到。</p>
-  <div class="keys" id="rep-wtiles"></div>
+  <p>武器池只收武庫配額，1,980 換一次十連。配額主要是抽角色送的：每抽到一隻四星給 20、五星 200、六星 2,000。所以武器和角色是連動的，角色抽得越多，配額越多，武器越有把握。</p>
   <p id="rep-wkey" class="note"></p>
-  <div class="scroll"><table id="rep-wres"></table></div>
-  <p class="cap">復刻角色的武器池會跟著復刻池一起關，所以排在前面。限定角色的武器池會持續三個卡池，可以晚一點抽，期間抽角色進帳的配額也用得上。</p>
+  <div class="scroll"><table id="rep-wlink"></table></div>
+  <p class="cap">進帳用的是平均值。實際進帳主要看出了幾隻六星，一隻就差 2,000 配額，大約一次十連。保證一把 UP 武器要 8 次十連，兩把要 16 次。</p>
   <div class="scroll"><table id="rep-wprob"></table></div>
-  <p class="cap">上表是累計抽到第幾次十連時，已經拿到 UP 武器的機率。六星武器每抽 4%，其中 25% 是當期 UP；連續 40 抽沒出六星武器時必出一把，池內第 80 抽必出 UP。前 7 次是慢慢爬的，第 8 次才補滿，所以要抽就準備好 8 次的量。</p>
-  <h3>三個卡池內補不補得到</h3>
-  <p id="rep-wfuture-intro"></p>
-  <div class="scroll"><table id="rep-wfuture"></table></div>
-  <p id="rep-wfuture-note"></p>
-  <h3>角色抽得越少，武器越買不起</h3>
-  <p>下表用新角色池的三種結果，看各自會進帳多少武庫配額，以及加上你現有的配額之後夠不夠拿武器。</p>
-  <div class="scroll"><table id="rep-wscen"></table></div>
-  <p id="rep-wnote"></p>
+  <p class="cap">累計抽到第幾次十連時，已經拿到一把 UP 武器的機率。前 7 次慢慢爬，第 8 次才補滿。</p>
 
   <h3>九、推導</h3>
   <p>令 \(T_A\)、\(T_B\) 為兩個池各自拿到目標所需的自備抽數，\(f_A(j)=P(T_A=j)\)、\(F_A(j)=P(T_A\le j)\)，\(B\) 池同理。兩種池的保底互不相通，所以 \(T_A\) 與 \(T_B\) 獨立。令 \(S\) 為到第二個池結束可用的總抽數，\(x\) 為第一個池的投入上限：最多抽 \(x\) 抽，拿到就提早停，剩下的全給第二個池。</p>
@@ -794,7 +718,7 @@ __ENGINE__
   const tbl=(id,head,body)=>{$(id).innerHTML='<tr>'+head.map((h,i)=>`<th${i?' class="n"':''}>${h}</th>`).join('')+'</tr>'+
     body.map(r=>'<tr>'+r.map((v,i)=>`<td${i?' class="n"':''}>${v}</td>`).join('')+'</tr>').join('');};
   function report(c){
-    const {wq,wantA,wantB,wai,wbi,got,rebate,perPull,fa,fb,S,S1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other,card}=c;
+    const {wq,got,rebate,perPull,fa,fb,S,S1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other,card}=c;
     const h=Math.min(ap,maxA,capMax), softA=Math.max(1,ap-14), hardB=Math.max(0,bp-bf), softB=Math.max(1,bp-14-bf);
     const Fa=cumsum(fa), Fb=cumsum(fb), at=(F,j)=>j<0?0:F[Math.min(j,F.length-1)];
     const stat=f=>{let m=0,acc=0,med=null;f.forEach((p,j)=>{m+=p*j;acc+=p;if(med===null&&acc>=0.5-1e-12)med=j;});return {m,med};};
@@ -855,113 +779,25 @@ __ENGINE__
       band.map(r=>[r.d<0?'比估計少 2 抽':r.d>0?'比估計多 2 抽':'目前的估計',r.S,pc(r.b),pc(r.both),nt(r.worst)]));
     const spread=Math.max(Math.abs(band[0].both-band[1].both),Math.abs(band[2].both-band[1].both))*100;
     $('rep-band-note').textContent=perPull>0?(got?'':`以復刻池抽 ${h} 抽停為前提。`)+`回收差 2 抽，兩隻都有的機率最多移動 ${spread.toFixed(1)} 個百分點`+(spread<1.5?'，不影響該停在哪裡的判斷。':'。這個幅度不小，代表你的抽數剛好落在某個保底門檻附近，判斷時要保守一點。'):'目前沒有計入回收，這張表只顯示可用抽數差 2 抽的影響。';
-    // weapons: issues affordable, per-banner progress, and how character luck feeds the quota
-    const ISSUE=1980, r5=D.rates.five, r6=D.rates.six, minor=20*(1-r5-r6)+200*r5;
-    const wA=weaponUp({issuesDone:wai}), wB=weaponUp({issuesDone:wbi}), cw=f=>{const c=cumsum(f);return k=>c[Math.max(0,Math.min(k,c.length-1))];};
-    const wanted=[];if(wantA)wanted.push(['復刻角色的武器',wA]);if(wantB)wanted.push(['新角色的武器',wB]);
-    const allW=wanted.reduce((acc,[,f])=>convolve(acc,f),[1]), cAll=cw(allW), needW=allW.length-1, can=Math.floor(wq/ISSUE);
-    if(!wanted.length){$('rep-wkey').textContent='沒有勾選想要的武器。';for(const id of ['rep-wtiles','rep-wres','rep-wprob','rep-wscen','rep-wfuture'])$(id).innerHTML='';$('rep-wnote').textContent='';$('rep-wfuture-note').textContent='';}
-    else{
-      const short=Math.max(0,needW*ISSUE-wq), perChar=minor+2000*r6, wmean=f=>f.reduce((a,p,k)=>a+p*k,0);
-      let used=[1];const res=wanted.map(([name,f],i)=>{const c=cw(f);let pr=0;used.forEach((pu,u)=>{if(can-u>=0)pr+=pu*c(can-u);});used=convolve(used,f);
-        return [name,i===0?(wanted.length>1?'先抽':'—'):'後抽，用剩下的配額',pc(pr),wmean(f).toFixed(1),f.length-1,pr];});
-      $('rep-wtiles').innerHTML=[[can,`可抽的十連次數，${wq.toLocaleString()} 配額`],[needW,`想要的 ${wanted.length} 把最壞共需要幾次`],[pc(cAll(can)),'用現有配額全部拿到的機率'],
-        [short?short.toLocaleString():'0',short?`離全部保證還差的配額，約 ${Math.ceil(short/ISSUE)} 次十連`:'離全部保證還差的配額，已經足夠']].map(k=>`<div><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
-      $('rep-wkey').textContent=can>=needW?`你的配額夠抽 ${can} 次十連，想要的 ${wanted.length} 把最壞只要 ${needW} 次，全部保證拿得到，還會剩 ${can-needW} 次。拿到就停，不用多抽。`:
-        wanted.length===1?`你的配額夠抽 ${can} 次十連，保證這把武器要 ${needW} 次。現在去抽，拿到的機率是 ${pc(cAll(can))}。差的 ${short.toLocaleString()} 配額，大約再抽 ${Math.ceil(short/perChar)} 抽角色就會補上。`:
-        `你的配額夠抽 ${can} 次十連。建議先抽${wanted[0][0]}，它拿到的機率是 ${res[0][2]}。抽完之後剩下的配額再給${wanted[1][0]}，拿到的機率是 ${res[1][2]}。兩把都拿到的機率是 ${pc(cAll(can))}。要兩把都保證還差 ${short.toLocaleString()} 配額，大約再抽 ${Math.ceil(short/perChar)} 抽角色就會補上。`;
-      tbl('rep-wres',['武器','順序','用現有配額拿到的機率','平均要幾次十連','最多幾次'],
-        res.map(r=>r.slice(0,5)).concat(wanted.length>1?[['兩把都拿到','—',pc(cAll(can)),wmean(allW).toFixed(1),needW]]:[]));
-      const maxK=Math.max(...wanted.map(([,f])=>f.length-1)), ks=Array.from({length:maxK},(_,i)=>i+1);
-      const sameCurve=wanted.length>1&&wanted[0][1].length===wanted[1][1].length&&wanted[0][1].every((v,i)=>Math.abs(v-wanted[1][1][i])<1e-12);
-      const curves=sameCurve?[['每一把 UP 武器',wanted[0][1]]]:wanted;
-      tbl('rep-wprob',['累計十連次數',...ks.map(k=>'第 '+k+' 次')],curves.map(([name,f])=>[name,...ks.map(k=>pc(cw(f)(k)))]));
-      const income=Math.round(perChar*c.wpulls)+c.wextra;
-      // quota accumulated over the next three banners; the re-run weapon can only use what is in hand now
-      const avg6=r6*c.wpulls, mid6=Math.round(avg6), d6=Math.max(1,Math.round(Math.sqrt(c.wpulls*r6*(1-r6)))), fA=wantA?wA:null, fBw=wantB?wB:null;
-      const usedA=[];if(fA){let acc=0;for(let u=0;u<=Math.min(can,fA.length-1);u++){usedA[u]=fA[u]||0;acc+=usedA[u];}usedA[Math.min(can,fA.length-1)]+=1-acc;}else usedA[0]=1;
-      const pAnow=fA?cw(fA)(can):null;
-      const six=[...new Set([Math.max(0,mid6-d6),mid6,mid6+d6])];
-      const fut=six.map(k=>{const name=`出 ${k} 隻六星`+(k<mid6?'，比平均少':k>mid6?'，比平均多':'，接近平均'), inc=Math.round(minor*c.wpulls+2000*k)+c.wextra;
-        let pB=null;if(fBw){pB=0;const cB=cw(fBw);usedA.forEach((pu,u)=>{pB+=pu*cB(Math.floor((wq-ISSUE*u+inc)/ISSUE));});}
-        return [name,inc.toLocaleString(),(wq+inc).toLocaleString(),Math.floor((wq+inc)/ISSUE),pAnow===null?'—':pc(pAnow),pB===null?'—':pc(pB),pB];});
-      $('rep-wfuture-intro').textContent=`你填了接下來三個卡池預計抽 ${c.wpulls} 抽角色。每抽到一隻角色都會給武庫配額：四星 20、五星 200、六星 2,000，平均下來每抽約 ${perChar.toFixed(0)}。六星平均每 ${(1/r6).toFixed(0)} 抽出一隻，所以 ${c.wpulls} 抽平均會出 ${avg6.toFixed(1)} 隻。四星與五星的進帳很穩定，${c.wpulls} 抽大約 ${Math.round(minor*c.wpulls).toLocaleString()}；六星則是每隻 2,000，出幾隻差很多`+(c.wextra?`。另外加上你填的其他來源 ${c.wextra.toLocaleString()}`:'')+`。所以下表依這段期間出了幾隻六星分開來看。限定角色的武器池會開三個卡池，這些進帳都來得及用；復刻角色的武器池會提早關閉，只能用你現在手上的配額。`;
-      tbl('rep-wfuture',['這段期間抽角色的結果','進帳的配額','加上現有的配額','總共可抽十連','復刻角色的武器，只用現有配額','新角色的武器，用剩下的加上進帳'],fut.map(r=>r.slice(0,6)));
-      const iMid=six.indexOf(mid6), lo=fut[0], hi=fut[fut.length-1];
-      const needB=fBw?(fBw.length-1)*ISSUE:0, mid=fut[iMid][6];
-      $('rep-wfuture-note').textContent=!fBw?'沒有勾選新角色的武器。復刻角色的武器只能用現有的配額。':
-        mid>=0.9995?`怎麼讀：六星出 ${mid6} 隻的話，新角色的武器在三個卡池內保證拿得到。`+(lo[6]<0.9995?`但如果只出 ${six[0]} 隻，機率只有 ${pc(lo[6])}，差的那一兩次十連要另外想辦法。`:`就算只出 ${six[0]} 隻也夠。`):
-        `怎麼讀：六星出 ${mid6} 隻的話，新角色的武器拿到的機率是 ${pc(mid)}，還不到保證；只出 ${six[0]} 隻是 ${pc(lo[6])}，出 ${six[six.length-1]} 隻是 ${pc(hi[6])}。要保證需要 ${needB.toLocaleString()} 配額`+(fA?'，而且要先扣掉復刻武器用掉的部分':'')+`。每多抽 25 抽角色大約多一次十連；特惠武器包 420 元給 2,000 配額，約等於一次十連。`;
-      const scen=[['免費抽就出',0,1],['必出六星那一抽出',hardB,1],['歪一次，抽到大保底才出',maxB,2]].map(([name,own,six])=>{
-        const pulls=own+bf+(own+bf>=30?10:0), gainQ=Math.round(minor*pulls+2000*six), tot=wq+gainQ, k=Math.floor(tot/ISSUE);
-        return [name,own,gainQ.toLocaleString(),tot.toLocaleString(),k,pc(cAll(k))];});
-      tbl('rep-wscen',['新角色的結果','自備抽數','進帳的武庫配額','合計','可抽十連','想要的武器全拿到'],scen);
-      const zero=[0,hardB,maxB].map((own,i)=>{const pulls=own+bf+(own+bf>=30?10:0);return Math.floor((minor*pulls+2000*(i===2?2:1))/ISSUE);});
-      $('rep-wnote').textContent=`抽角色平均每抽進帳 ${(minor+2000*r6).toFixed(0)} 武庫配額，其中六星佔一半左右，所以進帳多寡主要看出了幾隻六星、抽了幾抽。如果手上原本沒有配額，上面三種結果各只能換 ${zero.join('、')} 次十連，而保證一把武器要 8 次。`+
-        (can>=needW?'你現有的配額夠多，所以三種情況都拿得到。':'配額不夠時，缺的部分要靠之後抽角色的進帳、活動、每週任務、大月卡或課金補。特惠武器包 420 元給 2,000 配額。');
-    }
+    // weapons are tied to character pulls: more character pulls bring more arsenal quota
+    const ISSUE=1980, r5=D.rates.five, r6=D.rates.six, perChar=20*(1-r5-r6)+200*r5+2000*r6;
+    const wOne=weaponUp({issuesDone:0}), two=convolve(wOne,wOne), cw=f=>{const cc=cumsum(f);return k=>cc[Math.max(0,Math.min(k,cc.length-1))];}, w1=cw(wOne), w2=cw(two);
+    const mine=S+bf, opts=[...new Set([0,30,60,90,120,180,240,mine])].sort((a,b)=>a-b);
+    tbl('rep-wlink',['抽了幾抽角色，含免費抽','平均進帳的配額','加上現有的','可抽十連','拿到一把 UP 武器','兩把都拿到'],
+      opts.map(n=>{const q=wq+Math.round(perChar*n), k=Math.floor(q/ISSUE);
+        return [n+(n===mine?' ◀ 你的抽數全用掉':''),Math.round(perChar*n).toLocaleString(),q.toLocaleString(),k,pc(w1(k)),pc(w2(k))];}));
+    const kNow=Math.floor(wq/ISSUE), need1=Math.max(0,8*ISSUE-wq), need2=Math.max(0,16*ISSUE-wq);
+    $('rep-wkey').textContent=`你現在有 ${wq.toLocaleString()} 武庫配額，可抽 ${kNow} 次十連。現在去抽，拿到一把 UP 武器的機率是 ${pc(w1(kNow))}，兩把都拿到是 ${pc(w2(kNow))}。抽角色平均每抽進帳 ${perChar.toFixed(0)} 配額。`+
+      (need1===0?(need2===0?'兩把都已經保證得到。':`一把已經保證；要兩把都保證，還要再抽約 ${Math.ceil(need2/perChar)} 抽角色。`):`要保證一把，還要再抽約 ${Math.ceil(need1/perChar)} 抽角色；兩把約 ${Math.ceil(need2/perChar)} 抽。`);
+    tbl('rep-wprob',['累計十連次數',...[1,2,3,4,5,6,7,8].map(k=>'第 '+k+' 次')],[['一把 UP 武器',...[1,2,3,4,5,6,7,8].map(k=>pc(w1(k)))]]);
     const gain=((inc[4][4]-inc[0][4])/4)*100;
     $('rep-income-note').textContent=(got?'':`以復刻池抽 ${h} 抽停為前提。`)+`每多 10 抽，新角色的機率平均多 ${gain.toFixed(1)} 個百分點。`+
       (gain<3?'幫助有限，因為新角色歪掉之後要再走 65 抽以上才會進入下一段軟保底，中間每抽只有 0.4%。':'表中機率跳得比較多的那幾列，是多出來的抽數剛好夠新角色歪掉後走進第二段軟保底。其餘的區段每抽只有 0.4%，幫助很小。');
   }
-  function runB(c){
-    const {S,now,left,M,bp,bf,d0,pc}=c, nt=v=>'NT$'+Math.round(v).toLocaleString();
-    const want=['in-w1','in-w2','in-w3'].map(id=>$(id).checked), useFree=$('in-usefree').checked, t0=80-bp;
-    const sym=w=>w.map(x=>x?'○':'✕').join(' '), same=(a,b)=>a.every((x,i)=>x===b[i]);
-    const mean=f=>f.reduce((a,p,j)=>a+p*j,0), cdfAt=(f,k)=>{let s=0;for(let j=0;j<=Math.min(k,f.length-1);j++)s+=f[j];return s;};
-    const evalP=w=>{const st=limitedPlan({t0,free:bf,want:w,useFree,d0}).stages, fin=st[st.length-1], need=fin.length-1;
-      return {w,st,fin,need,k:st.length,pAll:cdfAt(fin,S),got:st.reduce((a,f)=>a+cdfAt(f,S),0),mean:mean(fin),worst:costFor(need-S,left)};};
-    const all=[];for(let m=7;m>=1;m--)all.push(evalP([!!(m&4),!!(m&2),!!(m&1)]));
-    const sel=all.find(r=>same(r.w,want));
-    tbl('b-patterns',['抽法','想要幾隻','全部拿到','平均拿到幾隻','平均要自備','最多要自備','全部保證的最壞花費'],
-      all.map(r=>[sym(r.w)+(sel&&r===sel?' ◀':''),r.k,pc(r.pAll),r.got.toFixed(2),r.mean.toFixed(1),r.need,nt(r.worst)]));
-    if(!sel){$('b-keys').innerHTML='';$('b-advice').textContent='三個池都沒有勾選要抽。上表列出其他七種抽法的結果。';
-      for(const id of ['b-stages','b-money'])$(id).innerHTML='';$('c-b-cdf').innerHTML='';}
-    else{
-      $('b-keys').innerHTML=[[S,`可用的總抽數，現有 ${now}`],[pc(sel.pAll),`想要的 ${sel.k} 隻全部拿到`],[sel.got.toFixed(2),`平均拿到幾隻，想要 ${sel.k} 隻`],
-        [nt(sel.worst),`全部保證的最壞花費，最多要 ${sel.need} 抽`]].map(k=>`<div><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
-      const better=all.filter(r=>r.k===sel.k&&r!==sel).sort((a,b)=>b.pAll-a.pAll)[0];
-      $('b-advice').textContent=`抽法 ${sym(sel.w)}：用 ${S} 抽把想要的 ${sel.k} 隻全部拿到的機率是 ${pc(sel.pAll)}，平均拿到 ${sel.got.toFixed(2)} 隻。`+
-        (S>=sel.need?'你的抽數已經足夠保證。':`要保證還差 ${sel.need-S} 抽，最壞要補 ${nt(sel.worst)}。`)+
-        (!better?'':better.pAll>sel.pAll+0.02?`同樣抽 ${sel.k} 隻，${sym(better.w)} 的機率是 ${pc(better.pAll)}，明顯比較高。`:Math.abs(better.pAll-sel.pAll)<=0.02?`同樣抽 ${sel.k} 隻的其他抽法，機率都在 2 個百分點以內，可以當成一樣。要抽哪幾池，看你想要哪幾隻角色就好，不用為了機率去調整順序。`:'');
-      const xm=Math.max(sel.need,S)+5, cdf=cumsum(sel.fin);while(cdf.length<=xm)cdf.push(1);
-      lineChart('c-b-cdf',{label:'總自備抽數的累積機率',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
-        xlabel:'自備的總抽數',ylabel:'全部拿到',xname:'抽數',vfmt:pct,h:280,mark:S,series:[{name:'全部拿到',y:cdf}]});
-      let idx=0;tbl('b-stages',['想要的池','到這一池為止都拿到','平均累計自備','最多累計自備'],
-        sel.w.map((w,i)=>w?(()=>{const f=sel.st[idx++];return [`第 ${i+1} 池`,pc(cdfAt(f,S)),mean(f).toFixed(1),f.length-1];})():null).filter(Boolean));
-      let free=0,avg=0,mx=0;const pts=[];
-      sel.fin.forEach((pr,u)=>{if(pr<=0)return;const k=costFor(u-S,left);if(k===0)free+=pr;avg+=pr*k;if(pr>1e-12)mx=Math.max(mx,k);pts.push([k,pr]);});
-      pts.sort((a,b)=>a[0]-b[0]);let acc=0,q90=null,p50=null;for(const [k,pr] of pts){acc+=pr;if(p50===null&&acc>=0.5-1e-12)p50=k;if(q90===null&&acc>=0.9-1e-12)q90=k;}
-      tbl('b-money',['抽法','不用花錢','平均花費','中位數','九成情況內','最壞','有花錢時的平均'],
-        [[sym(sel.w),pc(free),nt(avg),nt(p50),nt(q90),nt(mx),free<1-1e-9?nt(avg/(1-free)):'—']]);
-    }
-    // weapons for the wanted banners, paid from arsenal quota now plus what the character pulls bring in
-    const ISSUE=1980, r5=D.rates.five, r6=D.rates.six, perChar=20*(1-r5-r6)+200*r5+2000*r6, wq=num('in-wq'), wextra=num('in-wextra');
-    const wwant=['in-ww1','in-ww2','in-ww3'].map((id,i)=>$(id).checked&&want[i]), kw=wwant.filter(Boolean).length;
-    if(!sel||!kw){$('b-wkey').textContent=sel?'沒有勾選任何要抽的池的武器。':'';$('b-weapons').innerHTML='';}
-    else{
-      const one=weaponUp({issuesDone:0}), freeUsed=want.reduce((a,w)=>a+((w||useFree)?bf:0),0), pulls=sel.mean+freeUsed, inc=Math.round(perChar*pulls)+wextra;
-      const canNow=Math.floor(wq/ISSUE), canFut=Math.floor((wq+inc)/ISSUE);let acc=[1];const rowsW=[];
-      for(let j=1;j<=kw;j++){acc=convolve(acc,one);const c=cumsum(acc), at=k=>c[Math.max(0,Math.min(k,c.length-1))];rowsW.push([`前 ${j} 把都拿到`,j*8,pc(at(canNow)),pc(at(canFut)),at(canFut)]);}
-      tbl('b-weapons',['想要的武器','最壞要幾次十連','只用現有配額','加上這三池的預估進帳'],rowsW.map(r=>r.slice(0,4)));
-      const need=kw*8, last=rowsW[kw-1][4];
-      $('b-wkey').textContent=`想要 ${kw} 把武器，最壞共需要 ${need} 次十連。你現有 ${wq.toLocaleString()} 配額，可抽 ${canNow} 次。這個抽法平均會抽約 ${Math.round(pulls)} 抽角色，預估再進帳 ${inc.toLocaleString()} 配額，合計可抽 ${canFut} 次。`+
-        (canNow>=need?'現有配額就足夠全部保證。':canFut>=need?'加上預估進帳後足夠全部保證，但進帳若偏少可能差一兩次。':`全部拿到的機率約 ${pc(last)}，要保證還差 ${((need-canFut)*ISSUE).toLocaleString()} 配額左右。`);
-    }
-    const opts=[[0,'不用']];if(bf>5)opts.push([5,'只用登入送的 5 抽']);if(bf>0)opts.push([bf,`${bf} 抽全部用掉`]);
-    const fr=opts.map(([k,name])=>{const f=limitedPlan({t0,free:bf,want:[false,true],skipFree:k,d0}).stages[0];let acc=0,med=0;for(let j=0;j<f.length;j++){acc+=f[j];if(acc>=0.5-1e-12){med=j;break;}}return [name,mean(f),med,k];});
-    const bestF=fr.slice().sort((a,b)=>a[1]-b[1])[0];
-    tbl('b-free',['跳過的池的免費抽','下一池平均要自備','下一池的中位數'],fr.map(r=>[r[0]+(r===bestF?' ◀':''),r[1].toFixed(1),r[2]]));
-    $('b-free-note').textContent=`你的保底再 ${bp} 抽必出六星。`+(bestF[3]===0?`這時候跳過的池不要用免費抽，商店那 5 抽也不用換。用掉會把保底推進軟保底區，六星多半出在不想要的池子。`:
-      bestF[3]===bf?`離軟保底還遠，跳過的池把免費抽全部用掉最划算，等於替下一池多墊 ${bf} 抽保底。`:`用登入送的 5 抽就好，商店那 5 抽不要換。再多就會踩進軟保底區。`)+
-      (useFree?'':' 上面的抽法比較是以「跳過的池不用免費抽」計算的。');
-  }
-  function showMode(){const b=$('in-mode-b').checked;
-    document.querySelectorAll('.only-a,[data-mode="a"]').forEach(e=>e.hidden=b);document.querySelectorAll('.only-b,[data-mode="b"]').forEach(e=>e.hidden=!b);return b;}
   function run(){
     setOffers();
     const err=$('calc-error'),out=$('calc-out');
-    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),d0=$('in-dossier').checked,bfBase=num('in-bf')+($('in-shop').checked?5:0),bf=bfBase+(d0?10:0),soft=true;
+    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),d0=$('in-dossier').checked,bfBase=($('in-bf').checked?5:0)+($('in-shop').checked?5:0),bf=bfBase+(d0?10:0),soft=true;
     let msg='';
     if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
     else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
@@ -981,8 +817,6 @@ __ENGINE__
     const got=$('in-agot').checked;
     const fa=got?[1]:firstUp({t:80-ap,n:an,free:0,vac:[30,60,90],soft}), fb=firstUp({t:80-bp,n:0,free:bf,vac:[30],soft});
     const left=jade%500, M=num('in-money');
-    const modeB=showMode();$('out-b').hidden=!modeB;$('case').hidden=modeB;
-    if(modeB){$('calc-error').hidden=true;$('calc-out').hidden=true;runB({S:B,now,left,M,bp,bf:bfBase,d0,pc:v=>(v*100).toFixed(1)+'%'});return;}
     const rows=decide(fa,fb,B), capMax=got?0:Math.min(B1,B), usable=rows.slice(0,capMax+1), best=Math.max(...usable.map(r=>r.both));
     const pick=usable.find(r=>r.both>=best-0.01), maxA=fa.length-1, maxB=fb.length-1, need=maxA+maxB;
     const pc=v=>(v*100).toFixed(1)+'%';
@@ -1023,7 +857,7 @@ __ENGINE__
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
       series:[{name:'兩隻都有',y:usable.map(r=>r.both)},{name:'復刻角色',y:usable.map(r=>r.a)},{name:'新角色',y:usable.map(r=>r.b)}]});
     const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
-    report({wpulls:num('in-wpulls'),wextra:num('in-wextra'),wq:num('in-wq'),wantA:$('in-wa').checked,wantB:$('in-wb').checked,wai:Math.min(7,num('in-wai')),wbi:Math.min(7,num('in-wbi')),
+    report({wq:num('in-wq'),
       got,rebate:B-rawB,perPull,fa,fb,S:B,S1:B1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other:num('in-other'),card:$('in-card').checked});
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
@@ -1031,18 +865,18 @@ __ENGINE__
   // inputs are applied when the viewer presses 計算; the applied values are kept in this browser
   const KEY='gacha-calc-v1', fields=()=>[...$('calc-form').querySelectorAll('input[id]')];
   const tick=e=>e.type==='checkbox'||e.type==='radio', read=e=>tick(e)?e.checked:e.value, write=(e,v)=>{if(tick(e))e.checked=!!v;else e.value=v;};
-  const note=t=>{$('calc-saved').textContent=t;}, stale=on=>{for(const id of ['calc-out','case','out-b']){const c=$(id).classList;if(c)c.toggle('stale',on);}};
+  const note=t=>{$('calc-saved').textContent=t;}, stale=on=>{for(const id of ['calc-out','case']){const c=$(id).classList;if(c)c.toggle('stale',on);}};
   let canSave=true;
   try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');
-    if(saved&&!('in-shop' in saved)&&+saved['in-bf']>=5)saved['in-bf']=String(+saved['in-bf']-5);  // older saves stored login + shop pulls together
-    if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('已載入你上次計算時的數字。');}
+    if(saved&&typeof saved['in-bf']!=='boolean')saved['in-bf']=+saved['in-bf']>0;  // older saves stored a number of pulls
+    if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('');}
     else note('目前顯示的是範例。改成你的數字後按「計算」。');
   }catch(_){canSave=false;note('目前顯示的是範例。這個瀏覽器不允許儲存，重新整理後要重填。');}
   const apply=()=>{run();stale(false);
-    try{const o={};fields().forEach(e=>o[e.id]=read(e));localStorage.setItem(KEY,JSON.stringify(o));note('已計算，數字已存在這個瀏覽器，頁面更新後不會消失。');}
-    catch(_){note('已計算。這個瀏覽器不允許儲存，重新整理後要重填。');}};
+    try{const o={};fields().forEach(e=>o[e.id]=read(e));localStorage.setItem(KEY,JSON.stringify(o));note('');}
+    catch(_){note('');}};
   $('calc-form').addEventListener('submit',ev=>{ev.preventDefault();apply();});
-  $('calc-form').addEventListener('input',()=>{showMode();stale(true);note('有尚未計算的修改，按「計算」更新下面的結果。');});
+  $('calc-form').addEventListener('input',()=>{stale(true);note('有尚未計算的修改，按「計算」更新下面的結果。');});
   run();
 })();
 

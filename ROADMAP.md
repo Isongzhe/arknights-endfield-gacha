@@ -13,7 +13,7 @@ pity systems. Work is ordered so that each step serves both.
   Monte Carlo parity, kernel invariants on every model.
 - Analysis: stopping table for two banners sharing one stock, money risk through a price menu,
   保障配額 rebate (expected-value layer), arsenal income.
-- Tool surface: CLI (`evaluate`, `decide`, `weapon`, `experiment`), demo notebook, documentation
+- Tool surface: CLI (`evaluate`, `decide`, `weapon`, `experiment`), documentation
   site with calculators.
 - Data: rule register, operator roster, past banner schedule, price list.
 

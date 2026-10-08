@@ -52,8 +52,7 @@ A rule change goes register first, failing test second, model third (see CONTRIB
 
 ## Two engines on the site
 
-`docs/site/engine.js` ports three recursions (first rate-up copy, consecutive limited banners,
-weapon banner) so the calculators run in the browser. `docs/site/build.py` compares each port with
+`docs/site/engine.js` ports two recursions (first rate-up copy, weapon banner) so the calculators run in the browser. `docs/site/build.py` compares each port with
 the Python engine on fixed cases and refuses to build if they differ. Python is the reference.
 
 ## Verification layers
