@@ -273,7 +273,7 @@ __OWN6__
   <div class="scroll"><table id="rep-single"></table></div>
 
   <h3>三、在復刻池每多抽一段，換到什麼、賠掉什麼</h3>
-  <p>把復刻池的投入切成每 10 抽一段，看每一段讓伊馮的機率多多少，又讓祀的機率少多少。換得多、賠得少的段落值得抽，反過來就該停。</p>
+  <p>每一列是「復刻池最多抽到這裡，沒出就停，剩下的全留給祀」時的機率。括號裡是和上一列相比的變化，單位是百分點，也就是多抽這 10 抽換到或賠掉多少。例如 54.8%（+16.8）表示機率是 54.8%，比少抽 10 抽時高 16.8 個百分點。伊馮那一欄漲得多、祀那一欄掉得少的列值得抽，反過來就該停。</p>
   <div class="scroll"><table id="rep-marginal"></table></div>
   <p id="rep-marginal-note"></p>
 
@@ -800,9 +800,9 @@ __ENGINE__
       const za=zone(fa,s+1,e,softA,ap,maxA), zb=db>-0.02?0:zone(fb,S-e+1,S-s,softB,hardB,maxB), left2=S-e, gift=[60,90].filter(m=>m-an>s&&m-an<=e)[0];
       const why=[['伊馮還在每抽 0.4% 的區段','伊馮的軟保底區，六星多半在這裡出','伊馮第一隻六星歪掉後，等第二隻的區段','伊馮的 120 保底在這一段'][za]+(gift?`，另外累積滿 ${gift} 抽會送 10 抽`:''),
         ['祀幾乎不受影響',`剩 ${left2} 抽，不夠祀走到第一次必出六星（要 ${hardB} 抽）`,`剩 ${left2} 抽，祀第一隻六星歪掉的話，不夠再抽到第二隻`,`剩 ${left2} 抽，不夠祀走到 120 保底（要 ${maxB} 抽）`][zb]].join('；');
-      blocks.push([`第 ${s+1} 到 ${e} 抽`,pp(da),pp(db),pp(dd),why]);
+      blocks.push([`${e} 抽`,`${pc(rows[e].a)}（${pp(da)}）`,`${pc(rows[e].b)}（${pp(db)}）`,`${pc(rows[e].both)}（${pp(dd)}）`,why]);
       if(!bestBlock||da>bestBlock.da)bestBlock={s,e,da};if(!worstBlock||db<worstBlock.db)worstBlock={s,e,db};}
-    if(got){one('rep-marginal','伊馮已經拿到，不需要再決定復刻池要抽到哪裡。');}else tbl('rep-marginal',['復刻池投入','伊馮機率（百分點）','祀機率（百分點）','兩隻都有（百分點）','這一段發生什麼事'],blocks);
+    if(got){one('rep-marginal','伊馮已經拿到，不需要再決定復刻池要抽到哪裡。');}else tbl('rep-marginal',['復刻池最多抽到','拿到伊馮','拿到祀','兩隻都有','多抽的這 10 抽發生什麼事'],[['0 抽，不抽',pc(rows[0].a),pc(rows[0].b),pc(rows[0].both),'起點'],...blocks]);
     $('rep-marginal-note').textContent=got?'':blocks.length?`你到新角色池結束共有 ${S} 抽，復刻池每多抽一抽，留給祀的就少一抽。祀的機率不是平均地掉，而是在剩下的抽數跌破某個門檻時一次掉一段：跌破「歪掉後還能抽到第二隻六星」掉一次，跌破「第一次必出六星」再掉一次。兩個門檻之間多抽幾乎沒有代價。收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽。`:'復刻池結束前沒有可用的抽數。';
     const caps=[...new Set([0,h,Math.min(h+10,capMax),pick.x,capMax])].sort((a,b)=>a-b);
     tbl('rep-outcome',['復刻池上限','兩隻都有','只有伊馮','只有祀','都沒有','平均拿到幾隻'],
