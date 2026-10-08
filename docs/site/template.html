@@ -231,6 +231,7 @@ __OWN6__
       <figcaption>橫軸是你願意在復刻池從現在起最多再抽幾抽，沒拿到就停手，剩下的全留給祀。橫軸最遠只到復刻池結束前你拿得出的抽數。陡升的區段是軟保底區，六星多半在那裡出現。</figcaption>
     </figure>
     <div class="scroll"><table id="calc-table"></table></div>
+    <p class="cap" id="calc-table-note"></p>
     <h3>要花多少錢</h3>
     <p>下表假設祀一定要拿到，缺多少補多少。上方的「最壞花費」是運氣最差時的金額，多數情況遠低於它。</p>
     <p id="calc-afford" class="note"></p>
@@ -781,13 +782,18 @@ __ENGINE__
     const sa=stat(fa), sb=stat(fb);
     tbl('rep-single',['單獨抽','平均','中位數','走到必出六星時','最多'],[
       ['伊馮',sa.m.toFixed(1),sa.med,pc(at(Fa,ap)),maxA],['祀',sb.m.toFixed(1),sb.med,pc(at(Fb,hardB)),maxB]]);
+    // every 10-pull block: what it buys, what it costs, and which threshold explains each number
+    const massIn=(f,lo,hi)=>{let t=0;for(let k=Math.max(0,lo);k<=Math.min(hi,f.length-1);k++)t+=f[k];return t;};
+    const zone=(f,lo,hi,soft,hard,max)=>{const z=[[massIn(f,Math.max(lo,soft),Math.min(hi,hard)),1],[massIn(f,Math.max(lo,hard+1),Math.min(hi,max-1)),2],[lo<=max&&max<=hi?f[max]||0:0,3]].sort((a,b)=>b[0]-a[0])[0];return z[0]>0.02?z[1]:0;};
     const blocks=[];let bestBlock=null,worstBlock=null;
     for(let s=0;s<capMax;s+=10){const e=Math.min(s+10,capMax),da=rows[e].a-rows[s].a,db=rows[e].b-rows[s].b,dd=rows[e].both-rows[s].both;
-      blocks.push([`第 ${s+1} 到 ${e} 抽`,pp(da),pp(db),pp(dd)]);
+      const za=zone(fa,s+1,e,softA,ap,maxA), zb=db>-0.02?0:zone(fb,S-e+1,S-s,softB,hardB,maxB), left2=S-e, gift=[60,90].filter(m=>m-an>s&&m-an<=e)[0];
+      const why=[['伊馮還在每抽 0.4% 的區段','伊馮的軟保底區，六星多半在這裡出','伊馮第一隻六星歪掉後，等第二隻的區段','伊馮的 120 保底在這一段'][za]+(gift?`，另外累積滿 ${gift} 抽會送 10 抽`:''),
+        ['祀幾乎不受影響',`剩 ${left2} 抽，不夠祀走到第一次必出六星（要 ${hardB} 抽）`,`剩 ${left2} 抽，祀第一隻六星歪掉的話，不夠再抽到第二隻`,`剩 ${left2} 抽，不夠祀走到 120 保底（要 ${maxB} 抽）`][zb]].join('；');
+      blocks.push([`第 ${s+1} 到 ${e} 抽`,pp(da),pp(db),pp(dd),why]);
       if(!bestBlock||da>bestBlock.da)bestBlock={s,e,da};if(!worstBlock||db<worstBlock.db)worstBlock={s,e,db};}
-    if(got){one('rep-marginal','伊馮已經拿到，不需要再決定復刻池要抽到哪裡。');}else tbl('rep-marginal',['復刻池投入','伊馮機率（百分點）','祀機率（百分點）','兩隻都有（百分點）'],blocks);
-    $('rep-marginal-note').textContent=got?'':blocks.length?`收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，讓伊馮多 ${(bestBlock.da*100).toFixed(1)} 個百分點。代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽，讓祀少 ${Math.abs(worstBlock.db*100).toFixed(1)} 個百分點`+
-      (worstBlock.db<-0.05?`，因為抽到這裡，剩下的抽數已經不夠祀走到必出六星。`:`。`):'復刻池結束前沒有可用的抽數。';
+    if(got){one('rep-marginal','伊馮已經拿到，不需要再決定復刻池要抽到哪裡。');}else tbl('rep-marginal',['復刻池投入','伊馮機率（百分點）','祀機率（百分點）','兩隻都有（百分點）','這一段發生什麼事'],blocks);
+    $('rep-marginal-note').textContent=got?'':blocks.length?`你到新角色池結束共有 ${S} 抽，復刻池每多抽一抽，留給祀的就少一抽。祀的機率不是平均地掉，而是在剩下的抽數跌破某個門檻時一次掉一段：跌破「歪掉後還能抽到第二隻六星」掉一次，跌破「第一次必出六星」再掉一次。兩個門檻之間多抽幾乎沒有代價。收益最大的是第 ${bestBlock.s+1} 到 ${bestBlock.e} 抽，代價最大的是第 ${worstBlock.s+1} 到 ${worstBlock.e} 抽。`:'復刻池結束前沒有可用的抽數。';
     const caps=[...new Set([0,h,Math.min(h+10,capMax),pick.x,capMax])].sort((a,b)=>a-b);
     tbl('rep-outcome',['復刻池上限','兩隻都有','只有伊馮','只有祀','都沒有','平均拿到幾隻'],
       caps.map(x=>{const o=out(x);return [x+(x===pick.x?' ◀':''),pc(o.both),pc(o.a),pc(o.b),pc(o.none),o.n.toFixed(2)];}));
@@ -890,6 +896,8 @@ __ENGINE__
     const stops=[...new Set([0,ap,pick.x,Math.max(0,afford),capMax,maxA])].filter(x=>x<=maxA).sort((a,b)=>a-b);
     $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th>這一列是什麼</th><th class="n">拿到伊馮</th><th class="n">拿到祀</th><th class="n">兩隻都有</th></tr>'+
       stops.filter(x=>x<=capMax).map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td>${why(x)}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
+    {const last=rows[capMax], hb=Math.max(0,bp-bf), rest=B-capMax;
+      $('calc-table-note').textContent=got||capMax===pick.x||last.b>pick.b-0.03?'':`最後一列是把復刻池結束前手上的抽數全部丟進去。祀的機率從 ${pc(pick.b)} 掉到 ${pc(last.b)}，因為這樣到新角色池結束只剩 ${rest} 抽，`+(rest<hb?`不夠祀走到必出六星（要 ${hb} 抽）。`:`祀歪掉的話不夠再抽到第二隻六星。`)+`多出來的那幾抽只讓伊馮多 ${((last.a-pick.a)*100).toFixed(1)} 個百分點，不划算。`;}
     $('calc-money').innerHTML='<tr><th class="n">復刻池上限</th><th>這一列是什麼</th><th class="n">拿到伊馮</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞花費</th></tr>'+
       stops.map(x=>{const r=spend(x);return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td>${why(x)}</td><td class="n">${pc(pA(x))}</td><td class="n">${pc(r.free)}</td><td class="n">${nt(r.avg)}</td><td class="n">${nt(r.q90)}</td><td class="n">${nt(r.mx)}</td></tr>`;}).join('');
     const xm=Math.max(1,Math.min(capMax,maxA+10));
