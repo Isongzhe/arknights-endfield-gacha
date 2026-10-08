@@ -1,5 +1,6 @@
 """Rebuild docs/site/index.html: recompute chart data with the exact engine and inject it
 into template.html. Run: uv run python docs/site/build.py"""
+import base64
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -132,7 +133,6 @@ assert template.count("__ENGINE__") == 1
 
 def checklist(entries, cls):
     """Ownership checkboxes; an icon is embedded when docs/site/icons/<name>.png exists."""
-    import base64
 
     out = []
     for entry in entries:
@@ -155,6 +155,12 @@ def checklist(entries, cls):
 roster = json.loads((HERE / "roster.json").read_text())
 template = template.replace("__OWN5__", checklist(roster["five"], "own5"))
 template = template.replace("__OWN6__", checklist(roster["six_standard"], "own6"))
+for key, name in (("__ICON_A__", "Yvonne"), ("__ICON_B__", "Si")):
+    icon = HERE / "icons" / f"{name}.png"
+    if icon.exists():
+        template = template.replace(key, "data:image/png;base64," + base64.b64encode(icon.read_bytes()).decode())
+    else:
+        template = template.replace(f'<img alt="" src="{key}">', "")
 page = template.replace("__DATA__", data).replace("__ENGINE__", (HERE / "engine.js").read_text())
 (HERE / "index.html").write_text(page)
 # index.html is a page body for hosts that supply the document shell; standalone.html is a
