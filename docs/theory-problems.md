@@ -167,8 +167,18 @@ the conditional experience after losing the first 50/50?
 Endfield is better in mean, spread and maximum, yet a third of players meet the exact worst case
 on any banner. This is a candidate formalisation of "good on paper, bad in experience".
 
-**Open.** Define the frontier; characterise mechanisms on it; relate it to risk measures such as
-CVaR and to the salience of a named worst-case event.
+**Caveat (project owner, 2026-10-08).** The single-copy comparison does not explain why players
+dislike the second mechanism at least as much as the first. Two things it leaves out: the usable
+state of a character often needs several copies and a weapon, so the relevant cost is that of a
+bundle; and an off-rate result is worth little to a player who wanted the current target. A
+useful formulation therefore has to price the bundle and value off-target outcomes, not only the
+first copy. For scale: six copies on one Endfield banner take 451.8 pulls on average (median 475,
+90th percentile 593), helped by one token per 240 pulls; seven independent copies under the
+reference schedule take 7 × 93.5 = 654.6 on average.
+
+**Open.** Define the frontier for a bundle objective; characterise mechanisms on it; relate it to
+risk measures such as CVaR, to the salience of a named worst-case event, and to the price of a
+pull in each game.
 
 ## P10. Runs of worst-case outcomes — solved
 
