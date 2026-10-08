@@ -1,0 +1,28 @@
+{
+  "source": "https://endfield.wiki.gg/wiki/Headhunting/Banners/2026 and /wiki/Version, fetched 2026-10-08 through an automatic summariser; spot-check before relying on a date",
+  "timezone_note": "times as shown on the wiki; banners that end with a version end at 05:59, others at 11:59",
+  "versions": [
+    {"name": "Zeroth Directive", "start": "2026-01-22", "end": "2026-03-11"},
+    {"name": "Old Deep Water Dies, by Rising Tide It is Denied", "start": "2026-03-12", "end": "2026-04-16"},
+    {"name": "At the Wake of Spring", "start": "2026-04-17", "end": "2026-06-04"},
+    {"name": "Sketches of Lost Heirlooms", "start": "2026-06-05", "end": "2026-07-15"},
+    {"name": "Homecoming", "start": "2026-07-16", "end": "2026-09-01"},
+    {"name": "Dreamscape of Wind and Snow", "start": "2026-09-02", "end": "2026-10-14"}
+  ],
+  "standard_six": ["Ardelia", "Pogranichnik", "Last Rite", "Ember", "Lifeng"],
+  "banners": [
+    {"name": "Scars of the Forge", "type": "limited", "up": "Laevatain", "also": ["Gilberta", "Yvonne"], "start": "2026-01-22T11:00", "end": "2026-02-07T11:59"},
+    {"name": "The Floaty Messenger", "type": "limited", "up": "Gilberta", "also": ["Yvonne", "Laevatain"], "start": "2026-02-07T12:00", "end": "2026-02-24T11:59"},
+    {"name": "Hues of Passion", "type": "limited", "up": "Yvonne", "also": ["Laevatain", "Gilberta"], "start": "2026-02-24T12:00", "end": "2026-03-12T05:59"},
+    {"name": "River's Daughter", "type": "limited", "up": "Tangtang", "also": ["Yvonne", "Gilberta"], "start": "2026-03-12T12:00", "end": "2026-03-29T11:59"},
+    {"name": "Wolf Pearl", "type": "limited", "up": "Rossi", "also": ["Tangtang", "Yvonne"], "start": "2026-03-29T12:00", "end": "2026-04-17T05:59"},
+    {"name": "Thunder of Renewal", "type": "limited", "up": "Zhuang Fangyi", "also": ["Rossi", "Tangtang"], "start": "2026-04-17T12:00", "end": "2026-05-22T11:59"},
+    {"name": "Fest of Brilliance", "type": "special", "up": null, "also": ["Laevatain", "Gilberta", "Ardelia", "Pogranichnik"], "start": "2026-05-14T12:00", "end": "2026-06-05T05:59"},
+    {"name": "Fists of No Regrets", "type": "limited", "up": "Mi Fu", "also": ["Zhuang Fangyi", "Rossi"], "start": "2026-06-05T12:00", "end": "2026-06-26T11:59"},
+    {"name": "Expunger of Sin", "type": "limited", "up": "Camille", "also": ["Mi Fu", "Zhuang Fangyi"], "start": "2026-06-26T12:00", "end": "2026-07-16T05:59"},
+    {"name": "North Yearns the Rift Vigile", "type": "limited", "up": "Arcane", "also": ["Camille", "Mi Fu"], "start": "2026-07-16T12:00", "end": "2026-08-09T11:59"},
+    {"name": "Good Morning from Your Dawnstar", "type": "limited", "up": "Liino", "also": ["Arcane", "Camille"], "start": "2026-08-09T12:00", "end": "2026-09-02T05:59"},
+    {"name": "Winter Hunt", "type": "limited", "up": "Typhoeus", "also": ["Liino", "Arcane"], "start": "2026-09-02T12:00", "end": "2026-09-30T11:59"},
+    {"name": "Resplendent Spectrum", "type": "rerun", "up": "Yvonne", "also": [], "start": "2026-09-24T12:00", "end": "2026-10-15T05:59"}
+  ]
+}
