@@ -170,7 +170,9 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
     </fieldset>
     <fieldset><legend>限定新角色池<small>後開</small></legend>
       <label for="in-bp">再幾抽必出六星<input id="in-bp" type="number" min="1" max="80" value="32" inputmode="numeric"></label>
-      <label for="in-bf">開頭綁定的免費抽（登入 5 + 商店 5）<input id="in-bf" type="number" min="0" max="25" value="10" inputmode="numeric"></label>
+      <label for="in-bf">登入送的免費抽<input id="in-bf" type="number" min="0" max="25" value="5" inputmode="numeric"></label>
+      <label class="check" for="in-shop"><input id="in-shop" type="checkbox" checked>用集成配額到商店再換 5 抽</label>
+      <span class="cap">集成配額來自滿潛的四星、五星，老玩家通常用不完。新帳號換不起就取消勾選。</span>
     </fieldset>
     <fieldset class="wide"><legend>還能買的項目<small>勾選你還沒買過、願意買的；一般源石不限次數，一律可買</small></legend>
       <div class="own offers">
@@ -805,7 +807,7 @@ __ENGINE__
   function run(){
     setOffers();
     const err=$('calc-error'),out=$('calc-out');
-    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf'),soft=true;
+    const an=num('in-an'),ap=num('in-ap'),bp=num('in-bp'),bf=num('in-bf')+($('in-shop').checked?5:0),soft=true;
     let msg='';
     if(ap<1||ap>80||bp<1||bp>80)msg='「再幾抽必出六星」要在 1 到 80 之間。';
     else if(an>119)msg='復刻池累積 120 抽時一定已經拿到 UP，請填 119 以下。';
@@ -876,6 +878,7 @@ __ENGINE__
   const note=t=>{$('calc-saved').textContent=t;}, stale=on=>{for(const id of ['calc-out','case']){const c=$(id).classList;if(c)c.toggle('stale',on);}};
   let canSave=true;
   try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(saved&&!('in-shop' in saved)&&+saved['in-bf']>=5)saved['in-bf']=String(+saved['in-bf']-5);  // older saves stored login + shop pulls together
     if(saved){fields().forEach(e=>{if(e.id in saved)write(e,saved[e.id]);});note('已載入你上次計算時的數字。');}
     else note('目前顯示的是範例。改成你的數字後按「計算」。');
   }catch(_){canSave=false;note('目前顯示的是範例。這個瀏覽器不允許儲存，重新整理後要重填。');}
