@@ -39,12 +39,12 @@ Research codebase extending Hou, Zhu & Zhang (Symmetry 2026) to Arknights: Endfi
 
 ## Layout
 
-    src/gacha/rules      parameters (schedule.py, paper.py, endfield.py)
+    src/gacha/rules      parameters (schedule.py, paper.py, endfield.py, weapon.py)
     src/gacha/kernel     types, chain enumeration, forward (PMF), backward (E, Var, success within b)
-    src/gacha/models     paper.py, endfield.py (single banner), plan.py (multi-banner)
+    src/gacha/models     paper.py, endfield.py (single banner), plan.py (multi-banner), weapon.py (issues)
     src/gacha/risk       metrics.py, normal.py
     src/gacha/mc         simulate.py, compare.py
-    src/gacha/analysis   two_banner.py (stopping table for two banners sharing one stock)
+    src/gacha/analysis   two_banner.py (stopping table for two banners sharing one stock), rebate.py (保障配額, arsenal income)
     src/gacha/cost       menu.py (price menus, cheapest top-up); prices are data, not rules
     src/gacha/scenario.py  TOML scenario files (examples/)
     src/gacha/plots      style.py, waiting_time.py, heatmaps.py

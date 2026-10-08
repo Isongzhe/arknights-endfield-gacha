@@ -8,7 +8,7 @@ distribution** from your **current state**, by finite recursion rather than simu
 it to answer planning questions: how likely is my stock to be enough, where should I stop on
 this banner, and what does pulling here cost my chances on the next one.
 
-[繁體中文說明](#繁體中文) · [Rules and assumptions](docs/assumptions.md) · [Results](docs/results.md)
+[繁體中文說明](#繁體中文) · [Rules and assumptions](docs/assumptions.md) · [Documentation index](docs/README.md)
 
 ## What it does
 
@@ -22,6 +22,8 @@ this banner, and what does pulling here cost my chances on the next one.
   the plan model composes them exactly instead of assuming independence.
 - **Two banners, one stock.** For banners with separate pity (a re-run and a limited banner) it
   tabulates every stopping point on the first banner against the chance of getting both targets.
+- **Weapons.** The weapon banner in ten-pull issues, and the arsenal quota that character pulls
+  bring in.
 - **Money.** A price menu turns a shortfall in pulls into the cheapest top-up.
 - **Checked three ways.** The engine reproduces the published numbers of the reference paper,
   matches the game's official comprehensive rates to four decimals, and agrees with Monte Carlo
@@ -101,7 +103,8 @@ print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 
 **Reproduce every table and figure**: `uv run gacha experiment all` writes to `results/`.
 
-A browsable write-up with an interactive calculator lives in `docs/site/`; build it with
+A browsable write-up with calculators (re-run plus next limited banner, three consecutive limited
+banners with skip patterns, weapons) lives in `docs/site/`; build it with
 `uv run python docs/site/build.py` and open `docs/site/standalone.html` (built pages are not
 committed; `docs/site/fetch_icons.py` optionally downloads operator icons for the checklist).
 
@@ -126,6 +129,7 @@ function, so they cannot drift apart. The mathematics is summarised in
   weapon banner. The 保障配額 rebate is an expected-value approximation; 集成配額 is not modelled.
 - Every rule and its source is listed in [docs/assumptions.md](docs/assumptions.md). A few are
   still assumptions; results change if they are wrong.
+- Dates, banner schedule and prices are for the Asia server (UTC+8).
 - The price menu is the Taiwan list without first-purchase bonuses. Prices are data: check them
   against your own store.
 - A model tells you the odds. It does not improve them, and it cannot tell you what a character
@@ -164,5 +168,7 @@ MIT, see [LICENSE](LICENSE).
 uv run gacha decide examples/rerun_then_limited.toml
 ```
 
-規則與來源列在 [docs/assumptions.md](docs/assumptions.md)，復刻池規則與價目在 [docs/rules/](docs/rules/)。
+武器池用 `uv run gacha weapon --quota <武庫配額>`。
+
+規則與來源列在 [docs/assumptions.md](docs/assumptions.md)，復刻池、武器池、卡池排程、角色名單與價目在 [docs/rules/](docs/rules/)。
 本專案為非官方的研究與同好作品，與鷹角網路、Gryphline 無關。請在抽卡前先決定自己的花費上限。

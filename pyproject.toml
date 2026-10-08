@@ -1,6 +1,6 @@
 [project]
 name = "gacha"
-version = "0.1.0"
+version = "0.2.0"
 description = "Exact waiting-time and budget-risk models for gacha banners (Arknights: Endfield)"
 readme = "README.md"
 requires-python = ">=3.12"

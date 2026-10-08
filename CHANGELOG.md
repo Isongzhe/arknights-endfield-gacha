@@ -1,18 +1,30 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-10-08
 
+Added
 - `gacha decide`: two banners with separate pity sharing one stock, from a TOML scenario file.
-- `gacha.cost`: price menus and the cheapest top-up for a number of pulls.
+- `gacha weapon` and the weapon banner model (issues to the first rate-up weapon); arsenal quota
+  earned from character pulls.
 - Re-run banner rules (`rerun_rules()`): bonus pulls at 30/60/90 and persistent counters.
-- Rule register updated with confirmed rules and a calibration against the official
-  comprehensive rates (2.0387% and 2.2720%).
-- Weapon banner model and `gacha weapon`; arsenal quota earned from character pulls.
-- 保障配額 rebate as an expected-value layer (`gacha.analysis.rebate`).
-- Documentation site with an interactive calculator whose JavaScript engine is verified against
-  the Python engine at build time.
-- CLI reports invalid input as a one-line error instead of a traceback.
-- Kernel invariants are now tested on every real model.
+- `gacha.cost`: price menus and the cheapest top-up for a number of pulls.
+- `gacha.analysis.rebate`: 保障配額 rebate as an expected-value layer, from the stationary 5★ and
+  6★ rates.
+- Documentation site (`docs/site`): calculator for "re-run plus next limited" and for three
+  consecutive limited banners with skip patterns, weapons, a report generated from the inputs
+  with money risk metrics and derivations. Its JavaScript engines are checked against the Python
+  engine on every build.
+- Data records: operator roster, past banner schedule, Taiwan price list, weapon and re-run rules.
+
+Changed
+- Rule register extended (R11, R13, RR1-RR7, W1-W6) and calibrated against the official
+  comprehensive rates (2.0387% and 2.2720%, reproduced to four decimals).
+- The CLI reports invalid input as a one-line error; kernel invariants are tested on every model.
+
+Known limits
+- The rebate is an average, not part of the exact chain. 集成配額, the 100/180-pull weapon
+  milestones and adaptive stopping are not modelled. Multi-banner plans always use free pulls on
+  skipped banners, which is not the best play near pity (docs/research-notes.md).
 
 ## 0.1.0 — 2026-09-23
 

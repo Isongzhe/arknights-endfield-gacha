@@ -4,6 +4,8 @@
 來源：endfield.wiki.gg 的 [Headhunting/Banners/2026](https://endfield.wiki.gg/wiki/Headhunting/Banners/2026) 與 [Version](https://endfield.wiki.gg/wiki/Version)，2026-10-08 擷取。
 資料經自動摘要工具整理，日期使用前請抽查。
 
+**伺服器：亞服（Asia），時間為 UTC+8。** 本專案的日期、價目與規則都以亞服為準。wiki 上的結束時間（05:59、11:59）與作者在亞服觀察到的「早上六點、中午十二點」一致。其他伺服器的日期與時間可能不同。
+
 ## 版本
 
 | 版本 | 期間 |

@@ -1,6 +1,8 @@
 {
   "source": "https://endfield.wiki.gg/wiki/Headhunting/Banners/2026 and /wiki/Version, fetched 2026-10-08 through an automatic summariser; spot-check before relying on a date",
-  "timezone_note": "times as shown on the wiki; banners that end with a version end at 05:59, others at 11:59",
+  "server": "Asia",
+  "timezone": "UTC+8",
+  "timezone_note": "times as shown on the wiki, consistent with what the project owner sees on the Asia server; banners that end with a version end at 05:59, others at 11:59",
   "versions": [
     {"name": "Zeroth Directive", "start": "2026-01-22", "end": "2026-03-11"},
     {"name": "Old Deep Water Dies, by Rising Tide It is Denied", "start": "2026-03-12", "end": "2026-04-16"},
