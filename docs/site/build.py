@@ -155,6 +155,35 @@ def checklist(entries, cls):
 roster = json.loads((HERE / "roster.json").read_text())
 template = template.replace("__OWN5__", checklist(roster["five"], "own5"))
 template = template.replace("__OWN6__", checklist(roster["six_standard"], "own6"))
+
+
+def copies_rows(rules, start, budgets=None):
+    """Table rows for one to six copies on one banner (own pulls)."""
+    names = ("一隻", "一潛能，兩隻", "二潛能，三隻", "三潛能，四隻", "四潛能，五隻", "滿潛，六隻")
+    out = []
+    for k, name in enumerate(names, 1):
+        model = SingleBannerModel(BannerSpec(rules, k, 1300), start=start)
+        f = np.array(hitting_time(EnumeratedChain.from_model(model)).f_succ)
+        c = f.cumsum()
+        q = lambda p: int(np.searchsorted(c, p - 1e-12))  # noqa: E731
+        cells = [f"{float((f * np.arange(len(f))).sum()):.1f}", q(0.5), q(0.9)]
+        if budgets:
+            cells += [f"{100 * float(c[min(b, len(c) - 1)]):.1f}%" for b in budgets]
+            tail = ""
+        else:
+            cells.append(q(0.99))
+            top = int(np.argmax(f))
+            tail = f"<td>第 {top} 抽，{100 * float(f[top]):.1f}%</td>"
+        tds = "".join(f'<td class="n">{v}</td>' for v in cells)
+        out.append(f"    <tr><td>{name}</td>{tds}{tail}</tr>")
+    return "\n".join(out)
+
+
+template = template.replace("__COPIES_FRESH__", copies_rows(EndfieldCharacterRules(), BannerState(0, 0, 0, 0)))
+template = template.replace(
+    "__COPIES_MINE__",
+    copies_rows(replace(EndfieldCharacterRules(), free_start_pulls=10), BannerState(48, 0, 0, 0), (100, 150, 200, 250)),
+)
 for key, name in (("__ICON_A__", "Yvonne"), ("__ICON_B__", "Si")):
     icon = HERE / "icons" / f"{name}.png"
     if icon.exists():
