@@ -59,7 +59,7 @@
   "six_standard": [
     {
       "en": "Ardelia",
-      "zh": "艾爾戴拉",
+      "zh": "艾爾黛拉",
       "pool": "standard"
     },
     {
@@ -83,5 +83,18 @@
       "pool": "standard"
     }
   ],
-  "six_previous_limited_note": "The two most recent limited operators join the off-rate pool of each limited banner; they change every banner, so the site only asks how many of the two the player owns. For the 1.6 first-half banner they are Typhoeus (提佛洛斯) and Liino (梨諾)."
+  "six_previous_limited_note": "The two most recent limited operators join the off-rate pool of each limited banner; they change every banner, so the site only asks how many of the two the player owns. For the 1.6 first-half banner they are Typhoeus (提佛洛斯) and Liino (梨諾).",
+  "zh_names": {
+    "Laevatain": "萊萬汀",
+    "Gilberta": "潔爾佩塔",
+    "Ardelia": "艾爾黛拉",
+    "Pogranichnik": "駿衛",
+    "Last Rite": "別禮",
+    "Ember": "餘燼",
+    "Lifeng": "黎風",
+    "Typhoeus": "提佛洛斯",
+    "Liino": "梨諾",
+    "Yvonne": "伊馮"
+  },
+  "zh_names_note": "萊萬汀、潔爾佩塔、艾爾黛拉、駿衛 are from official in-game text; the others were typed by the project owner and may differ from the official spelling."
 }

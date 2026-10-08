@@ -29,7 +29,7 @@
 | River's Daughter | 限定 | Tangtang | Yvonne、Gilberta | 03-12 | 03-29 | 17 |
 | Wolf Pearl | 限定 | Rossi | Tangtang、Yvonne | 03-29 | 04-17 | 19 |
 | Thunder of Renewal | 限定 | Zhuang Fangyi | Rossi、Tangtang | 04-17 | 05-22 | 35 |
-| Fest of Brilliance | 特殊 | 無單一 UP | Laevatain、Gilberta、Ardelia、Pogranichnik | 05-14 | 06-05 | 22 |
+| Fest of Brilliance（輝光慶典） | 特殊 | 無單一 UP | Laevatain、Gilberta、Ardelia、Pogranichnik | 05-14 | 06-05 | 22 |
 | Fists of No Regrets | 限定 | Mi Fu | Zhuang Fangyi、Rossi | 06-05 | 06-26 | 21 |
 | Expunger of Sin | 限定 | Camille | Mi Fu、Zhuang Fangyi | 06-26 | 07-16 | 20 |
 | North Yearns the Rift Vigile | 限定 | Arcane | Camille、Mi Fu | 07-16 | 08-09 | 24 |
@@ -44,5 +44,5 @@
 - **歪池名單可以推算。** 每個限定池同池的另外兩隻，就是前兩個限定池的 UP（開服的三池互相包含）。所以下一個限定池的歪池是常駐 5 隻加上 Typhoeus 與 Liino，與作者的說明一致。
 - **結束時間有兩種。** 跟著版本結束的池在 05:59 結束，版本中途換池的在 11:59 結束。每日重置是 04:00，所以結束當天的每日收入都領得到。
 - **限定池的長度**在 16 到 35 天之間，近期多為 20 到 28 天。
-- **1.2 版出現過一次混合復刻**（Fest of Brilliance），1.5 版下半是第一次單一角色的復刻池。樣本只有一次，「每個大版本下半是復刻」還只是推測。
+- **1.2 版出現過一次特殊尋訪**（輝光慶典，規則見 [special-banner.md](special-banner.md)），1.5 版下半是第一次單一角色的復刻池。樣本只有一次，「每個大版本下半是復刻」還只是推測。
 - 作者表示下一個復刻是 1.1 版的角色，依排程是 Tangtang 或 Rossi。

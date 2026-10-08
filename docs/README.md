@@ -5,6 +5,8 @@
 | [assumptions.md](assumptions.md) | Every game rule the models use, its source and status, and the calibration against the official published rates |
 | [research-notes.md](research-notes.md) | Contributions relative to the reference paper, propositions to prove, planned work, dated findings |
 | [results.md](results.md) | Headline numbers written by `uv run gacha experiment all` |
+| [rules/README.md](rules/README.md) | Overview of every banner type with a side-by-side comparison (Chinese) |
+| [rules/special-banner.md](rules/special-banner.md) | Special banner 輝光慶典 rules, recorded only (Chinese) |
 | [rules/rerun-banner.md](rules/rerun-banner.md) | Re-run banner (重構尋訪) rules, schedule and the official rate text (Chinese) |
 | [rules/weapon-banner.md](rules/weapon-banner.md) | Weapon banner rules and first calculations (Chinese) |
 | [rules/banner-schedule.md](rules/banner-schedule.md) | Past character banners and versions, with what the schedule implies (Chinese) |
