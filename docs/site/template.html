@@ -858,7 +858,7 @@ __ENGINE__
       `花費上限 ${nt(M)}、祀一定要拿到的話，復刻池最多可以再抽 ${afford} 抽，也就是累積到 ${an+afford} 抽。這時拿到伊馮的機率是 ${pc(pA(afford))}，而且有 ${pc(spend(afford).free)} 的機會一毛都不用花。算法：你到新角色池結束有 ${B} 抽`+(buy>0?`，${nt(M)} 最多再買 ${buy} 抽`:'')+`，祀最壞要 ${maxB} 抽，所以最多能分給復刻池 ${B+buy-maxB} 抽。這個結論的前提是那 ${B} 抽都確實拿得到，其中預估的收入若沒有到手，就得用錢補。`;
     // both tables list the same stopping points, each with the reason it is listed
     const why=x=>[x===0&&'不抽復刻池',x===ap&&'抽到必出六星',x===pick.x&&'建議：兩隻都有的機率接近最高',x===afford&&M>0&&`花費上限 ${nt(M)} 內還能保證祀`,
-      x===capMax&&x<maxA&&'復刻池結束前拿得出的全部',x===maxA&&'保證拿到伊馮'].filter(Boolean).join('；');
+      x===capMax&&x<maxA&&'不課金，復刻池結束前手上有的全部',x===maxA&&'保證拿到伊馮'].filter(Boolean).join('；');
     const stops=[...new Set([0,ap,pick.x,Math.max(0,afford),capMax,maxA])].filter(x=>x<=maxA).sort((a,b)=>a-b);
     $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th>這一列是什麼</th><th class="n">拿到伊馮</th><th class="n">拿到祀</th><th class="n">兩隻都有</th></tr>'+
       stops.filter(x=>x<=capMax).map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td>${why(x)}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
