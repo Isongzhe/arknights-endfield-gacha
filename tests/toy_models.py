@@ -1,6 +1,6 @@
 """Tiny hand-checkable models used by the kernel tests."""
 
-from gacha.kernel.types import FAIL, SUCCESS, Transition
+from gacharisk.kernel.types import FAIL, SUCCESS, Transition
 
 
 class ToyModel:

@@ -1,4 +1,4 @@
-# gacha
+# gacha-risk
 
 Exact waiting-time and budget-risk models for gacha banners, starting with
 *Arknights: Endfield* (明日方舟：終末地).
@@ -35,7 +35,7 @@ Endfield's schedule so far puts a re-run banner in the second half of each major
 new limited character at the start of the next one. Their pity counters are separate, so the
 two banners compete only for your stock of pulls. That makes "how far do I go on the re-run
 without hurting the next limited character" a question that comes back every version, and it is
-what `gacha decide` and the site's calculator are built for.
+what `gacha-risk decide` and the site's calculator are built for.
 
 ## Install
 
@@ -43,7 +43,7 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 git clone <this repository>
-cd gacha
+cd arknights-endfield-gacha
 uv sync
 uv run pytest
 ```
@@ -53,14 +53,14 @@ uv run pytest
 **One banner, from your current state**
 
 ```bash
-uv run gacha evaluate --pity 40 --banner-pulls 20 --budget 60
+uv run gacha-risk evaluate --pity 40 --banner-pulls 20 --budget 60
 ```
 
 **Two banners sharing one stock** — describe your situation in a TOML file
 ([example](examples/rerun_then_limited.toml)):
 
 ```bash
-uv run gacha decide examples/rerun_then_limited.toml
+uv run gacha-risk decide examples/rerun_then_limited.toml
 ```
 
 ```text
@@ -79,19 +79,19 @@ to guarantee both: 200 pulls, 111 more than the stock
 worst-case top-up (standard price list): NT$6,120
 ```
 
-**Weapon banner** — what an amount of arsenal quota buys: `uv run gacha weapon --quota 43940`.
+**Weapon banner** — what an amount of arsenal quota buys: `uv run gacha-risk weapon --quota 43940`.
 
-**A sequence of limited banners** with carried pity: `uv run gacha evaluate --plan plan.toml`
-(schema in `uv run gacha evaluate --help`).
+**A sequence of limited banners** with carried pity: `uv run gacha-risk evaluate --plan plan.toml`
+(schema in `uv run gacha-risk evaluate --help`).
 
 **From Python**
 
 ```python
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.endfield import BannerState, SingleBannerModel
-from gacha.risk import metrics as rk
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.endfield import BannerState, SingleBannerModel
+from gacharisk.risk import metrics as rk
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
 
 model = SingleBannerModel(
     BannerSpec(EndfieldCharacterRules(), target_copies=1, cap=120),
@@ -104,7 +104,7 @@ print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 **In a notebook, nothing to install** — [open the demo in Colab](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
 (the text is in Traditional Chinese; the repository has to be public for this link to work).
 
-**Reproduce every table and figure**: `uv run gacha experiment all` writes to `results/`.
+**Reproduce every table and figure**: `uv run gacha-risk experiment all` writes to `results/`.
 
 A browsable write-up with calculators (re-run plus next limited banner, three consecutive limited
 banners with skip patterns, weapons) lives in `docs/site/`; build it with
@@ -115,12 +115,12 @@ committed; `docs/site/fetch_icons.py` optionally downloads operator icons for th
 
 | Layer | Module | Role |
 |---|---|---|
-| Rules | `gacha.rules` | Rates, pity, guarantees and bonuses as plain parameters |
-| Models | `gacha.models` | State and one-step transitions for a banner or a plan |
-| Kernel | `gacha.kernel` | State enumeration, forward distribution, backward expectations |
-| Risk | `gacha.risk` | Quantiles, VaR/CVaR, completion, expected shortfall |
-| Analysis | `gacha.analysis`, `gacha.cost` | Stopping tables and cheapest top-ups |
-| Check | `gacha.mc` | Monte Carlo that samples the same transitions |
+| Rules | `gacharisk.rules` | Rates, pity, guarantees and bonuses as plain parameters |
+| Models | `gacharisk.models` | State and one-step transitions for a banner or a plan |
+| Kernel | `gacharisk.kernel` | State enumeration, forward distribution, backward expectations |
+| Risk | `gacharisk.risk` | Quantiles, VaR/CVaR, completion, expected shortfall |
+| Analysis | `gacharisk.analysis`, `gacharisk.cost` | Stopping tables and cheapest top-ups |
+| Check | `gacharisk.mc` | Monte Carlo that samples the same transitions |
 
 Rules are written once. The exact engine and the simulator both read the same transition
 function, so they cannot drift apart. The mathematics is summarised in
@@ -170,10 +170,10 @@ MIT, see [LICENSE](LICENSE).
 把你的狀況寫成一個檔案（範例見 [examples/rerun_then_limited.toml](examples/rerun_then_limited.toml)），然後執行：
 
 ```bash
-uv run gacha decide examples/rerun_then_limited.toml
+uv run gacha-risk decide examples/rerun_then_limited.toml
 ```
 
-武器池用 `uv run gacha weapon --quota <武庫配額>`。
+武器池用 `uv run gacha-risk weapon --quota <武庫配額>`。
 
 規則與來源列在 [docs/assumptions.md](docs/assumptions.md)，復刻池、武器池、卡池排程、角色名單與價目在 [docs/rules/](docs/rules/)。
 本專案為非官方的研究與同好作品，與鷹角網路、Gryphline 無關。請在抽卡前先決定自己的花費上限。

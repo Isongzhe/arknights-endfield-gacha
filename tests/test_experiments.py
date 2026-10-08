@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from gacha.experiments import EXPERIMENTS, run_experiment
+from gacharisk.experiments import EXPERIMENTS, run_experiment
 
 
 def _files(out: Path, kind: str, prefix: str) -> list[str]:

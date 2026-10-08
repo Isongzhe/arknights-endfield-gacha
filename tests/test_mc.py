@@ -1,15 +1,15 @@
 import numpy as np
 import pytest
 
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.mc.compare import compare
-from gacha.mc.simulate import simulate
-from gacha.models.endfield import SingleBannerModel
-from gacha.models.paper import SingleCounterModel
-from gacha.models.plan import Plan
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
-from gacha.rules.paper import PaperSchedule
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.mc.compare import compare
+from gacharisk.mc.simulate import simulate
+from gacharisk.models.endfield import SingleBannerModel
+from gacharisk.models.paper import SingleCounterModel
+from gacharisk.models.plan import Plan
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.rules.paper import PaperSchedule
 from tests.toy_models import ToyModel
 
 N = 200_000

@@ -1,5 +1,5 @@
 # Two banners sharing one stock of pulls: a re-run banner now, a limited banner next.
-# Run:  uv run gacha decide examples/rerun_then_limited.toml
+# Run:  uv run gacha-risk decide examples/rerun_then_limited.toml
 
 [stock]
 tickets = 2          # universal headhunting permits

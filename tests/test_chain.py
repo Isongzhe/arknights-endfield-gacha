@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from gacha.kernel.chain import CycleError, EnumeratedChain
-from gacha.kernel.types import SUCCESS, HittingTime, Transition
+from gacharisk.kernel.chain import CycleError, EnumeratedChain
+from gacharisk.kernel.types import SUCCESS, HittingTime, Transition
 from tests.toy_models import BadProbModel, CyclicModel, DuplicateTargetModel, ToyModel
 
 

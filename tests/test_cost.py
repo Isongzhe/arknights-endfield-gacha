@@ -1,6 +1,6 @@
 import pytest
 
-from gacha.cost.menu import ENDFIELD_TW_STANDARD, PriceMenu
+from gacharisk.cost.menu import ENDFIELD_TW_STANDARD, PriceMenu
 
 
 def test_min_cost_matches_hand_checked_values():

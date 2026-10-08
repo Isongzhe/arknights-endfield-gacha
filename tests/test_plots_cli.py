@@ -5,12 +5,12 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from gacha.cli import main
-from gacha.experiments import EXPERIMENTS, run_experiment
-from gacha.experiments._io import ensure_dirs, update_results_md, write_table
-from gacha.plots.heatmaps import heatmap
-from gacha.plots.style import PALETTE, apply_style, new_figure, save
-from gacha.plots.waiting_time import plot_cdf, plot_pmf, plot_schedule, plot_survival
+from gacharisk.cli import main
+from gacharisk.experiments import EXPERIMENTS, run_experiment
+from gacharisk.experiments._io import ensure_dirs, update_results_md, write_table
+from gacharisk.plots.heatmaps import heatmap
+from gacharisk.plots.style import PALETTE, apply_style, new_figure, save
+from gacharisk.plots.waiting_time import plot_cdf, plot_pmf, plot_schedule, plot_survival
 
 
 def test_palette_and_figure_roundtrip(tmp_path: Path):

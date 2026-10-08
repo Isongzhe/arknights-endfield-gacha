@@ -6,7 +6,7 @@ Start with [../ARCHITECTURE.md](../ARCHITECTURE.md) for how the code is organise
 |---|---|
 | [assumptions.md](assumptions.md) | Every game rule the models use, its source and status, and the calibration against the official published rates |
 | [research-notes.md](research-notes.md) | Contributions relative to the reference paper, propositions to prove, planned work, dated findings |
-| [results.md](results.md) | Headline numbers written by `uv run gacha experiment all` |
+| [results.md](results.md) | Headline numbers written by `uv run gacha-risk experiment all` |
 | [rules/README.md](rules/README.md) | Overview of every banner type with a side-by-side comparison (Chinese) |
 | [rules/special-banner.md](rules/special-banner.md) | Special banner 輝光慶典 rules, recorded only (Chinese) |
 | [rules/rerun-banner.md](rules/rerun-banner.md) | Re-run banner (重構尋訪) rules, schedule and the official rate text (Chinese) |

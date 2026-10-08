@@ -36,8 +36,8 @@ for the weapon banner.
 
 | Kind | Changes | Lives in |
 |---|---|---|
-| Game rules | rarely | `src/gacha/rules/`, registered with source and status in `docs/assumptions.md` |
-| Game data (schedule, roster, prices) | every version | `docs/site/*.json`, `docs/rules/`, `gacha.cost` |
+| Game rules | rarely | `src/gacharisk/rules/`, registered with source and status in `docs/assumptions.md` |
+| Game data (schedule, roster, prices) | every version | `docs/site/*.json`, `docs/rules/`, `gacharisk.cost` |
 | Player state (resources, counters, progress) | every pull | inputs: CLI flags, scenario TOML, the site's saved form |
 
 A rule change goes register first, failing test second, model third (see CONTRIBUTING.md).

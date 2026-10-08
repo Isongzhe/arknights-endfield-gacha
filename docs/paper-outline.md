@@ -22,12 +22,12 @@ lie on those thresholds and monetary risk is bimodal.
 
 | # | Contribution | Status | Evidence in the repository |
 |---|---|---|---|
-| 1 | Model class: several counters, an expiring one-time guarantee, cost-0 pulls; the waiting time is a cost-weighted absorption time on a DAG | ready | `gacha.kernel`, `gacha.models.endfield`, `docs/assumptions.md` |
-| 2 | Exact algorithms: level-closure forward recursion and backward recurrences that reduce to the reference paper's propositions | ready | `gacha.kernel.forward`, `gacha.kernel.backward`, reproduction tests |
+| 1 | Model class: several counters, an expiring one-time guarantee, cost-0 pulls; the waiting time is a cost-weighted absorption time on a DAG | ready | `gacharisk.kernel`, `gacharisk.models.endfield`, `docs/assumptions.md` |
+| 2 | Exact algorithms: level-closure forward recursion and backward recurrences that reduce to the reference paper's propositions | ready | `gacharisk.kernel.forward`, `gacharisk.kernel.backward`, reproduction tests |
 | 3 | Calibration against published aggregate rates (2.0387%, 2.2720%) and its sensitivity to each rule | ready | `docs/assumptions.md`; sensitivity table still to be scripted as an experiment |
 | 4 | Dependence between banners: error of i.i.d. convolution | ready | experiment E4 |
-| 5 | Two banners sharing a stock: closed forms for the marginal effect of the cap, threshold structure | partial: formulas derived and checked numerically, no formal statement | `gacha.analysis.two_banner`, site report section 9 |
-| 6 | Monetary risk: piecewise price menu, VaR/CVaR in currency, bimodality | partial: in the site and scripts, not yet in the package | `gacha.cost`, site report section 6 |
+| 5 | Two banners sharing a stock: closed forms for the marginal effect of the cap, threshold structure | partial: formulas derived and checked numerically, no formal statement | `gacharisk.analysis.two_banner`, site report section 9 |
+| 6 | Monetary risk: piecewise price menu, VaR/CVaR in currency, bimodality | partial: in the site and scripts, not yet in the package | `gacharisk.cost`, site report section 6 |
 | 7 | Free pulls on a skipped banner are harmful near pity | partial: numerical finding | `docs/research-notes.md` (2026-10-08) |
 | 8 | Optimal stopping under a budget as an MDP; structure of the optimal policy | missing | — |
 | 9 | Generality: second mechanism or abstract class | missing | — |
@@ -61,7 +61,7 @@ lie on those thresholds and monetary risk is bimodal.
 | Calibration sensitivity table (each rule perturbed) | new experiment | no |
 | Cap on first banner vs P(first), P(second), P(both) | new experiment from `two_banner` | no |
 | Marginal gain and loss per pull with threshold positions | new experiment | no |
-| Spend distribution and VaR/CVaR by strategy | new experiment from `gacha.cost` | no |
+| Spend distribution and VaR/CVaR by strategy | new experiment from `gacharisk.cost` | no |
 | Free pulls on a skipped banner by entering pity | new experiment | no |
 
 ## What must not be claimed

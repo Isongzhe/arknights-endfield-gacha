@@ -2,9 +2,9 @@ import math
 
 import pytest
 
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
-from gacha.rules.paper import PaperSchedule
-from gacha.rules.schedule import ramp_schedule
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.rules.paper import PaperSchedule
+from gacharisk.rules.schedule import ramp_schedule
 
 
 def test_ramp_schedule_paper_values():
@@ -93,7 +93,7 @@ def test_banner_spec_validation():
 
 
 def test_multiple_vacuum_points_and_rerun_rules():
-    from gacha.rules.endfield import rerun_rules
+    from gacharisk.rules.endfield import rerun_rules
 
     assert EndfieldCharacterRules().vacuum_points == (30,)
     assert EndfieldCharacterRules(vacuum_at=None).vacuum_points == ()

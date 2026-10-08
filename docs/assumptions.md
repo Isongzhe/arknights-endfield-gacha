@@ -1,8 +1,8 @@
 # Rule and policy assumptions register
 
 Status: **confirmed** = user statement and endfield.wiki.gg agree; **assumed** = modeling choice to verify.
-Every row maps to a parameter of `EndfieldCharacterRules` (`src/gacha/rules/endfield.py`) or to a
-policy in `src/gacha/models/endfield.py` / `plan.py`. Change a rule here first, then in code (see the
+Every row maps to a parameter of `EndfieldCharacterRules` (`src/gacharisk/rules/endfield.py`) or to a
+policy in `src/gacharisk/models/endfield.py` / `plan.py`. Change a rule here first, then in code (see the
 `add-mechanic` skill).
 
 | ID | Rule | Status | Parameter / code |
@@ -29,7 +29,7 @@ policy in `src/gacha/models/endfield.py` / `plan.py`. Change a rule here first, 
 
 ## Re-run banner (重構尋訪), source: docs/rules/rerun-banner.md
 
-Built with `rerun_rules()` in `src/gacha/rules/endfield.py`; cross-session persistence is expressed by
+Built with `rerun_rules()` in `src/gacharisk/rules/endfield.py`; cross-session persistence is expressed by
 the caller passing the saved (t, n, c, u) as the start state.
 
 | ID | Rule | Status | Parameter / code |
@@ -44,7 +44,7 @@ the caller passing the saved (t, n, c, u) as the start state.
 
 ## Weapon banner (武庫申領), source: docs/rules/weapon-banner.md
 
-`WeaponBannerRules` in `src/gacha/rules/weapon.py`, model in `src/gacha/models/weapon.py`. The
+`WeaponBannerRules` in `src/gacharisk/rules/weapon.py`, model in `src/gacharisk/models/weapon.py`. The
 unit of cost is one issue (a ten-pull).
 
 | ID | Rule | Status | Parameter / code |
@@ -70,7 +70,7 @@ R5 (120 guarantee) and R8/RR6 (one token per 240 pulls).
 ### 保障配額 rebate (R13), modeled as an expected-value approximation
 
 25 保障配額 buy one universal permit; a duplicate 5★ gives 10 and a duplicate 6★ gives 50
-(`quota_per_permit`, `quota_five_dupe`, `quota_six_dupe`). `gacha.analysis.rebate` computes the
+(`quota_per_permit`, `quota_five_dupe`, `quota_six_dupe`). `gacharisk.analysis.rebate` computes the
 long-run 5★ and 6★ rates from the stationary law of (6★ pity, 5★ pity) and turns a player's
 ownership shares into quota per pull; the stock is then scaled by 1 / (1 − quota per pull / 25).
 For a player whose 5★ are all owned this is about 1.3 quota per pull, roughly one extra pull per

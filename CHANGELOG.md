@@ -3,12 +3,12 @@
 ## 0.2.0 — 2026-10-08
 
 Added
-- `gacha decide`: two banners with separate pity sharing one stock, from a TOML scenario file.
-- `gacha weapon` and the weapon banner model (issues to the first rate-up weapon); arsenal quota
+- `gacha-risk decide`: two banners with separate pity sharing one stock, from a TOML scenario file.
+- `gacha-risk weapon` and the weapon banner model (issues to the first rate-up weapon); arsenal quota
   earned from character pulls.
 - Re-run banner rules (`rerun_rules()`): bonus pulls at 30/60/90 and persistent counters.
-- `gacha.cost`: price menus and the cheapest top-up for a number of pulls.
-- `gacha.analysis.rebate`: 保障配額 rebate as an expected-value layer, from the stationary 5★ and
+- `gacharisk.cost`: price menus and the cheapest top-up for a number of pulls.
+- `gacharisk.analysis.rebate`: 保障配額 rebate as an expected-value layer, from the stationary 5★ and
   6★ rates.
 - Documentation site (`docs/site`): calculator for "re-run plus next limited" and for three
   consecutive limited banners with skip patterns, weapons, a report generated from the inputs
@@ -32,4 +32,4 @@ Known limits
   expectation, variance and success-within-budget.
 - Paper models and reproduction of Hou, Zhu and Zhang (2026).
 - Endfield limited character banner and multi-banner plans with carried pity.
-- Risk metrics, Monte Carlo parity checks, seven reproducible experiments, `gacha evaluate`.
+- Risk metrics, Monte Carlo parity checks, seven reproducible experiments, `gacha-risk evaluate`.

@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
 
-from gacha.kernel.backward import state_values, success_within
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
+from gacharisk.kernel.backward import state_values, success_within
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
 from tests.toy_models import ToyModel
 
 

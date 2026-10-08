@@ -3,16 +3,16 @@
 import numpy as np
 import pytest
 
-from gacha.kernel.backward import state_values, success_within
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.endfield import BannerState, SingleBannerModel
-from gacha.models.paper import Featured5050Model, SingleCounterModel
-from gacha.models.plan import Plan
-from gacha.models.weapon import WeaponBannerModel
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules, rerun_rules
-from gacha.rules.paper import PaperSchedule
-from gacha.rules.weapon import WeaponBannerRules
+from gacharisk.kernel.backward import state_values, success_within
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.endfield import BannerState, SingleBannerModel
+from gacharisk.models.paper import Featured5050Model, SingleCounterModel
+from gacharisk.models.plan import Plan
+from gacharisk.models.weapon import WeaponBannerModel
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules, rerun_rules
+from gacharisk.rules.paper import PaperSchedule
+from gacharisk.rules.weapon import WeaponBannerRules
 
 FULL = EndfieldCharacterRules()
 MODELS = {

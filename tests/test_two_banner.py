@@ -3,11 +3,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from gacha.analysis.two_banner import cap_table, first_up_pmf, recommend
-from gacha.cli import main
-from gacha.models.endfield import BannerState, SingleBannerModel
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules, rerun_rules
-from gacha.scenario import load_scenario
+from gacharisk.analysis.two_banner import cap_table, first_up_pmf, recommend
+from gacharisk.cli import main
+from gacharisk.models.endfield import BannerState, SingleBannerModel
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules, rerun_rules
+from gacharisk.scenario import load_scenario
 
 EXAMPLE = Path(__file__).parent.parent / "examples" / "rerun_then_limited.toml"
 

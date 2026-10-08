@@ -41,4 +41,4 @@ Akekuri、Antal、Catcher、Estella、Fluorite
 ## 用途
 
 抽到已擁有的五星給 10 保障配額，已擁有的六星給 50，25 換 1 張通用憑證。
-`gacha.analysis.rebate` 只需要「五星池裡已擁有的比例」與「歪池六星裡已擁有的比例」。
+`gacharisk.analysis.rebate` 只需要「五星池裡已擁有的比例」與「歪池六星裡已擁有的比例」。

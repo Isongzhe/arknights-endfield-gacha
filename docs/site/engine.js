@@ -1,4 +1,4 @@
-// Browser port of the first-UP waiting-time recursion (src/gacha/models/endfield.py).
+// Browser port of the first-UP waiting-time recursion (src/gacharisk/models/endfield.py).
 // build.py checks it against the Python engine on every build; change rules there first.
 // o: {t, n, free, vac: [..], soft: bool, guar: 120} -> pmf[j] = P(first UP with exactly j own pulls)
 function firstUp(o) {
@@ -53,7 +53,7 @@ function convolve(a, b) {
   return out;
 }
 if (typeof module !== "undefined") module.exports = { firstUp, decide, convolve, cumsum };
-// Weapon banner (src/gacha/models/weapon.py): pmf[k] = P(rate-up weapon arrives in the k-th
+// Weapon banner (src/gacharisk/models/weapon.py): pmf[k] = P(rate-up weapon arrives in the k-th
 // issue from now). o: {issuesDone} ; 4% 6*, 25% rate-up, 6* forced on the 40th pull since the
 // last one, rate-up forced on the 80th pull of the banner.
 function weaponUp(o) {
@@ -80,7 +80,7 @@ function weaponUp(o) {
   return pmf;
 }
 if (typeof module !== "undefined") module.exports.weaponUp = weaponUp;
-// Consecutive limited banners with carried pity and the 60-pull dossier (src/gacha/models/plan.py).
+// Consecutive limited banners with carried pity and the 60-pull dossier (src/gacharisk/models/plan.py).
 // o: {t0, free, want: [bool...], useFree, d0 (dossier held for the first banner)} -> {stages: [pmf of own pulls after each wanted banner]}
 // Policy: chase every wanted banner to its rate-up (at most 120 counted pulls); on a skipped
 // banner use the free pulls when useFree is true (dossier pulls are always used).

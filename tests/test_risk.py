@@ -3,9 +3,9 @@ import math
 import numpy as np
 import pytest
 
-from gacha.kernel.types import HittingTime
-from gacha.risk import metrics as rk
-from gacha.risk.normal import max_abs_cdf_error, normal_approx_cdf
+from gacharisk.kernel.types import HittingTime
+from gacharisk.risk import metrics as rk
+from gacharisk.risk.normal import max_abs_cdf_error, normal_approx_cdf
 
 
 @pytest.fixture

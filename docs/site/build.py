@@ -6,14 +6,14 @@ from pathlib import Path
 
 import numpy as np
 
-from gacha.kernel.backward import state_values
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.endfield import BannerState, SingleBannerModel
-from gacha.models.plan import Plan
-from gacha.risk import metrics as rk
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
-from gacha.rules.paper import PaperSchedule
+from gacharisk.kernel.backward import state_values
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.endfield import BannerState, SingleBannerModel
+from gacharisk.models.plan import Plan
+from gacharisk.risk import metrics as rk
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.rules.paper import PaperSchedule
 
 HERE = Path(__file__).parent
 
@@ -68,7 +68,7 @@ def check_browser_engine():
     """The page's JS port must reproduce the Python engine before the site is built."""
     import subprocess
 
-    from gacha.rules.endfield import rerun_rules
+    from gacharisk.rules.endfield import rerun_rules
 
     flat = replace(full, soft_pity_step=0.0)
     rerun = rerun_rules()
@@ -101,8 +101,8 @@ def check_browser_engine():
     )
     if out.returncode != 0:
         raise SystemExit(f"browser engine disagrees with Python: {out.stdout} {out.stderr}")
-    from gacha.models.weapon import WeaponBannerModel, WeaponState
-    from gacha.rules.weapon import WeaponBannerRules
+    from gacharisk.models.weapon import WeaponBannerModel, WeaponState
+    from gacharisk.rules.weapon import WeaponBannerRules
 
     wpayload = []
     for done in (0, 3, 4, 7):
@@ -115,7 +115,7 @@ def check_browser_engine():
     if wout.returncode != 0:
         raise SystemExit(f"browser weapon engine disagrees with Python: {wout.stdout} {wout.stderr}")
     print("browser weapon engine max abs diff vs Python:", wout.stdout.strip())
-    from gacha.models.plan import Plan
+    from gacharisk.models.plan import Plan
 
     ppayload = []
     cases3 = ((0, 5, [1, 1, 1], 0), (48, 10, [1, 0, 1], 0), (70, 5, [0, 1, 1], 0), (30, 10, [1, 1, 0], 0), (48, 10, [1, 1, 0], 1), (20, 5, [0, 1, 1], 1))
@@ -139,7 +139,7 @@ def check_browser_engine():
 
 
 check_browser_engine()
-from gacha.analysis.rebate import star_rates  # noqa: E402
+from gacharisk.analysis.rebate import star_rates  # noqa: E402
 
 rate6, rate5 = star_rates(full)
 d["rates"] = {"six": rate6, "five": rate5}

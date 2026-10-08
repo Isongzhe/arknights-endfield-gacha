@@ -2,12 +2,12 @@ from dataclasses import replace
 
 import pytest
 
-from gacha.kernel.backward import state_values
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.endfield import BannerState, SingleBannerModel, pull, status, validate_start
-from gacha.risk import metrics as rk
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.kernel.backward import state_values
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.endfield import BannerState, SingleBannerModel, pull, status, validate_start
+from gacharisk.risk import metrics as rk
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
 
 FULL = EndfieldCharacterRules()
 # Only the 80-pull pity and the 50/50 (R2-R4); everything banner-local switched off.
@@ -189,7 +189,7 @@ def test_golden_default_rules():
 
 
 def test_rerun_banner_has_bonus_pulls_at_60_and_90():
-    from gacha.rules.endfield import rerun_rules
+    from gacharisk.rules.endfield import rerun_rules
 
     rules = rerun_rules()
     p_vac = 1 - (1 - 0.004) ** 10

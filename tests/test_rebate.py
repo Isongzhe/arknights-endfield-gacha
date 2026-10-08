@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from gacha.analysis.rebate import effective_stock, quota_per_pull, star_rates
-from gacha.rules.endfield import EndfieldCharacterRules
+from gacharisk.analysis.rebate import effective_stock, quota_per_pull, star_rates
+from gacharisk.rules.endfield import EndfieldCharacterRules
 
 RULES = EndfieldCharacterRules()
 

@@ -1,1 +1,0 @@
-"""gacha.rules package."""

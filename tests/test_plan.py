@@ -1,13 +1,13 @@
 import numpy as np
 import pytest
 
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.kernel.types import FAIL, SUCCESS
-from gacha.models.endfield import BannerState, SingleBannerModel
-from gacha.models.plan import Plan, PlanState
-from gacha.risk import metrics as rk
-from gacha.rules.endfield import BannerSpec, EndfieldCharacterRules
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.kernel.types import FAIL, SUCCESS
+from gacharisk.models.endfield import BannerState, SingleBannerModel
+from gacharisk.models.plan import Plan, PlanState
+from gacharisk.risk import metrics as rk
+from gacharisk.rules.endfield import BannerSpec, EndfieldCharacterRules
 
 FULL = EndfieldCharacterRules()
 WANTED = BannerSpec(FULL, 1, 120)

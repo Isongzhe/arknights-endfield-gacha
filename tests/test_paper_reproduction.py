@@ -6,13 +6,13 @@ A disagreement is investigated and documented in docs/research-notes.md, never f
 
 import pytest
 
-from gacha.kernel.backward import state_values
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.paper import Featured5050Model, IIDStagesModel, SingleCounterModel
-from gacha.risk import metrics as rk
-from gacha.risk.normal import max_abs_cdf_error
-from gacha.rules.paper import PaperSchedule
+from gacharisk.kernel.backward import state_values
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.paper import Featured5050Model, IIDStagesModel, SingleCounterModel
+from gacharisk.risk import metrics as rk
+from gacharisk.risk.normal import max_abs_cdf_error
+from gacharisk.rules.paper import PaperSchedule
 
 MOM = 0.01
 PROB = 5e-4

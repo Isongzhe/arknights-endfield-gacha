@@ -1,13 +1,13 @@
 import pytest
 
-from gacha.analysis.rebate import arsenal_per_pull
-from gacha.cli import main
-from gacha.kernel.chain import EnumeratedChain
-from gacha.kernel.forward import hitting_time
-from gacha.models.weapon import WeaponBannerModel, WeaponState
-from gacha.risk import metrics as rk
-from gacha.rules.endfield import EndfieldCharacterRules
-from gacha.rules.weapon import WeaponBannerRules
+from gacharisk.analysis.rebate import arsenal_per_pull
+from gacharisk.cli import main
+from gacharisk.kernel.chain import EnumeratedChain
+from gacharisk.kernel.forward import hitting_time
+from gacharisk.models.weapon import WeaponBannerModel, WeaponState
+from gacharisk.risk import metrics as rk
+from gacharisk.rules.endfield import EndfieldCharacterRules
+from gacharisk.rules.weapon import WeaponBannerRules
 
 RULES = WeaponBannerRules()
 
