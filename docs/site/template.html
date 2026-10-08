@@ -837,9 +837,6 @@ __ENGINE__
     $('calc-advice').textContent=got?`伊馮已經拿到，剩下的 ${B} 抽全部留給祀。祀不花錢拿到的機率是 ${pc(rows[0].b)}，要保證拿到最多需要 ${maxB} 抽。`:best<0.005?'以目前的抽數，兩隻都拿到的機率接近零。':
       pick.x===0?'復刻池不值得投入，把抽數全留給祀。':
       `復刻池最多抽 ${pick.x} 抽，沒拿到就停手。這樣拿到伊馮的機率是 ${pc(pick.a)}，祀是 ${pc(pick.b)}，兩隻都有是 ${pc(pick.both)}。完全不抽復刻池時，祀是 ${pc(skip.b)}。`;
-    const xs=[...new Set([0,10,20,30,40,ap,ap+10,maxA,capMax].filter(x=>x<=capMax))].sort((a,b)=>a-b);
-    $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到伊馮</th><th class="n">拿到祀</th><th class="n">兩隻都有</th></tr>'+
-      xs.map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
     // spend when the second target is chased to its guarantee and the first is capped at x
     const S=B, spendMemo={};
     const spend=x=>{if(spendMemo[x])return spendMemo[x];const n=Math.min(x,maxA),c=fa.slice(0,n+1);
@@ -859,9 +856,14 @@ __ENGINE__
       afford<ap&&ap<=maxA?`花費上限 ${nt(M)}、祀一定要拿到的話，復刻池最多只能再抽 ${afford} 抽，還到不了必出六星的第 ${ap} 抽。停在那之前很不划算，拿到伊馮的機率只有 ${pc(pA(afford))}。要嘛這次不抽復刻池，要嘛把上限提高到 ${nt(worst(ap))}，才能抽到必出六星。`:
       afford>=maxA?`${nt(M)} 足以把兩隻都追到保證，最壞花費是 ${nt(worst(maxA))}。`:
       `花費上限 ${nt(M)}、祀一定要拿到的話，復刻池最多可以再抽 ${afford} 抽，也就是累積到 ${an+afford} 抽。這時拿到伊馮的機率是 ${pc(pA(afford))}，而且有 ${pc(spend(afford).free)} 的機會一毛都不用花。算法：你到新角色池結束有 ${B} 抽`+(buy>0?`，${nt(M)} 最多再買 ${buy} 抽`:'')+`，祀最壞要 ${maxB} 抽，所以最多能分給復刻池 ${B+buy-maxB} 抽。這個結論的前提是那 ${B} 抽都確實拿得到，其中預估的收入若沒有到手，就得用錢補。`;
-    const ms=[...new Set([0,ap,ap+10,maxA,Math.max(0,afford)])].filter(x=>x<=maxA).sort((a,b)=>a-b);
-    $('calc-money').innerHTML='<tr><th class="n">復刻池上限</th><th class="n">拿到伊馮</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞花費</th></tr>'+
-      ms.map(x=>{const r=spend(x);return `<tr><td class="n">${x}${x===afford?' ◀':''}</td><td class="n">${pc(pA(x))}</td><td class="n">${pc(r.free)}</td><td class="n">${nt(r.avg)}</td><td class="n">${nt(r.q90)}</td><td class="n">${nt(r.mx)}</td></tr>`;}).join('');
+    // both tables list the same stopping points, each with the reason it is listed
+    const why=x=>[x===0&&'不抽復刻池',x===ap&&'抽到必出六星',x===pick.x&&'建議：兩隻都有的機率接近最高',x===afford&&M>0&&`花費上限 ${nt(M)} 內還能保證祀`,
+      x===capMax&&x<maxA&&'復刻池結束前拿得出的全部',x===maxA&&'保證拿到伊馮'].filter(Boolean).join('；');
+    const stops=[...new Set([0,ap,pick.x,Math.max(0,afford),capMax,maxA])].filter(x=>x<=maxA).sort((a,b)=>a-b);
+    $('calc-table').innerHTML='<tr><th class="n">復刻池上限</th><th>這一列是什麼</th><th class="n">拿到伊馮</th><th class="n">拿到祀</th><th class="n">兩隻都有</th></tr>'+
+      stops.filter(x=>x<=capMax).map(x=>{const r=rows[x];return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td>${why(x)}</td><td class="n">${pc(r.a)}</td><td class="n">${pc(r.b)}</td><td class="n">${pc(r.both)}</td></tr>`;}).join('');
+    $('calc-money').innerHTML='<tr><th class="n">復刻池上限</th><th>這一列是什麼</th><th class="n">拿到伊馮</th><th class="n">不用花錢</th><th class="n">平均花費</th><th class="n">九成情況內</th><th class="n">最壞花費</th></tr>'+
+      stops.map(x=>{const r=spend(x);return `<tr><td class="n">${x}${x===pick.x?' ◀':''}</td><td>${why(x)}</td><td class="n">${pc(pA(x))}</td><td class="n">${pc(r.free)}</td><td class="n">${nt(r.avg)}</td><td class="n">${nt(r.q90)}</td><td class="n">${nt(r.mx)}</td></tr>`;}).join('');
     const xm=Math.max(1,Math.min(capMax,maxA+10));
     lineChart('c-calc-cap',{label:'復刻池投入上限的影響',xmax:xm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(xm,8),
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
