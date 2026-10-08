@@ -1,5 +1,10 @@
 # gacha-risk
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
+[![CI](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml/badge.svg)](https://github.com/Isongzhe/arknights-endfield-gacha/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)
+
 Exact waiting-time and budget-risk models for gacha banners, starting with
 *Arknights: Endfield* (明日方舟：終末地).
 
@@ -28,6 +33,41 @@ this banner, and what does pulling here cost my chances on the next one.
 - **Checked three ways.** The engine reproduces the published numbers of the reference paper,
   matches the game's official comprehensive rates to four decimals, and agrees with Monte Carlo
   within three standard errors.
+
+## At a glance
+
+Which entry point answers which question:
+
+```mermaid
+flowchart TD
+    Q{What do you want to know?}
+    Q -->|One banner, from my current pity and progress| E["gacha-risk evaluate"]
+    Q -->|A re-run now and a limited banner next,<br/>one stock of pulls| D["gacha-risk decide scenario.toml"]
+    Q -->|Several limited banners in a row| P["gacha-risk evaluate --plan plan.toml"]
+    Q -->|What my arsenal quota buys| W["gacha-risk weapon --quota N"]
+    Q -->|Try it without installing| C["Colab notebook"]
+    E --> R["Exact distribution of own pulls:<br/>mean, quantiles, worst case,<br/>chance within a budget"]
+    D --> T["For every stopping point on the first banner:<br/>P(first), P(second), P(both),<br/>cheapest top-up to guarantee both"]
+    P --> R
+    W --> I["Chance of the rate-up weapon<br/>per ten-pull, quota still needed"]
+    C --> R
+```
+
+How a result is computed:
+
+```mermaid
+flowchart LR
+    A["Rules<br/>rates, pity, guarantees, bonuses"] --> B["Model<br/>state and one-step transitions"]
+    S["Your state<br/>pity, banner progress, stock"] --> B
+    B --> K["Enumerate reachable states<br/>finite, acyclic"]
+    K --> F["Forward pass<br/>distribution of own pulls"]
+    K --> G["Backward pass, first-step analysis<br/>mean, variance, success within budget"]
+    K --> M["Monte Carlo on the same transitions<br/>check only"]
+    F --> X["Risk metrics<br/>quantiles, VaR, CVaR, completion"]
+    G --> X
+    X --> O["Tables, figures, CLI, site"]
+    M -.agrees within 3 standard errors.-> X
+```
 
 ## The recurring decision
 
@@ -101,8 +141,11 @@ dist = hitting_time(EnumeratedChain.from_model(model))
 print(rk.mean(dist), rk.quantile(dist, 0.9), rk.completion(dist, 60))
 ```
 
-**In a notebook, nothing to install** — [open the demo in Colab](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
-(the text is in Traditional Chinese; the repository has to be public for this link to work).
+**In a notebook, nothing to install**
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
+
+The notebook text is in Traditional Chinese. Change the numbers marked 改這裡 and rerun the cell.
 
 **Reproduce every table and figure**: `uv run gacha-risk experiment all` writes to `results/`.
 
@@ -171,7 +214,9 @@ MIT, see [LICENSE](LICENSE).
 - **回答停損問題**：兩個池共用資源時，第一個池該抽到哪裡停，會讓第二個池的機率掉多少。
 - **換算成錢**：差的抽數最便宜要花多少。
 
-不想安裝的話，可以直接[在 Colab 開啟示範筆記](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)，改幾個數字就能算自己的情況。
+不想安裝的話，點下面的按鈕在 Colab 開啟示範筆記，改幾個數字就能算自己的情況。
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Isongzhe/arknights-endfield-gacha/blob/main/examples/demo.ipynb)
 
 把你的狀況寫成一個檔案（範例見 [examples/rerun_then_limited.toml](examples/rerun_then_limited.toml)），然後執行：
 
