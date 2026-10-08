@@ -103,6 +103,12 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
 .duo img{width:52px;height:52px;border-radius:8px}
 .duo span{display:flex;flex-direction:column;font-size:.85rem;color:var(--muted)}
 .duo b{font-size:1.05rem;color:var(--fg)}
+
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;background:var(--surface);color:var(--ink2);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.offtab{position:absolute!important;left:-300vw;width:min(760px,88vw);visibility:hidden}
+.more{margin-top:40px;color:var(--ink2)}
 </style>
 <script>
 window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'},options:{enableMenu:false}};
@@ -111,17 +117,20 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
 
 <div class="wrap">
 <nav aria-label="章節">
-  <div class="label">章節</div>
+  <div class="tabs" role="group" aria-label="頁面">
+    <button type="button" data-go="main" aria-pressed="true">試算與結果</button>
+    <button type="button" data-go="method" aria-pressed="false">方法與驗證</button>
+  </div>
   <ol>
-    <li><a href="#overview">總覽</a></li>
-    <li><a href="#calc">試算</a></li>
-    <li><a href="#case">分析報告</a></li>
-    <li><a href="#results">通用結果</a></li>
-    <li><a href="#rules">卡池規則</a></li>
-    <li><a href="#theory">統計理論</a></li>
-    <li><a href="#algo">演算法</a></li>
-    <li><a href="#verify">驗證</a></li>
-    <li><a href="#next">限制與下一步</a></li>
+    <li data-tab="main"><a href="#overview">總覽</a></li>
+    <li data-tab="main"><a href="#calc">試算</a></li>
+    <li data-tab="main"><a href="#case">分析報告</a></li>
+    <li data-tab="main"><a href="#results">通用結果</a></li>
+    <li data-tab="main"><a href="#rules">卡池規則</a></li>
+    <li data-tab="method"><a href="#theory">統計理論</a></li>
+    <li data-tab="method"><a href="#algo">演算法</a></li>
+    <li data-tab="method"><a href="#verify">驗證</a></li>
+    <li data-tab="method"><a href="#next">限制與下一步</a></li>
   </ol>
 </nav>
 <main>
@@ -132,7 +141,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
   <p>給定規則和你現在的狀態，直接算出「還要幾抽」的完整機率分布，而不是只給一個平均值或跑模擬。上半是可以填自己數字的試算與報告，下半是通用結果、規則與算法。抽數一律指<b>自備抽數</b>：你自己拿出來的抽，不論是存的還是買的；遊戲送的免費抽不算。</p>
 </header>
 
-<section id="overview">
+<section id="overview" data-tab="main">
   <h2>總覽</h2>
   <p>出發點是 Hou、Zhu、Zhang 在 <i>Symmetry</i> 2026 的論文〈<a href="https://www.mdpi.com/2073-8994/18/6/1051">State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models</a>〉，開放取用，可以免費閱讀全文。它把「抽到一隻稀有角色要幾抽」寫成吸收馬可夫鏈的吸收時間，用反向遞迴直接算出期望、變異數與完整分布。這裡把同一套想法搬到《明日方舟：終末地》的限定角色池。</p>
   <div class="keys">
@@ -145,7 +154,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
   <p>上面這排數字假設每池只有登入送的 5 抽免費，所以最壞是 115 而不是 120。這 5 抽人人都有。如果再用集成配額到商店換 5 抽，免費抽變成 10 抽，最壞是 110，期望也會再低約 5 抽。通用的數字以 5 抽為準，下面的試算器預設 10 抽，可以自己改。</p>
 </section>
 
-<section id="calc">
+<section id="calc" data-tab="main">
   <h2>試算：復刻、限定都想要</h2>
   <div class="duo">
     <div><img alt="" src="__ICON_A__"><span><b>伊馮</b>復刻池，先開</span></div>
@@ -245,7 +254,7 @@ __OWN6__
   </div>
 </section>
 
-<section id="case">
+<section id="case" data-tab="main">
   <h2>分析報告</h2>
   <p>照目前的排程，每個大版本的下半是一個復刻池，緊接著下個版本開新的限定角色池。復刻依角色推出的順序輪替，1.5 下半是伊馮，1.6 下半輪到 1.1 版的角色。所以「復刻池要不要投入、會不會影響下一隻新角色」是每個版本都會重來一次的問題。</p>
   <p class="note">這一節依上方試算器的輸入產生。改完數字按「計算」，下面的表、圖與文字都會跟著更新。</p>
@@ -322,7 +331,7 @@ __OWN6__
   <p id="rep-band-note"></p>
 </section>
 
-<section id="results">
+<section id="results" data-tab="main">
   <h2>通用結果</h2>
   <p>上面的試算與分析報告是依你填的數字算的。這一節不看個人狀況：從零開始、只照規則，一個限定池或連續幾個限定池要幾抽。試算器用的是同一套計算，只是起點換成你的狀態。</p>
   <ul>
@@ -435,7 +444,7 @@ __COPIES_MINE__
   <p>期望對 UP 佔比最敏感，但尾端完全由保底門檻決定。有沒有軟保底只讓期望差 3.5 抽，最壞情況不受影響。</p>
 </section>
 
-<section id="rules">
+<section id="rules" data-tab="main">
   <h2>卡池規則</h2>
   <p>下表是模型實際採用的規則。「已確認」表示遊戲內說明、玩家實測與 wiki 一致；其餘是建模時的假設，列在「限制與下一步」。</p>
   <div class="scroll"><table>
@@ -498,7 +507,7 @@ __COPIES_MINE__
   </figure>
 </section>
 
-<section id="theory">
+<section id="theory" data-tab="method">
   <h2>統計理論</h2>
 
   <h3>論文的單計數器模型</h3>
@@ -556,7 +565,7 @@ __COPIES_MINE__
   </ul>
 </section>
 
-<section id="algo">
+<section id="algo" data-tab="method">
   <h2>演算法</h2>
   <h3>一次計算怎麼流動</h3>
   <pre class="mermaid">
@@ -608,7 +617,7 @@ flowchart LR
   <p><b>結果。</b>在論文的單計數器模型、終末地單池模型與雙池計畫模型上，所有受檢量皆通過判準，\(|z|\) 的最大值依序為 1.01、0.82 與 1.21。以終末地單池為例，期望成本的精確值為 74.3312，模擬估計為 74.3857，標準誤 0.0805，\(z=0.68\)。</p>
 </section>
 
-<section id="verify">
+<section id="verify" data-tab="method">
   <h2>驗證</h2>
   <p>數字可信的理由有三個：算法重現了論文已發表的數字；規則重現了官方公布的綜合機率；動態規劃與蒙地卡羅互相吻合。</p>
   <h3>重現論文數字</h3>
@@ -639,7 +648,7 @@ flowchart LR
   </table></div>
 </section>
 
-<section id="next">
+<section id="next" data-tab="method">
   <h2>限制與下一步</h2>
   <h3>哪些是假設</h3>
   <p>保底門檻（80、120、240）與基礎機率是官方公告，最壞情況只由它們決定。下面幾項是模型的假設，會影響中間的機率，不影響最壞值。</p>
@@ -695,6 +704,7 @@ pmf = first_up_pmf(model)        # pmf[j] = 剛好再抽 j 抽拿到的機率</p
 </section>
 
 <footer>參考文獻：Hou, S.; Zhu, Y.; Zhang, S. State-Dependent Asymmetry in Soft-Pity Gacha Waiting-Time Models: Exact Recurrences, Tail Risk, and Featured-Target Extensions. <i>Symmetry</i> 2026, 18(6), 1051. <a href="https://doi.org/10.3390/sym18061051">https://doi.org/10.3390/sym18061051</a>（<a href="https://www.mdpi.com/2073-8994/18/6/1051/pdf">PDF</a>）。本頁數字由專案內的動態規劃計算。</footer>
+<p class="more" data-tab="main">這一頁的數字怎麼算出來、怎麼驗證、有哪些假設，放在 <a href="#theory">方法與驗證</a>。</p>
 </main>
 </div>
 
@@ -963,5 +973,21 @@ for(const k of [2,3]){const c=D.carry[k];
   G.forEach((_,r)=>el('text',{x:m.l-8,y:m.t+(G.length-1-r)*ch+ch/2+3,'text-anchor':'end'},svg).textContent=(r+1)+' 池');
   for(const t of [0,115,230,345,460,575]){const c=t/5;el('text',{x:m.l+c*cw,y:H-m.b+16,'text-anchor':'middle'},svg).textContent=t;}
   el('text',{class:'axl',x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle'},svg).textContent='總自備抽數預算';
+})();
+
+// two tabs: sections of the inactive tab are moved off-screen (not display:none, so formulas and diagrams still measure)
+(function(){
+  const tabOf=id=>{const e=id&&document.getElementById(id);return e&&e.dataset?e.dataset.tab:null;};
+  const setTab=(t,jump)=>{
+    document.querySelectorAll('section[data-tab],p[data-tab]').forEach(e=>e.classList.toggle('offtab',e.dataset.tab!==t));
+    document.querySelectorAll('nav li[data-tab]').forEach(e=>{e.hidden=e.dataset.tab!==t;});
+    document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.go===t)));
+    if(jump){const e=document.getElementById(jump);if(e&&e.scrollIntoView)e.scrollIntoView();}
+  };
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.go,b.dataset.go==='main'?'overview':'theory')));
+  document.addEventListener('click',ev=>{const a=ev.target&&ev.target.closest?ev.target.closest('a[href^="#"]'):null;if(!a)return;
+    const id=a.getAttribute('href').slice(1), t=tabOf(id);if(t){ev.preventDefault();setTab(t,id);try{history.replaceState(null,'','#'+id);}catch(_){}}});
+  const first=(location.hash||'').slice(1);
+  setTab(tabOf(first)||'main',tabOf(first)?first:null);
 })();
 </script>
