@@ -95,6 +95,9 @@ pre.mermaid{background:var(--surface);border:1px solid var(--rule);border-radius
 #calc-out h3:first-child{border-top:0;padding-top:0;margin-top:6px}
 a{color:var(--accent);text-underline-offset:2px}
 nav a{text-decoration:none}
+details{border:1px solid var(--rule);border-radius:6px;padding:8px 12px;background:var(--surface)}
+details summary{cursor:pointer;font-size:14px;color:var(--ink2)}
+details[open] summary{margin-bottom:8px}
 footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
 @media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr);gap:24px}nav{position:static}nav ol{flex-direction:row;flex-wrap:wrap;border-left:0;gap:4px 4px}nav a{border-left:0;border-bottom:2px solid transparent;margin:0;padding:3px 8px}}
 </style>
@@ -209,6 +212,8 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['$$','$$']]},svg:{
       <label for="in-wq">現有武庫配額<input id="in-wq" type="number" min="0" value="43940" inputmode="numeric"></label>
       <label for="in-wai">復刻角色的武器池，已抽幾次十連<input id="in-wai" type="number" min="0" max="7" value="0" inputmode="numeric"></label>
       <label for="in-wbi">新角色的武器池，已抽幾次十連<input id="in-wbi" type="number" min="0" max="7" value="0" inputmode="numeric"></label>
+      <label for="in-wpulls">接下來三個卡池，預計總共抽幾抽角色<input id="in-wpulls" type="number" min="0" value="100" inputmode="numeric"></label>
+      <label for="in-wextra">其他來源的武庫配額，活動、大月卡等<input id="in-wextra" type="number" min="0" value="0" inputmode="numeric"></label>
       </div>
       <div class="fields">
       <label class="check" for="in-wa"><input id="in-wa" type="checkbox" checked>想要復刻角色的武器</label>
@@ -330,8 +335,18 @@ __OWN6__
   <div class="scroll"><table id="rep-wres"></table></div>
   <p class="cap">復刻角色的武器池會跟著復刻池一起關，所以排在前面。限定角色的武器池會持續三個卡池，可以晚一點抽，期間抽角色進帳的配額也用得上。</p>
   <h3>抽幾次十連，拿到的機率是多少</h3>
-  <div class="scroll"><table id="rep-wprob"></table></div>
-  <p class="cap">六星武器每抽 4%，其中 25% 是當期 UP。連續 40 抽沒出六星武器時必出一把，池內第 80 抽必出 UP。前 7 次十連的機率是慢慢爬的，第 8 次才補滿，所以武器池沒有適合中途停手的位置：要抽就準備好 8 次的量。</p>
+  <figure>
+    <div class="ftitle">累計抽到第幾次十連時，已經拿到 UP 武器的機率</div>
+    <div class="legend" id="l-rep-wprob"></div>
+    <div class="chart" id="c-rep-wprob"></div>
+    <figcaption>前 7 次十連每次大約只多 6 到 12 個百分點，第 8 次是保底，一口氣補到 100%。所以武器池沒有適合中途停手的位置：要抽就準備好 8 次的量。虛線標出你的配額能抽到第幾次。</figcaption>
+  </figure>
+  <details><summary>看數字</summary><div class="scroll"><table id="rep-wprob"></table></div></details>
+  <p class="cap">六星武器每抽 4%，其中 25% 是當期 UP。連續 40 抽沒出六星武器時必出一把，池內第 80 抽必出 UP。</p>
+  <h3>三個卡池內補不補得到</h3>
+  <p>限定角色的武器池會開三個卡池。這段期間你抽角色還會進帳武庫配額，平均每抽 81，但實際進帳要看出了幾隻六星，所以分成偏少、一般、偏多三種情況來看。復刻角色的武器池會提早關閉，只能用現有的配額。</p>
+  <div class="scroll"><table id="rep-wfuture"></table></div>
+  <p id="rep-wfuture-note"></p>
   <h3>角色抽得越少，武器越買不起</h3>
   <p>下表用新角色池的三種結果，看各自會進帳多少武庫配額，以及加上你現有的配額之後夠不夠拿武器。</p>
   <div class="scroll"><table id="rep-wscen"></table></div>
@@ -739,6 +754,22 @@ function lineChart(id,o){
   svg.addEventListener('pointerleave',()=>{tip.hidden=true;cross.setAttribute('visibility','hidden');});
 }
 const pct=v=>(v*100).toFixed(1)+'%';
+// grouped bars over categories 1..n with optional vertical markers placed after a category
+function barChart(id,o){
+  const host=document.getElementById(id);host.innerHTML='';const W=720,H=o.h||280,m={l:52,r:14,t:26,b:40};
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':o.label},host);
+  const n=o.labels.length,g=(W-m.l-m.r)/n,k=o.series.length,bw=Math.min(46,(g-14)/k),Y=v=>H-m.b-v*(H-m.t-m.b);
+  for(const t of [0,.25,.5,.75,1]){el('line',{class:'grid',x1:m.l,x2:W-m.r,y1:Y(t),y2:Y(t)},svg);el('text',{x:m.l-8,y:Y(t)+4,'text-anchor':'end'},svg).textContent=(t*100)+'%';}
+  o.labels.forEach((lb,i)=>{const cx=m.l+g*(i+.5);
+    el('text',{x:cx,y:H-m.b+16,'text-anchor':'middle'},svg).textContent=lb;
+    o.series.forEach((sr,si)=>{const v=sr.y[i]||0,x=cx-(k*bw+(k-1)*2)/2+si*(bw+2),hh=Math.max(1,Y(0)-Y(v));
+      const r=el('rect',{x,y:Y(v),width:bw,height:hh,rx:3,style:`fill:${sr.color}`},svg);el('title',{},r).textContent=`${sr.name} 第 ${lb} 次：${pct(v)}`;
+      if(k===1)el('text',{x:cx,y:Y(v)-6,'text-anchor':'middle',style:'fill:var(--ink2)'},svg).textContent=(v*100).toFixed(v>=0.9995?0:1)+'%';});});
+  (o.marks||[]).forEach((mk,i)=>{if(mk.x<0)return;const x=m.l+g*Math.min(mk.x,n)-(mk.x>=n?4:0);
+    el('line',{x1:x,x2:x,y1:m.t-8+i*12,y2:H-m.b,style:'stroke:var(--ink2)','stroke-width':1.2,'stroke-dasharray':'3 4'},svg);
+    el('text',{class:'axl',x:x-6,y:m.t-12+i*12+8,'text-anchor':'end'},svg).textContent=mk.label;});
+  el('text',{class:'axl',x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle'},svg).textContent=o.xlabel;
+}
 __ENGINE__
 (function(){
   const $=id=>document.getElementById(id), num=id=>Math.max(0,Math.floor(Number($(id).value)||0));
@@ -828,7 +859,7 @@ __ENGINE__
     const wA=weaponUp({issuesDone:wai}), wB=weaponUp({issuesDone:wbi}), cw=f=>{const c=cumsum(f);return k=>c[Math.max(0,Math.min(k,c.length-1))];};
     const wanted=[];if(wantA)wanted.push(['復刻角色的武器',wA]);if(wantB)wanted.push(['新角色的武器',wB]);
     const allW=wanted.reduce((acc,[,f])=>convolve(acc,f),[1]), cAll=cw(allW), needW=allW.length-1, can=Math.floor(wq/ISSUE);
-    if(!wanted.length){$('rep-wkey').textContent='沒有勾選想要的武器。';for(const id of ['rep-wtiles','rep-wres','rep-wprob','rep-wscen'])$(id).innerHTML='';$('rep-wnote').textContent='';}
+    if(!wanted.length){$('rep-wkey').textContent='沒有勾選想要的武器。';for(const id of ['rep-wtiles','rep-wres','rep-wprob','rep-wscen','rep-wfuture','c-rep-wprob','l-rep-wprob'])$(id).innerHTML='';$('rep-wnote').textContent='';$('rep-wfuture-note').textContent='';}
     else{
       const short=Math.max(0,needW*ISSUE-wq), perChar=minor+2000*r6, wmean=f=>f.reduce((a,p,k)=>a+p*k,0);
       let used=[1];const res=wanted.map(([name,f],i)=>{const c=cw(f);let pr=0;used.forEach((pu,u)=>{if(can-u>=0)pr+=pu*c(can-u);});used=convolve(used,f);
@@ -840,8 +871,26 @@ __ENGINE__
         `你的配額夠抽 ${can} 次十連。建議先抽${wanted[0][0]}，它拿到的機率是 ${res[0][2]}。抽完之後剩下的配額再給${wanted[1][0]}，拿到的機率是 ${res[1][2]}。兩把都拿到的機率是 ${pc(cAll(can))}。要兩把都保證還差 ${short.toLocaleString()} 配額，大約再抽 ${Math.ceil(short/perChar)} 抽角色就會補上。`;
       tbl('rep-wres',['武器','順序','用現有配額拿到的機率','平均要幾次十連','最多幾次'],
         res.map(r=>r.slice(0,5)).concat(wanted.length>1?[['兩把都拿到','—',pc(cAll(can)),wmean(allW).toFixed(1),needW]]:[]));
-      const maxK=Math.max(...wanted.map(([,f])=>f.length-1));
-      tbl('rep-wprob',['十連次數',...wanted.map(w=>w[0])],Array.from({length:maxK},(_,i)=>[i+1,...wanted.map(([,f])=>pc(cw(f)(i+1)))]));
+      const maxK=Math.max(...wanted.map(([,f])=>f.length-1)), ks=Array.from({length:maxK},(_,i)=>i+1);
+      tbl('rep-wprob',['十連次數',...wanted.map(w=>w[0])],ks.map(k=>[k,...wanted.map(([,f])=>pc(cw(f)(k)))]));
+      const sameCurve=wanted.length>1&&wanted[0][1].length===wanted[1][1].length&&wanted[0][1].every((v,i)=>Math.abs(v-wanted[1][1][i])<1e-12);
+      const bars=sameCurve?[{name:'每一把 UP 武器',y:ks.map(k=>cw(wanted[0][1])(k)),color:'var(--s1)'}]:wanted.map(([name,f],i)=>({name,y:ks.map(k=>cw(f)(k)),color:COLORS[i]}));
+      $('l-rep-wprob').innerHTML=bars.map(b=>`<span><i style="border-color:${b.color}"></i>${b.name}</span>`).join('');
+      const income=Math.round(perChar*c.wpulls)+c.wextra, canF=Math.floor((wq+income)/ISSUE);
+      barChart('c-rep-wprob',{label:'十連次數與拿到 UP 武器的機率',labels:ks,series:bars,xlabel:'累計十連次數',
+        marks:[{x:Math.min(can,maxK),label:`現有配額可抽 ${can} 次`}].concat(canF>can?[{x:Math.min(canF,maxK),label:`三個卡池內約 ${canF} 次`}]:[])});
+      // quota accumulated over the next three banners; the re-run weapon can only use what is in hand now
+      const sdQ=Math.sqrt(c.wpulls*(2000*2000*r6+200*200*r5)), fA=wantA?wA:null, fBw=wantB?wB:null;
+      const usedA=[];if(fA){let acc=0;for(let u=0;u<=Math.min(can,fA.length-1);u++){usedA[u]=fA[u]||0;acc+=usedA[u];}usedA[Math.min(can,fA.length-1)]+=1-acc;}else usedA[0]=1;
+      const pAnow=fA?cw(fA)(can):null;
+      const fut=[['偏少',-1],['一般',0],['偏多',1]].map(([name,z])=>{const inc=Math.max(0,Math.round(perChar*c.wpulls+z*sdQ))+c.wextra;
+        let pB=null;if(fBw){pB=0;const cB=cw(fBw);usedA.forEach((pu,u)=>{pB+=pu*cB(Math.floor((wq-ISSUE*u+inc)/ISSUE));});}
+        return [name,inc.toLocaleString(),(wq+inc).toLocaleString(),Math.floor((wq+inc)/ISSUE),pAnow===null?'—':pc(pAnow),pB===null?'—':pc(pB),pB];});
+      tbl('rep-wfuture',['進帳情況','三個卡池內進帳','加上現有','可抽十連','復刻角色的武器','新角色的武器'],fut.map(r=>r.slice(0,6)));
+      const needB=fBw?(fBw.length-1)*ISSUE:0, mid=fut[1][6];
+      $('rep-wfuture-note').textContent=!fBw?'沒有勾選新角色的武器。復刻角色的武器只能用現有的配額。':
+        mid>=0.9995?`以預計的 ${c.wpulls} 抽角色來看，一般情況下新角色的武器在三個卡池內保證拿得到。`+(fut[0][6]<0.9995?`但如果六星出得少、進帳偏少，機率只有 ${pc(fut[0][6])}，差的那一兩次十連要另外想辦法。`:'就算進帳偏少也夠。'):
+        `以預計的 ${c.wpulls} 抽角色來看，一般情況下新角色的武器拿到的機率是 ${pc(mid)}，還不到保證。要保證需要 ${needB.toLocaleString()} 配額`+(fA?'，而且要先扣掉復刻武器用掉的部分':'')+`。每多抽 25 抽角色大約多一次十連；特惠武器包 420 元給 2,000 配額，約等於一次十連。`;
       const scen=[['免費抽就出',0,1],['必出六星那一抽出',hardB,1],['歪一次，抽到大保底才出',maxB,2]].map(([name,own,six])=>{
         const pulls=own+bf+(own+bf>=30?10:0), gainQ=Math.round(minor*pulls+2000*six), tot=wq+gainQ, k=Math.floor(tot/ISSUE);
         return [name,own,gainQ.toLocaleString(),tot.toLocaleString(),k,pc(cAll(k))];});
@@ -960,7 +1009,7 @@ __ENGINE__
       xlabel:'復刻池投入上限（抽）',ylabel:'機率',xname:'上限',vfmt:pct,h:300,mark:pick.x,
       series:[{name:'兩隻都有',y:usable.map(r=>r.both)},{name:'復刻角色',y:usable.map(r=>r.a)},{name:'新角色',y:usable.map(r=>r.b)}]});
     const cdf=cumsum(convolve(fa,fb)), sm=Math.max(need,B)+5; while(cdf.length<=sm)cdf.push(1);
-    report({wq:num('in-wq'),wantA:$('in-wa').checked,wantB:$('in-wb').checked,wai:Math.min(7,num('in-wai')),wbi:Math.min(7,num('in-wbi')),
+    report({wpulls:num('in-wpulls'),wextra:num('in-wextra'),wq:num('in-wq'),wantA:$('in-wa').checked,wantB:$('in-wb').checked,wai:Math.min(7,num('in-wai')),wbi:Math.min(7,num('in-wbi')),
       got,rebate:B-rawB,perPull,fa,fb,S:B,S1:B1,now,left,an,ap,bp,bf,maxA,maxB,rows,capMax,pick,M,pc,nt,spend,pA,c1,c2,other:num('in-other'),card:$('in-card').checked});
     lineChart('c-calc-stock',{label:'總抽數與兩隻都拿到的機率',xmax:sm,ymax:1,yticks:[0,.25,.5,.75,1],yfmt:pct,xticks:ticks(sm,8),
       xlabel:'總抽數',ylabel:'兩隻都有',xname:'總抽數',vfmt:pct,h:260,mark:B,series:[{name:'兩隻都有',y:cdf}]});
